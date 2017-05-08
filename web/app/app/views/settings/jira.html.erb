@@ -1,0 +1,65 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="continer">
+			<div id="settings_message"></div>
+		</div>
+
+		<div class='container'>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+				<li class="breadcrumb-item">Jira Details</li>
+			</ul>
+			<div class='col-md-8'>
+				<div class="panel panel-default">
+					<div class="panel-heading"><h4>Jira Details</h4></div>
+					<div class="panel-body">
+						<%= form_for(:settings, url: update_details_settings_path,method: :POST ,remote: true,:html=>{role: "form"}) do |form| %>
+							<%= form.fields_for :jira do |f| %>
+								<div class="form-group">                                               
+									<%=f.label :host%>
+									<%= f.text_field :host, autofocus: true,requred: true,class: "form-control",value: Setting["jira"].present? ? Setting["jira"]["host"] : ""%>
+								</div>          
+								<div class="form-group " >
+									<%=f.label :username%>
+									<%= f.text_field :username, autofocus: true,requred: true,class: "form-control",value: Setting["jira"].present? ? Setting["jira"]["username"] : ""%>
+								</div>                                          
+								<div class="form-group " >
+									<%=f.label :password%>
+									<%= f.password_field :password, autofocus: true,requred: true, class: "form-control"%>
+								</div>                                                                  
+								<div class="form-group " >
+									<%=f.label :default_project%>
+									<%= f.text_field :default_project, autofocus: true,requred: true, class: "form-control",value:Setting["jira"].present? ? Setting["jira"]["default_project"] : ""%>
+								</div>
+								<div class="form-group" >                                                           
+									<%= f.submit "Save",class: 'btn btn-danger',:onclick=> "start_spinner();"%>                                       
+									<a href="#" data-toggle="popover" data-trigger="hover" font-size="8px;" data-content="In case findings project dose not match, issue will get publish to default project">
+										<i class='glyphicon glyphicon-info-sign text-info'></i>
+									</a>
+								</div>               
+							<%end%>
+						<%end%>
+					</div>
+					<div class='jira-spinner'>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function start_spinner()
+{
+	$(".jira-spinner").spin({
+		lines: 12, // The number of lines to draw
+		length: 7, // The length of each line
+		width: 9, // The line thickness
+		radius: 30, // The radius of the inner circle
+		color: '#000', // #rgb or #rrggbb
+		speed: 1, // Rounds per second
+		trail: 60, // Afterglow percentage
+		shadow: true // Whether to render a shadow
+	});
+}
+</script>

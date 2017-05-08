@@ -1,0 +1,44 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="container">
+			<div id="settings_message"></div>
+		</div>
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-12'>
+					<div class="panel panel-default">
+						<div class="panel-heading">Tools</div>
+						<div class="panel-body">		
+							<table class='table'>
+								<thead>
+									<th>Name</th>
+									<th>Scan Type</th>
+									<th>Language</th>
+									<th>Edit</th>
+									<th>Delete</th>
+								</thead>
+								<tbody>
+									<%@tools.each do |each_tool| %>
+										<tr>
+											<td><%=each_tool.name%></td>			
+											<td><%=each_tool.scan_type.name%></td>
+											<td><%=each_tool.group%>
+											<td>
+												<%=link_to('<i class="fa fa-pencil-square-o"> </i>'.html_safe,update_tool_settings_path(each_tool),title: 'Delete',method: :delete, remote: true,confirm: "Confirm deletion?")%>
+											</td>
+											<td>
+												<%=link_to('<i class="glyphicon glyphicon-remove-circle text-danger"> </i>'.html_safe,destroy_tool_settings_path(id: each_tool.id),title: 'Delete',method: :delete,confirm: "Confrm deletion?")%>
+											</td>
+										</tr>
+									<%end%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

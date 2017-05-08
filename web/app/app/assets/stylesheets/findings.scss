@@ -1,0 +1,208 @@
+// Place all the styles related to the findings controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.top-buffer { margin-top:20px; }
+.left-buffer { margin-left: 20px; }
+.right-buffer { margin-right: 20px; }
+.bottom-buffer { margin-bottom: 20px; }
+.finding-details {
+	background-color: #fcf4d4;
+	border-top: 1px solid #7ecc54;
+	padding-top: 2px;
+	font-family: Sans-Serif;;
+	padding: 12px 8px 0px 7px;
+	border-right: 1px solid #b3bda4;
+	border-bottom: 2px solid white;
+}
+.borderless tr td,.borderless thead tr th,.borderless tbody tr td,.borderless > td{
+	border: none !important;;
+}
+
+.comment-message { 
+	color: #858c93;
+}
+.grid-header {
+	background-color: #980905;
+	border-bottom: 5px solid #530200;
+	color: white;
+	font-size: 11pt;
+	padding: 1px 8px 1px 8px;
+}
+.breadcrumb > li + li:before {
+	color: #ccc;
+	content: "\00BB" !important;
+	padding: 0 5px;
+}
+
+.target-stats ,.target-stats > .panel-heading {
+	border-color: #5fcf80 !important;
+	color: #000000 !important;
+}
+
+.status-control {
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+	color: #555555;
+	font-size: 14px;
+	height: 34px;
+	line-height: 1.42857;
+	padding: 6px 12px;
+	transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.table-striped tbody tr:nth-child(odd) {
+//	background-color: #f8f5f0 !important;
+}
+#sidebar-wrapper {
+	width: 230px;
+	position: fixed;
+	height: 100%;
+	top: 0;
+	overflow-y: auto;
+	z-index: 1000;
+	overflow-x: hidden;
+	transition: all 0.4s ease 0s;
+}
+/*nav.sidebar {                                                                                   
+position: absolute;                             
+bottom: 0 !important;
+top: 51;
+padding: 0px 2px 0px 10px;
+}*/
+nav.sidebar {  
+	position: absolute;
+	width: 250px;
+	list-style: none;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	top:50;
+}
+nav.sidebar ul li.active > a,#corporate_scans  a.active, #team_scans  a.active,#my_scans a.active{
+	background-color: #4caf50 !important;
+	color: #ffffff !important;
+}
+#corporate_scans  a.active, #team_scans  a.active,#my_scans a.active{
+	background-color: #4cae4c !important;
+	border-color: #f5f5f5 !important;
+	color: #ffffff !important;
+}
+nav.sidebar, .main{
+	-webkit-transition: margin 200ms ease-out;
+	-moz-transition: margin 200ms ease-out;
+	-o-transition: margin 200ms ease-out;
+	transition: margin 200ms ease-out;
+}
+
+.main{
+	padding: 10px 10px 0 10px;
+}
+@media (min-width: 765px) {
+
+	nav.sidebar{
+		position: absolute;
+		width: calc(100% - 40px); 
+		margin-left: 40px;
+		float: right;
+	}
+
+	nav.sidebar:hover + .main{
+		margin-left: 200px;
+	}
+
+	nav.sidebar.navbar.sidebar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+		margin-left: 0px;
+	}
+
+	nav.sidebar .navbar-brand, nav.sidebar .navbar-header{
+		text-align: center;
+		width: 250px;
+		margin-left: 0px;
+		float: left;
+	}
+
+	nav.sidebar a{
+		padding-right: 13px;
+	}
+
+	nav.sidebar .navbar-nav > li:first-child{
+		border-top: 1px #e5e5e5 solid;
+	}
+
+	nav.sidebar .navbar-nav > li{
+		border-bottom: 1px #e5e5e5 solid;
+	}
+
+	nav.sidebar .navbar-nav .open .dropdown-menu {
+		position: static;
+		float: none;
+		width: auto;
+		margin-top: 0;
+		background-color: transparent;
+		border: 0;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+
+	nav.sidebar .navbar-collapse, nav.sidebar .container-fluid{
+		padding: 0 2px 0 0px;
+	}
+
+	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+		color: #777;
+	}
+
+	nav.sidebar{
+		width: 230px;
+		margin-left: -160px;
+		float: left;
+	}
+
+	nav.sidebar li {
+		width: 100%;
+	}
+
+	nav.sidebar:hover{
+		margin-left: 0px;
+	}
+
+	.forAnimate{
+		opacity: 0;
+	}
+}
+
+@media (min-width: 1330px) {
+
+	.main{
+		width: calc(100% - 200px);
+		margin-left: 200px;
+	}
+
+	nav.sidebar{
+		margin-left: 0px;
+		float: left;
+	}
+
+	nav.sidebar .forAnimate{
+		opacity: 1;
+	}
+}
+
+nav.sidebar .navbar-nav .open .dropdown-menu>li>a:hover, nav.sidebar .navbar-nav .open .dropdown-menu>li>a:focus {
+	color: #CCC;
+	background-color: transparent;
+}
+
+nav:hover .forAnimate{
+	opacity: 1;
+}
+section.finding_details {
+	display: block;
+	padding-left:1px;
+}
+.display-flash{
+	margin-left: 250px !important;
+}

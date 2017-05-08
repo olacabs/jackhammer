@@ -1,0 +1,37 @@
+<host starttime="1378483073" endtime="1378483078">
+  <status state="up" reason="localhost-response" reason_ttl="0"/>
+  <address addr="127.0.0.1" addrtype="ipv4"/>
+  <hostnames>
+    <hostname name="localhost" type="user"/>
+    <hostname name="localhost" type="PTR"/>
+  </hostnames>
+  <ports>
+    <extraports state="closed" count="65529">
+      <extrareasons reason="resets" count="65529"/>
+    </extraports>
+    <port protocol="tcp" portid="25">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+      <service name="smtp" method="table" conf="3"/>
+    </port>
+    <port protocol="tcp" portid="80">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+      <service name="http" method="table" conf="3"/>
+    </port>
+    <port protocol="tcp" portid="443">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+      <service name="https" method="table" conf="3"/>
+    </port>
+    <port protocol="tcp" portid="3000">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+      <service name="ppp" method="table" conf="3"/>
+    </port>
+    <port protocol="tcp" portid="3306">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+      <service name="mysql" method="table" conf="3"/>
+    </port>
+    <port protocol="tcp" portid="22007">
+      <state state="open" reason="syn-ack" reason_ttl="64"/>
+    </port>
+  </ports>
+  <times srtt="35" rttvar="5" to="100000"/>
+</host>

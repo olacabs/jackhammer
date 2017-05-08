@@ -1,0 +1,14 @@
+<instance>
+  <uri>http://localhost:8080/bodgeit/advanced.jsp</uri>
+  <param>product</param>
+  <attack>POST http://localhost:8080/bodgeit/advanced.jsp HTTP/1.1
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0
+Pragma: no-cache
+Cache-Control: no-cache
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 2143
+Referer: http://localhost:8080/bodgeit/advanced.jsp
+Host: localhost:8080
+
+</attack>
+</instance>

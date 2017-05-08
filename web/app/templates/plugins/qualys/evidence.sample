@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<CAT value="Web server" port="443" protocol="tcp">
+  <VULN number="42366" severity="3" cveid="CVE-2011-3389">
+    <TITLE><![CDATA[SSLv3.0/TLSv1.0 Protocol Weak CBC Mode Vulnerability]]></TITLE>
+    <LAST_UPDATE><![CDATA[2011-12-30T18:56:26Z]]></LAST_UPDATE>
+    <CVSS_BASE>4.3</CVSS_BASE>
+    <CVSS_TEMPORAL>3.5</CVSS_TEMPORAL>
+    <PCI_FLAG>0</PCI_FLAG>
+    <CVE_ID_LIST>
+      <CVE_ID>
+        <ID><![CDATA[CVE-2011-3389]]></ID>
+        <URL><![CDATA[http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3389]]></URL>
+      </CVE_ID>
+    </CVE_ID_LIST>
+    <DIAGNOSIS><![CDATA[SSLv 3.0 and TLS v1.0 protocols are used to provide integrity, authenticity and privacy to other protocols such as HTTP and LDAP. They provide these services by using encryption for privacy, x509 certificates for authenticity and one-way hash functions for integrity. To encrypt data SSL and TLS can use block ciphers, which are encryption algorithms that can encrypt only a fixed block of original data to an encrypted block of the same size. Note that these cihpers will always obtain the same resulting block for the same original blockof data. To achieve difference in the output the output of encryption is XORed with yet another block of the same size referred to as initialization vectors (IV). A special mode of operation for block ciphers known as CBC (cipher block chaining) uses one IV for the initial block and the result of the previous block for each subsequent block to obtain difference in the output of block cipher encryption.
+  <P>
+  In SSLv3.0 and TLSv1.0 implementation the choice CBC mode usage was poor because the entire traffic shares one CBC session with single set of initial IVs. The rest of the IV are as mentioned above results of the encryption of the previous blocks. The subsequent IV are available to the eavesdroppers. This allows an attacker with the capability to inject arbitrary traffic into the plain-text stream (to be encrypted by the client) to verify their guess of the plain-text preceding the injected block. If the attackers guess is correct then the output of the encryption will be the same for two blocks.
+  <P>For low entropy data it is possible to guess the plain-text block with relatively few number of attempts. For example for data that has 1000 possibilities the number of attempts can be 500.
+  <P>For more information please see <A HREF="http://eprint.iacr.org/2006/136.pdf" TARGET="_blank">a paper by Gregory V. Bard.</A>]]></DIAGNOSIS>
+    <CONSEQUENCE><![CDATA[Recently attacks against the web authentication cookies have been described which used this vulnerability. If the authentication cookie is guessed by the attacker then the attacker can impersonate the legitimate user on the Web site which accepts the authentication cookie.]]></CONSEQUENCE>
+    <SOLUTION><![CDATA[This attack was identified in 2004 and later revisions of TLS protocol which contain a fix for this. If possible, upgrade to TLSv1.1 or TLSv1.2. If upgrading to TLSv1.1 or TLSv1.2 is not possible, then disabling CBC mode ciphers will remove the vulnerability.
+  <P>
+  Openssl.org has posted information including countermeasures. Refer to the following link for further details:
+  <A HREF="https://www.openssl.org/~bodo/tls-cbc.txt" TARGET="_blank">Security of CBC Ciphersuites in SSL/TLS</A>
+  <P>
+  Setting your SSL server to prioritize RC4 ciphers mitigates this vulnerability. Microsoft has posted information including workarounds for IIS at <A HREF="http://technet.microsoft.com/en-us/security/advisory/2588513" TARGET="_blank">KB2588513</A>.
+  <P>
+  Using the following SSL configuration in Apache mitigates this vulnerability:<P>
+  SSLHonorCipherOrder On<BR>
+  SSLCipherSuite RC4-SHA:HIGH:!ADH<BR>]]></SOLUTION>
+    <RESULT format="table"><![CDATA[Available non CBC cipher	Server&apos;s choice	SSL version
+  RC4-SHA	EDH-RSA-DES-CBC3-SHA	SSLv3
+  RC4-SHA	EDH-RSA-DES-CBC3-SHA	TLSv1]]></RESULT>
+  </VULN>
+</CAT>

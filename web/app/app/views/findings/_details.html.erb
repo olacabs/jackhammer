@@ -1,0 +1,218 @@
+<div class='row'>
+	<div class='col-md-11'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'> <h4 class="panel-title">Vulnerability Details</h4>
+				<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+			</div>
+			<div class='panel-body'>
+				<div class='row'>
+					<div class='col-md-2'> <b>Application Name:</b></div>
+					<div class='col-md-9'><%=h(@finding.scaners.first.project_title.present? ? @finding.scaners.first.project_title : @finding.scaners.first.repo.name).html_safe%></div>
+					<div class='col-md-1'></div>
+				</div>
+				<%if current_user.is_admin? || current_user.is_security_member?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Tool Name:</b></div>
+						<div class='col-md-9'><%=h(@finding.scanner)%></div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<div class='row top-buffer'>
+					<div class='col-md-2'> <b>Repo/Url/Apk:</b> </div>
+					<div class='col-md-9'> 
+						<%if @finding.repo.ssh_repo_url.present? && @finding.repo.ssh_repo_url.include?("git")%>
+							<%=link_to @finding.repo.ssh_repo_url,@finding.repo.ssh_repo_url,target: '_blank'%>
+						<%else%>
+							<%=h strip_tags (@finding.repo.present? ? @finding.repo.ssh_repo_url : '')%>
+						<%end%>
+					</div>
+					<div class='col-md-1'></div>
+				</div>
+				<div class='row top-buffer'>
+					<%if @finding.scanner == 'Nmap'%>
+						<div class='col-md-2'> <b>Service:</b> </div>
+					<%else%>
+						<div class='col-md-2'> <b>Vulnerability Type:</b> </div>
+					<%end%>
+					<div class='col-md-9'> <%=h strip_tags @finding.description%> </div>
+					<div class='col-md-1'></div>
+				</div>
+				<div class='row top-buffer'>
+					<div class='col-md-2'> <b>Severity:</b> </div>
+					<div class='col-md-9' id='severity'> 
+						<a class='<%=@finding.severity.downcase%>-row badge finds-row'>
+							<%= best_in_place @finding, :severity,:as => :select, :collection => [['Critical', 'Critical'], ['High', 'High'], ['Medium', 'Medium'], ['Low', 'Low'],['Info','Info']],class: ''%>
+						</a>
+						<%#=h(@finding.severity).html_safe%> 
+					</div>
+					<div class='col-md-1'></div>
+				</div>
+				<div class='row top-buffer'>
+					<div class='col-md-2'> <b>Detail/Description:</b> </div>
+					<div class='col-md-9'>  <%=h strip_tags auto_link(@finding.detail)%> <%#= @finding.detail.html_safe%> </div>
+					<div class='col-md-1'></div>
+				</div>
+				<%if @finding.solution.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Remediation:</b> </div>
+						<div class='col-md-9'> <%=h strip_tags auto_link(@finding.solution.downcase) %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.location.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Sink/Source:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.location%></div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.user_input%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>User Input:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.user_input%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.file%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>File Name:</b></div>
+						<div class='col-md-9 col-lg-9 visible-md visible-lg hidden-xs hidden-md'> <%= h strip_tags @finding.file%></div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.line.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Line No:</b> </div>
+						<div class='col-md-9'> <%= h @finding.line%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.code.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Code:</b> </div>
+						<div class='col-md-9' id="cide_section"><pre><code><%= h(auto_link(RedCloth.new(@finding.code, [:filter_html, :no_span_caps]).to_html)).html_safe %></code></pre></div>
+							<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.advisory.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Advisory:</b> </div>
+						<div class='col-md-9'> <%= h strip_tags @finding.advisory %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.cvss_score.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>CVSS Score:</b> </div>
+						<div class='col-md-9'> <%= h strip_tags @finding.cvss_score%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.external_link%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>External Link:</b> </div>
+						<div class='col-md-9'> <%=h(auto_link(RedCloth.new(@finding.external_link,[:filter_html, :no_span_caps]).to_html)).html_safe %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.fingerprint.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Fingerprint:</b></div>
+						<div class='col-md-9'> <%=h @finding.fingerprint%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.host.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Host:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.host %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.protocol.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Protocol:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.protocol%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.state.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>State:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.state %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.port.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Port:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.port%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.product.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Product:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.product %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.version.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Version:</b></div>
+						<div class='col-md-9'> <%=h strip_tags @finding.version%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.scripts.present? && @finding.scripts!="{}"%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Scripts:</b></div>
+						<div class='col-md-9'> <%=h(auto_link(RedCloth.new(@finding.scripts,[:filter_html, :no_span_caps]).to_html)).html_safe %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+
+				<%if @finding.request.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Request:</b></div>
+						<div class='col-md-9'> <%=h(auto_link(RedCloth.new(@finding.request,[:filter_html, :no_span_caps]).to_html)).html_safe %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.response.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Response:</b></div>
+						<div class='col-md-9'> <%=h(auto_link(RedCloth.new(@finding.response,[:filter_html, :no_span_caps]).to_html)).html_safe%> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+				<%if @finding.confidence.present?%>
+					<div class='row top-buffer'>
+						<div class='col-md-2'> <b>Confidence:</b></div>
+						<div class='col-md-9'> <%=h(auto_link(RedCloth.new(@finding.confidence,[:filter_html, :no_span_caps]).to_html)).html_safe %> </div>
+						<div class='col-md-1'></div>
+					</div>
+				<%end%>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	/* Activating Best In Place */
+	$(".best_in_place").best_in_place();
+	$(".best_in_place").click(function(){
+		$(".finds-row").attr('class','');
+	})
+	$('.best_in_place').bind("ajax:success", function(event, data){ 
+		var obj = JSON.parse(data);
+		$("#severity").find('span').addClass("finds-row badge").addClass(obj.severity.toLowerCase() + "-row");
+	});
+});
+function enabled_editor()
+{
+	$(".best_in_place").removeClass("hide");
+	$(".finds-row").addClass("hide");
+	$(".best_in_place").removeClass("form-control")
+}
+</script>

@@ -1,0 +1,49 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active"><%= link_to "Roles",roles_path%></li>
+					<li class="breadcrumb-item active"><%= link_to "Editing Role",edit_role_path(params[:id])%></li>
+					<li class="breadcrumb-item">View Role</li>
+				</ul>
+			</div>
+			<div class='row'>
+				<div class='col-md-6'>
+					<div class="panel panel-default">
+						<div class="panel-heading"><h5><b>Role</b></h5></div>
+						<div class="panel-body">
+							<div class='row'>
+								<div class='col-md-12'>
+									<p>
+									<strong class='label-class'>Name:</strong>
+									<%= @role.name %>
+									</p>
+									<p>
+									<strong class='label-class'>Selected Modules:</strong>
+									<%= @role.functionalities.map(&:name).join(",") %>
+									</p> 
+									<p>
+									<strong class='label-class'>Selected Operations:</strong>
+									<%= @role.function_operations %>
+									</p>
+									<p>
+									<strong class='label-class'>Created:</strong>
+									<%= @role.created_at.to_formatted_s(:short)%>
+									</p>
+									<p>
+									<strong class='label-class'>Updated:</strong>
+									<%= @role.updated_at.to_formatted_s(:short) %>
+									</p>
+									<%= link_to 'Edit', edit_role_path(@role) %> |
+									<%= link_to 'Back', roles_path %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

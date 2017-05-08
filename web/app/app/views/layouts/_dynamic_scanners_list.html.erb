@@ -1,0 +1,44 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill" role="navigation">
+		<%if current_user.is_admin?%>
+			<div class="list-group panel sidebar fill">
+				<a href="#corporate_scans" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#MainMenu">Corporate Scans <i class="fa fa-caret-down pull-right"></i></a>
+				<div id="corporate_scans">
+					<%=link_to "Web Scans",add_dynamic_scans_scaners_path(owner_type: "corporate",scan_type: 'Web'),class: "list-group-item",id: "corporateweb"%>
+					<%=link_to "Wordpress Scans",add_dynamic_scans_scaners_path(owner_type: "corporate",scan_type: 'Wordpress'),class: "list-group-item",id: "corporatewordpress"%>
+					<%=link_to "Mobile Scans",add_dynamic_scans_scaners_path(owner_type: "corporate",scan_type: 'Mobile'),class: "list-group-item",id: "corporatemobile"%>
+					<%=link_to "Network Scans",add_dynamic_scans_scaners_path(owner_type: "corporate",scan_type: 'Network'),class: "list-group-item",id: "corporatenetwork"%>
+				</div>
+			</div>
+		<%end%>
+		<%if current_user.is_team_lead?%>
+			<div class="list-group panel sidebar fill">
+				<a href="#team_scans" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#MainMenu">Team Scans <i class="fa fa-caret-down pull-right"></i></a>
+				<div id="team_scans">
+					<%=link_to "Web Scans",add_dynamic_scans_scaners_path(owner_type: "team",scan_type: 'Web'),class: "list-group-item",id: "teamweb"%>
+					<%=link_to "Wordpress Scans",add_dynamic_scans_scaners_path(owner_type: "team",scan_type: 'Wordpress'),class: "list-group-item",id: "teamwordpress"%>
+					<%=link_to "Mobile Scans",add_dynamic_scans_scaners_path(owner_type: "team",scan_type: 'Mobile'),class: "list-group-item",id: "teammobile"%>
+					<%=link_to "Network Scans",add_dynamic_scans_scaners_path(owner_type: "team",scan_type: 'Network'),class: "list-group-item",id: "teamnetwork"%>
+				</div>
+			</div>
+		<%end%>
+		<%unless current_user.is_admin?%>
+			<div class="list-group panel sidebar fill">
+				<a href="#my_scans" class="list-group-item list-group-item-info" data-toggle="collapse" data-parent="#MainMenu">My Scans <i class="fa fa-caret-down pull-right"></i></a>
+				<div id="my_scans">
+					<%=link_to "Web Scans",add_dynamic_scans_scaners_path(scan_type: 'Web'),class: "list-group-item",id: "web"%>
+					<%=link_to "Wordpress Scans",add_dynamic_scans_scaners_path(scan_type: 'Wordpress'),class: "list-group-item",id: "wordpress"%>
+					<%=link_to "Mobile Scans",add_dynamic_scans_scaners_path(scan_type: 'Mobile'),class: "list-group-item",id: "mobile"%>
+					<%=link_to "Network Scans",add_dynamic_scans_scaners_path(scan_type: 'Network'),class: "list-group-item",id: "network"%>
+				</div>
+			</div>
+		<%end%>
+	</nav>
+</div>
+<script>
+$(document).ready(function(){
+	var scan_type = '<%= params[:is_scheduled].present? ? "scheduled" : params[:scan_type]%>';
+	var owner_type= '<%=params[:owner_type]%>';
+	$("#" + owner_type.toLowerCase() + scan_type.toLowerCase()).addClass("active");
+});
+</script>

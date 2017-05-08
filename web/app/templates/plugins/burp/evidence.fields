@@ -1,0 +1,7 @@
+issue.host
+issue.path
+issue.location
+issue.severity
+issue.confidence
+issue.request
+issue.response

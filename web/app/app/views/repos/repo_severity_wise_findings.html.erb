@@ -1,0 +1,145 @@
+<div class="ts-main-content">
+	<%=render "layouts/repo_results"%>
+	<div class="content-wrapper">
+		<div class="container">
+			<%=render 'breadcrumb'%>
+			<div class="panel panel-default table-hover top-buffer">
+				<div class="panel-heading"></span><%=params[:severity]%> Findings</h5></div>
+				<div class="panel-body">
+					 <%= render 'scaners/dislplay_buttons' %>
+					<table class="table table-striped" style="margin-top:-30px;" id="repo_severity_findings" data-source="<%= repo_severity_wise_findings_repos_path(repo_id: params[:repo_id],severity: params[:severity],owner_type: params[:owner_type],scan_type: params[:scan_type],false_finds: params[:false_finds],format: "json") %>">
+						<thead>                 
+							<tr>    
+								<th><input name="select_all" value="1" id="check_all" type="checkbox" /></th>        
+								<th>Vulnerability Type</th>
+								<%if current_user.is_admin?%>
+									<th>Scanner</th>  
+								<%end%>
+								<th> Issue In</th>
+								<th>View Finding</th>           
+							</tr>                                   
+						</thead>                                                
+						<tbody>                                                 
+
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function (){  
+	var rows_selected = [];
+	'<%if current_user.is_admin? %>'
+			var target= [0,3,4];
+	'<%else%>'
+			var target= [0,2,3];
+	'<%end%>'
+	var table = $('#repo_severity_findings').dataTable({               
+		bServerSide: true,      
+		processing: true,
+		order: [],      
+		dom: 'BFlfrtip',
+		columnDefs: [ {
+			targets  : target,
+			orderable: false,
+		}], 
+		buttons: [
+		        {       
+			                extend:    'copyHtml5',
+			                text:      '<i class="fa fa-files-o"></i> Copy',
+			                titleAttr: 'Copy'
+			        },      
+		        {
+			                extend:    'excelHtml5',
+			                text:      '<i class="fa fa-file-excel-o"></i> Excel',
+			                titleAttr: 'Excel'
+			        },
+		        {
+			                extend:    'csvHtml5',
+			                text:      '<i class="fa fa-file-text-o"></i> CSV',
+			                titleAttr: 'CSV'
+			        },
+		        {
+			                extend:    'pdfHtml5',
+			                text:      '<i class="fa fa-file-pdf-o"></i> PDF',
+			                titleAttr: 'PDF'
+			        }
+		        ],
+
+		sAjaxSource: $('#repo_severity_findings').data('source'),
+		rowCallback: function(row, data, dataIndex){
+			// Get row ID
+			var rowId = data[0];
+
+			// If row ID is in the list of selected row IDs
+			if($.inArray(rowId, rows_selected) !== -1){
+				$(row).find('input[type="checkbox"]').prop('checked', true);
+				$(row).addClass('selected');
+			}
+		}
+	});
+	var table = $('#repo_severity_findings').DataTable() ;
+	$('#repo_severity_findings tbody').on('click', 'input[type="checkbox"]', function(e){
+		'<%if @can_mark_flase_positive %>'
+			$('.btn-danger,.btn-success').prop("disabled", false);
+		'<%end%>'
+		var $row = $(this).closest('tr');
+
+		// Get row data
+		var data = table.row($row).data();
+
+		// Get row ID
+		var rowId = data[0];
+
+		// Determine whether row ID is in the list of selected row IDs 
+		var index = $.inArray(rowId, rows_selected);
+
+		// If checkbox is checked and row ID is not in list of selected row IDs
+		if(this.checked && index === -1){
+			rows_selected.push(this.id);
+
+			// Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+		} else if (!this.checked && index !== -1){
+			rows_selected.splice(index, 1);
+		}
+
+		if(this.checked){
+			$row.addClass('selected');
+		} else {       
+			$row.removeClass('selected');
+		}
+
+		// Update state of "Select all" control
+		updateDataTableSelectAllCtrl(table);
+
+		// Prevent click event from propagating to parent
+		e.stopPropagation();
+	});     
+
+	$('#repo_severity_findings').on('click', 'tbody td, thead th:first-child', function(e){
+		$(this).parent().find('input[type="checkbox"]').trigger('click');
+	});     
+	$('thead input[name="select_all"]', table.table().container()).on('click', function(e){ 
+		if(this.checked){
+			$('#repo_severity_findings tbody input[type="checkbox"]:not(:checked)').trigger('click');
+		} else {
+			$('#repo_severity_findings tbody input[type="checkbox"]:checked').trigger('click');
+		}
+
+		// Prevent click event from propagating to parent
+		e.stopPropagation();
+	});
+	$('#severity_results').on('submit', function(e){
+		$("#marked_table_id").val("repo_severity_findings");
+		add_hidden_values(rows_selected);
+		rows_selected = [];
+		$('.mark-buttons').prop("disabled", true);
+	});
+
+});
+
+</script>
+

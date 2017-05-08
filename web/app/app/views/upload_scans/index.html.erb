@@ -1,0 +1,49 @@
+<div class="ts-main-content">
+	<%=render "layouts/scaner_list"%>
+	<div class="content-wrapper right-buffer">
+		<div class="continer">
+			<div id="message"></div>
+		</div>	
+		<div class="page-header">
+			<%if params[:scan_type]== 'team'%>
+				<%header = 'Team'%>
+			<%elsif params[:scan_type] == 'corporate'%>
+				<%header = 'Corporate'%>
+			<%else%>
+				<%header = 'My'%>
+			<%end%>
+			<h2><%=header%> Scans
+				<%if current_user.is_admin? && params[:scan_type] == 'corporate'%>
+					<span class='pull-right'> 
+						<button class='btn btn-danger' onclick='start_scan_all_repos()'>Re-Scan/ Resume-scans</button>
+					</span>
+				<%end%>
+			</h2>
+		</div>          
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Project Title</th>
+					<th>File Name</th>
+					<th>Status</th>
+					<th>Scan Results</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>         
+				<%@scans.each do |scan| %>
+					<tr id='<%=scan.id%>'>
+						<%project_title = scan.project_title.present? ? scan.project_title : scan.repo.name%>
+						<%findings = scan.findings.count%>
+						<td><%= findings > 0 ? link_to(project_title,list_scan_results_scaners_path(scan_id: scan.id,scan_type: params[:scan_type].present? ? params[:scan_type] : "my_scans")) : project_title%></td>
+						<td><%=scan.project_target_file_name%></td>
+						<td><%=scan.status_reason.present? ? scan.status_reason : scan.status%></td>
+						<td><%= link_to "Scan Results",uploaded_findings_findings_path(scan_id: scan.id,scan_type: params[:scan_type]) %></td>
+						<td><%=link_to '<i class="glyphicon glyphicon-remove-circle text-danger"> </i>'.html_safe,scaner_path(scan),title: 'Delete',method: :delete, remote: true %> </td>
+					</tr>
+				<%end%> 
+			</tbody>
+		</table>
+		<div class='text-center'> <%= will_paginate @scans ,renderer: BootstrapPagination::Rails%></div>
+	</div>
+</div>

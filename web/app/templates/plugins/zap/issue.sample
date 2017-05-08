@@ -1,0 +1,21 @@
+<alertitem>
+  <pluginid>40018</pluginid>
+  <alert>SQL Injection</alert>
+  <riskcode>3</riskcode>
+  <confidence>2</confidence>
+  <riskdesc>High (Medium)</riskdesc>
+  <desc>&lt;p&gt;SQL injection may be possible.&lt;/p&gt;</desc>
+  <instances>
+    <instance>
+      <uri>http://localhost:8080/bodgeit/basket.jsp</uri>
+      <param>productid</param>
+      <attack>5-2</attack>
+    </instance>
+  </instances>
+  <count>1</count>
+  <solution>&lt;p&gt;Do not trust client side input, even if there is client side validation in place.  &lt;/p&gt;&lt;p&gt;In general, type check all data on the server side.&lt;/p&gt;&lt;p&gt;If the application uses JDBC, use PreparedStatement or CallableStatement, with parameters passed by '?'&lt;/p&gt;&lt;p&gt;If the application uses ASP, use ADO Command Objects with strong type checking and parameterized queries.&lt;/p&gt;&lt;p&gt;If database Stored Procedures can be used, use them.&lt;/p&gt;&lt;p&gt;Do *not* concatenate strings into queries in the stored procedure, or use 'exec', 'exec immediate', or equivalent functionality!&lt;/p&gt;&lt;p&gt;Do not create dynamic SQL queries using simple string concatenation.&lt;/p&gt;&lt;p&gt;Escape all data received from the client.&lt;/p&gt;&lt;p&gt;Apply a 'whitelist' of allowed characters, or a 'blacklist' of disallowed characters in user input.&lt;/p&gt;&lt;p&gt;Apply the principle of least privilege by using the least privileged database user possible.&lt;/p&gt;&lt;p&gt;In particular, avoid using the 'sa' or 'db-owner' database users. This does not eliminate SQL injection, but minimizes its impact.&lt;/p&gt;&lt;p&gt;Grant the minimum database access that is necessary for the application.&lt;/p&gt;</solution>
+  <otherinfo>&lt;p&gt;The original page results were successfully replicated using the expression [5-2] as the parameter value&lt;/p&gt;&lt;p&gt;The parameter value being modified was NOT stripped from the HTML output for the purposes of the comparison&lt;/p&gt;</otherinfo>
+  <reference>&lt;p&gt;https://www.owasp.org/index.php/Top_10_2010-A1&lt;/p&gt;&lt;p&gt;https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet&lt;/p&gt;</reference>
+  <cweid>89</cweid>
+  <wascid>19</wascid>
+</alertitem>

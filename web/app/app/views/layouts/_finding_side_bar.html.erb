@@ -1,0 +1,11 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill" role="navigation">
+		<ul class="nav navbar-nav ">
+			<li class="active"><a href="#status_section">Current Status <%=sidebar_icons('fa-info-circle').html_safe%></a></li>
+			<li><a href="#details_section">Finding Details <%=sidebar_icons('fa fa-hand-o-up').html_safe%></a></li>
+			<li><a href="#comments_section">Comments <span class='badge info-row' id='comments_count'><%=@comments.count%></span><%=sidebar_icons('fa-comments').html_safe%></a></li>
+			<li><a href="#tags_section">   Tags <span class='badge info-row' id='tags_count'><%=@tags.split(",").count%></span><%=sidebar_icons('fa-tags').html_safe%></a></li>
+			<li ><a href="#uploads_section">Uploads<span style="margin-left:22px;" class='badge info-row' id='uploads_count'><%=@uploads.count%> </span><%=sidebar_icons('fa-upload').html_safe%></a></li> 
+		</ul>
+	</nav>
+</div>

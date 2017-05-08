@@ -1,0 +1,146 @@
+<div class='panel panel-default'>
+	<div class='panel-heading'> <h4 class="panel-title">Vulnerability Snapshot</h4>
+		<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+	</div>
+	<div class="panel-body">
+		<div class='col-md-6'>
+			<ul class="nav nav-pills">
+				<li class="active">
+					<a href="#pie_chart_tab" data-toggle="tab" role="tab" id="snapshot_pie_tab"><i class="fa fa-pie-chart" aria-hidden="true"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#bar_chart_tab" data-toggle="tab" role="tab" id="snapshot_bar_tab"><i class="fa fa-bar-chart" aria-hidden="true"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content clearfix top-buffer">
+				<div class="tab-pane active" id="pie_chart_tab">
+					<div id="high_pie_chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+				</div>
+				<div class="tab-pane" id="bar_chart_tab">
+					<div id="high_bar_chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+				</div>
+			</div>
+		</div>
+		<div class='col-md-2' style="margin-top:80px;"></div>
+		<div class='col-md-2' style="margin-top:80px;">
+			<ul class="chart-dot-list nav">
+				<li class="a1">Critical</li>
+				<li class="a2">High</li>
+				<li class="a3">Medium</li>
+				<li class="a4">Low</li>
+				<li class="a5">Info</li>
+			</ul>
+		</div>
+	</div>
+
+</div>
+<script>
+$(function () {
+	Highcharts.setOptions({
+		colors: ['#e31e25', '#a94442', '#f2b968', '#73c9e3', '#74c374']
+	});
+	<%if @findings_hash.present?%>
+			Highcharts.chart('high_pie_chart', {    
+				chart: {                
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false,      
+					type: 'pie'                     
+				},                                      
+				title: {                                
+					text: ''                        
+				},                                      
+				tooltip: {                      
+					pointFormat: '{series.name}: <b>{point.y:.0f}</b>'
+				},              
+				plotOptions: {
+					pie: {  
+						allowPointSelect: true,
+						cursor: 'pointer',
+						dataLabels: {
+							enabled: true,
+							format: '<b>{point.name}</b>: {point.y:.0f}',
+							style: {
+								color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+							}
+						}       
+					}                       
+				},       
+				series: [{                      
+					name: 'Total',          
+					colorByPoint: true,     
+					data: [{        
+						name: 'Critical',
+						y: parseInt("<%=@findings_hash["Critical"]%>")
+					}, {
+						name: 'High',
+						y: parseInt("<%=@findings_hash["High"]%>"),
+						sliced: true,
+						selected: true
+					}, {
+						name: 'Medium',
+						y: parseInt("<%=@findings_hash["Medium"]%>")
+					}, {
+						name: 'Low',
+						y: parseInt("<%=@findings_hash["Low"]%>")
+					}, {
+						name: 'Info',
+						y: parseInt("<%=@findings_hash["Info"]%>")
+					}]
+				}],
+				credits: {enabled: false}
+			});
+	$('#high_bar_chart').highcharts({
+		chart: {
+			type: 'column',
+			margin: [ 50, 50, 100, 80]
+		},
+		credits: {
+			enabled: false
+		},
+		title: {
+			text: ''
+		},
+		xAxis: {categories: ['Critical','High','Medium','Low','Info'],
+			labels: {
+				rotation: -45,
+				align: 'right',
+				style: {
+					fontSize: '13px',
+					fontFamily: 'Verdana, sans-serif'
+				}
+			}
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: 'Findings'
+			}
+		},
+		legend: {
+			enabled: false
+		},
+		series: [{
+			name: 'Total',
+			colorByPoint: true,
+			data: [parseInt("<%=@findings_hash["Critical"]%>"),parseInt("<%=@findings_hash["High"]%>"),parseInt("<%=@findings_hash["Medium"]%>"),parseInt("<%=@findings_hash["Low"]%>"),parseInt("<%=@findings_hash["Info"]%>")],
+			dataLabels: {
+				enabled: true,
+				rotation: -90,
+
+				color: '#FFFFFF',
+				align: 'right',
+				style: {
+					fontSize: '13px',
+					fontFamily: 'Verdana, sans-serif'
+				}
+			}
+		}]
+	});
+<%end%>
+
+});
+
+</script>

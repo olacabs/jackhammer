@@ -1,0 +1,33 @@
+<div class="wrapper ">
+	<div class="main">
+		<div class="user">
+		</div>
+		<div class="login">	
+			<div class="login-form">
+				<%= form_for(resource,as: resource_name, url: session_path(resource_name) ,:html=>{role: "form"}) do |f| %>
+					<div class="form-group " >
+						<h2><a>Login</a>  <a><%#=link_to 'Git hub login',user_github_omniauth_authorize_path%></a> | <%=link_to 'Register' ,new_user_registration_path%></h2>
+					</div>
+					<div>
+						<span><label>Username</label></span>
+						<span><input type="text" class="textbox" id="active"></span>
+					</div>
+					<div>
+						<span><label>Password</label></span>
+						<span><input type="password" class="password"></span>
+					</div>	
+					<div class="sign">
+						<div class="submit">
+							<%= f.submit "LOGIN" %>
+						</div>
+						<span class="forget-pass">
+							<a href="#">Forgot Password?</a>
+						</span>
+						<div class="clear"> </div>
+					</div>
+				<%end%>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,16 @@
+#[Title]#
+Acunetix scanner notes (%scan.start_time%)
+
+#[ScanName]#
+%scan.name%
+
+#[StartURL]#
+%scan.start_url%
+
+#[TimeAndFlags]#
+|_. Start |_. Finish |_. Total |_. Aborted |_. Responsive |
+| %scan.start_time% | %scan.finish_time% | %scan.scan_time% | %scan.aborted% | %scan.responsive% |
+
+#[Fingerprint]#
+|_. Banner |_. OS |_. Web server |_. Technologies |
+| %scan.banner% | %scan.os% | %scan.web_server% | %scan.technologies% |

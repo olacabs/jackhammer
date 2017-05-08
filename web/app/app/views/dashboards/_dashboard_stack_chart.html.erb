@@ -1,0 +1,83 @@
+<script> 
+$(function(){
+	Highcharts.setOptions({
+		colors: ['#e31e25', '#a94442', '#f2b968', '#73c9e3', '#74c374']
+	});
+	var stack_bar_options = {
+		chart: {
+			renderTo: 'stack_bar',
+			type: 'column'
+		},
+		title: {
+			text: 'Stacked column chart'
+		},
+		xAxis: {
+			categories: <%=raw(@top_apps)%>,
+			title: {
+				text: 'Application'
+			}
+		},
+		yAxis: {
+			min: 0,
+			title: {
+				text: 'Findings'
+			},
+			stackLabels: {
+				enabled: true,
+				style: {
+					fontWeight: 'bold',
+					color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+				}
+			}
+		},
+		legend: {
+			x: -10,
+			verticalAlign: 'top',
+			y: 0,
+			floating: true,
+			backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+			borderColor: '#CCC',
+			borderWidth: 1,
+			shadow: false
+		},
+		tooltip: {
+			headerFormat: '<b>{point.x}</b><br/>',
+			pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+		},
+		plotOptions: {
+			column: {
+				stacking: 'normal',
+				dataLabels: {
+					enabled: true,
+					color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+				}
+			}
+		},
+		series: [{
+			name: 'Critical',
+			data: <%=@apps_sev_finds["Critical"]%>,
+		},
+		{
+			name: 'High',
+			data: <%=@apps_sev_finds["High"]%>,
+		},
+		{
+			name: 'Medium',
+			data: <%=@apps_sev_finds["Medium"]%>,
+		},
+		{
+			name: 'Low',
+			data: <%=@apps_sev_finds["Low"]%>,
+		},
+		{
+			name: 'Info',
+			data: <%=@apps_sev_finds["Info"]%>,
+		}
+		],
+		credits: {
+			enabled: false
+		}
+	};
+	var stack_chart = new Highcharts.Chart(stack_bar_options);
+});
+</script>

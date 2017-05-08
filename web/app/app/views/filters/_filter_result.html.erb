@@ -1,0 +1,131 @@
+<div class='panel panel-default'>
+	<div class='panel-heading'> <h4 class="panel-title">Filter Findings</h4>
+		<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+	</div>
+	<div class="panel-body">
+		<div id="findings_display_section">
+			<%#= render 'scaners/dislplay_buttons' %>
+			<table class="table borderless table-striped" id="filter_findings_table" style="margin-top:-30px;" data-source="<%=results_filters_path(filter: params[:filter],format: "json") %>">
+				<thead>
+					<tr>
+						<th><input name="select_all" value="1" id="check_all" type="checkbox" /></th>
+						<th>Severity</th>
+						<th>Bug Type</th>
+						<%if current_user.is_admin? || current_user.is_security_member?%>
+							<th>Tool</th>
+						<%end%>
+						<th>Created</th>
+						<th>Modified</th>
+						<th>Repo</th>
+						<th> <i class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="View Results"></i></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+var rows_selected = [];
+ '<%if current_user.is_admin? %>'
+                        var target= [0,7];
+ '<%else%>'
+                        var target= [0,6];
+ '<%end%>'
+$("#filter_findings_table").dataTable({
+	bServerSide: true,
+	dom: 'BFlfrtip',
+	order: [],      
+	sServerMethod: "POST",
+	columnDefs: [ {
+		targets  : target,
+		orderable: false,
+	}],  
+	buttons: [
+	{       
+		extend:    'copyHtml5',
+		text:      '<i class="fa fa-files-o"></i> Copy',
+		titleAttr: 'Copy'
+	},      
+	{
+		extend:    'excelHtml5',
+		text:      '<i class="fa fa-file-excel-o"></i> Excel',
+		titleAttr: 'Excel'
+	},
+	{
+		extend:    'csvHtml5',
+		text:      '<i class="fa fa-file-text-o"></i> CSV',
+		titleAttr: 'CSV'
+	},
+	{
+		extend:    'pdfHtml5',
+		text:      '<i class="fa fa-file-pdf-o"></i> PDF',
+		titleAttr: 'PDF'
+	}
+	],
+	sAjaxSource: $('#filter_findings_table').data('source'),
+	rowCallback: function(row, data, dataIndex){  // Get row ID
+		var rowId = data[0];
+
+		// If row ID is in the list of selected row IDs
+		if($.inArray(rowId, rows_selected) !== -1){
+			$(row).find('input[type="checkbox"]').prop('checked', true);
+			$(row).addClass('selected');
+		}
+
+	}       
+});     
+var table = $('#filter_findings_table').DataTable() ;
+$('#filter_findings_table tbody').on('click', 'input[type="checkbox"]', function(e){
+	$('.btn-danger').prop("disabled", false);
+	var $row = $(this).closest('tr');
+	var $row = $(this).closest('tr');
+
+	// Get row data
+	var data = table.row($row).data();
+
+	// Get row ID
+	var rowId = data[0];
+
+	// Determine whether row ID is in the list of selected row IDs 
+	var index = $.inArray(rowId, rows_selected);
+
+	// If checkbox is checked and row ID is not in list of selected row IDs
+	if(this.checked && index === -1){
+		rows_selected.push(this.id);
+
+		// Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+	} else if (!this.checked && index !== -1){
+		rows_selected.splice(index, 1);
+	}
+
+	if(this.checked){
+		$row.addClass('selected');
+	} else {
+		$row.removeClass('selected');
+	}
+
+	// Update state of "Select all" control
+	updateDataTableSelectAllCtrl(table);
+	e.stopPropagation();
+});
+$('#filter_findings_table').on('click', 'tbody td, thead th:first-child', function(e){
+	$(this).parent().find('input[type="checkbox"]').trigger('click');
+});
+$('thead input[name="select_all"]', table.table().container()).on('click', function(e){
+	if(this.checked){
+		$('#filter_findings_table tbody input[type="checkbox"]:not(:checked)').trigger('click');
+	} else {
+		$('#filter_findings_table tbody input[type="checkbox"]:checked').trigger('click');
+	}
+
+	// Prevent click event from propagating to parent
+	e.stopPropagation();
+});
+$('#severity_results').on('submit', function(e){
+	$("#marked_table_id").val("filter_findings_table");
+	add_hidden_values(rows_selected);
+});
+
+</script>

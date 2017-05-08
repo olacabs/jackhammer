@@ -1,0 +1,8 @@
+node.address
+node.device_id
+node.fingerprints
+node.hardware_address
+node.names
+node.tests
+node.status
+node.software

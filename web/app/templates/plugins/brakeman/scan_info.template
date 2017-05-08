@@ -1,0 +1,18 @@
+#[Title]#
+Brakeman scan information
+
+
+#[Application]#
+%scan_info.app_path%
+
+
+#[BrakemanVersion]#
+%scan_info.brakeman_version%
+
+
+#[RailsVersion]#
+%scan_info.rails_version%
+
+
+#[WarningCount]#
+%scan_info.security_warnings%

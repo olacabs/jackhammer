@@ -1,0 +1,7 @@
+$("#flash_message").addClass("alert alert-success fade in flash-setting");
+$("#flash_message").html("<a href='#' class='close' data-dismiss='alert'>&times;</a> <strong class='text-center'><%=@msg%></strong> ");
+$(".status").text("<%=@finding.status%>");
+location.reload(); 
+window.setTimeout(function() { // hide alert message
+        $(".alert").fadeOut('5000');
+}, 5000);

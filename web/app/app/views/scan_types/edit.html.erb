@@ -1,0 +1,22 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="row">                                                                                                                                                
+			<div class='col-md-10'>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active"><%=link_to "User Settings",scan_types_path%></li>
+					<li class="breadcrumb-item">Edit Scan Type</li>
+				</ul>
+			</div>
+		</div> 
+		<div class='col-md-6'>
+			<div class="panel panel-default">
+				<div class="panel-heading"><h4>Editing Scan Type</h4></div>  
+				<div class="panel-body">                                                                
+					<%= render 'form' %>
+					<%= link_to 'Back', scan_types_path %>
+				</div>  
+			</div>                  
+		</div>                          
+	</div>  
+</div>  

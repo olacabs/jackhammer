@@ -1,0 +1,22 @@
+#[Title]#
+%warning.message%
+
+
+#[Type]#
+%warning.warning_type%
+
+
+#[Confidence]#
+%warning.confidence%
+
+
+#[Path]#
+%warning.file%#%warning.line%
+
+
+#[Code]#
+bc.. %warning.code%
+
+
+#[References]#
+%warning.link%

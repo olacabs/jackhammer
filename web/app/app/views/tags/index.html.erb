@@ -1,0 +1,49 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class='container'>  
+			<ul class="breadcrumb">  
+				<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+				<li class="breadcrumb-item">Listing Tags</li>
+			</ul>                                                                                                                                    
+			<div class='row'>
+				<div class='col-md-12'>
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>Listing Tags</h4></div>
+						<div class="panel-body">
+							<div class='row pull-right'>
+								<div class='col-md-12'>
+									<%#=link_to "<i class='glyphicon glyphicon-plus-sign'></i>  Add".html_safe,new_tag_path,method: "GET",class: 'btn btn-success'%>
+								</div>
+							</div>
+							<div class='row'>
+								<table class='table borderless table-striped'>
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Created By</th>
+											<th>Edit</th>
+											<th> Delete</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<% @tags.each do |tag| %>
+											<tr>
+												<td><%=tag.name%></td>
+												<td><%=tag.try(:user).try(:name)%></td>
+												<td><%= link_to 'Edit', edit_tag_path(tag) %></td>
+												<td><%= link_to "<i class='glyphicon glyphicon-remove-circle text-danger'> </i>".html_safe, tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+											</tr>
+										<% end %>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

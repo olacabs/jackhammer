@@ -1,0 +1,42 @@
+<div class="ts-main-content">
+	<%=render "layouts/scan_results"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<%=render "breadcrumb"%>
+		</div>
+			<div class="container">
+				<div class="panel panel-default">
+					<div class="panel-heading"><h5><b><%=params[:channel]%> Vulnerabilities</b></h5></div>
+					<div class="panel-body">
+						<table class="table table-striped" id="channel_findings" data-source="<%= channel_wise_results_scaners_path(scan_id: @scan.id,channel: params[:channel],date: params[:date],format: "json") %>">
+							<thead>                 
+								<tr>            
+									<th>Vulnerability Type</th>
+									<th>Severity</th>               
+									<th>Issue In</th>
+									<th>View Finding</th>           
+								</tr>                                   
+							</thead>                                                
+							<tbody>                                                 
+
+							</tbody>
+
+						</table>
+
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+<script>
+	var table = $('#channel_findings').dataTable({               
+		bServerSide: true,      
+		order: [],      
+		columnDefs: [ {
+			targets  : [2,3],
+			orderable: false,
+		}],   
+		sAjaxSource: $('#channel_findings').data('source')
+	});
+</script>
+

@@ -1,0 +1,30 @@
+#[Title]#
+%issue.alert%
+
+
+#[Risk]#
+%issue.riskdesc%
+
+
+#[Confidence]#
+%issue.confidence%
+
+
+#[Description]#
+%issue.desc%
+
+
+#[Solution]#
+%issue.solution%
+
+
+
+#[OtherInfo]#
+%issue.otherinfo%
+
+
+#[References]#
+%issue.reference%
+
+CWE: %issue.cweid%
+WASC: %issue.wascid%

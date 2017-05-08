@@ -1,0 +1,11 @@
+#[Category]#
+%evidence.cat_value%
+
+#[Protocol]#
+%evidence.cat_protocol%
+
+#[Port]#
+%evidence.cat_port%
+
+#[Output]#
+%evidence.result%

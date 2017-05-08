@@ -1,0 +1,76 @@
+<issue>
+  <serialNumber>5236964506139299840</serialNumber>
+  <type>6291712</type>
+  <name>Directory listing</name>
+  <host ip="10.0.0.1">http://wiki.local</host>
+  <path><![CDATA[/crmmanager/]]></path>
+  <location><![CDATA[/crmmanager/]]></location>
+  <severity>Information</severity>
+  <confidence>Firm</confidence>
+  <issueBackground><![CDATA[Directory listings do not necessarily constitute a security vulnerability. Any sensitive resources within your web root should be properly access-controlled in any case, and should not be accessible by an unauthorized party who happens to know the URL. Nevertheless, directory listings can aid an attacker by enabling them to quickly identify the resources at a given path, and proceed directly to analyzing and attacking them.]]></issueBackground>
+  <remediationBackground><![CDATA[There is not usually any good reason to provide directory listings, and disabling them may place additional hurdles in the path of an attacker. This can normally be achieved in two ways:<ul><li>Configure your web server to prevent directory listings for all paths beneath the web root; </li><li>Place into each directory a default file (such as index.htm) which the web server will display instead of returning a directory listing.</li></ul>]]></remediationBackground>
+  <requestresponse>
+    <request base64="false"><![CDATA[GET /crmmanager/ HTTP/1.1
+    Host: wiki.local
+    User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+    Accept-Language: en-US,en;q=0.5
+    Accept-Encoding: gzip, deflate
+    DNT: 1
+    Proxy-Connection: keep-alive
+    Referer: http://wiki.local/
+    Cookie: JSESSIONID=e2ff342b-f981-4ec0-9d55-f5b13dfe269c
+
+    ]]></request>
+    <response base64="false"><![CDATA[HTTP/1.1 200 OK
+    Date: Wed, 02 Jan 2013 15:10:59 GMT
+    Content-Type: text/html
+    Last-Modified: Fri, 19 Nov 2010 09:36:13 GMT
+    Date: Wed, 02 Jan 2013 15:10:59 GMT
+    Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept
+    Server: Apache
+    Content-Length: 2447
+
+    <!--
+
+        lots of crazy stuff
+    -->
+    <html>
+      <head>
+        <title>Index of /crmmanager/</title>
+      </head>
+      <body>
+        <h1>Index of /crmmanager/</h1>
+        <table cellspacing="10">
+          <tr>
+            <th align="left">Name</th>
+            <th>Last Modified</th>
+            <th>Size</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>
+              <a href="../">Parent Directory</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="http://wiki.local/crm-manager/admin/">admin/</a>
+            </td>
+            <td>
+              Wed Jan 02 01:00:13 CET 2013
+            </td>
+            <td align="right">
+                              &nbsp;
+                          </td>
+            <td>
+              &nbsp;
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    ]]></response>
+    <responseRedirected>false</responseRedirected>
+  </requestresponse>
+</issue>

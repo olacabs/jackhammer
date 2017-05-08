@@ -1,0 +1,17 @@
+<service name="CIFS Name Service">
+  <fingerprints>
+    <fingerprint certainty="1.00" product="Windows Server 2003 R2 5.2"/>
+  </fingerprints>
+
+  <configuration>
+    <config name="advertised-name-1">DC1 (Computer Name)</config>
+    <config name="advertised-name-2">localdomain (Domain Name)</config>
+    <config name="advertised-name-3">xxxxx (File Server Service)</config>
+    <config name="advertised-name-4">TOR (Browser Service Elections)</config>
+    <config name="advertised-name-count">4</config>
+    <config name="mac-address">00:de:ad:be:ef:00</config>
+  </configuration>
+
+  <tests>
+  </tests>
+</service>

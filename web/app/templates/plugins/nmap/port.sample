@@ -1,0 +1,14 @@
+<port
+  protocol="tcp"
+  portid="25">
+
+  <state
+    state="open"
+    reason="syn-ack"
+    reason_ttl="64"/>
+  
+  <service
+    name="smtp"
+    method="table"
+    conf="3"/>
+</port>

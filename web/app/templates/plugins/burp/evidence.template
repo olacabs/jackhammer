@@ -1,0 +1,26 @@
+#[Host]#
+%issue.host%
+
+
+#[Path]#
+%issue.path%
+
+
+#[Location]#
+%issue.location%
+
+
+#[Severity]#
+%issue.severity%
+
+
+#[Confidence]#
+%issue.confidence%
+
+
+#[Request]#
+bc.. %issue.request%
+
+
+#[Response]#
+bc.. %issue.response%

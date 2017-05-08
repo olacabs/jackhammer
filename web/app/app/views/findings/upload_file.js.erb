@@ -1,0 +1,7 @@
+$("#uploadModal").modal('toggle');
+$("#upload_section").append("<tr id='<%=@uploads.id%>'><td><%=j (link_to "<i class='glyphicon glyphicon-download text-danger'></i>&nbsp&nbsp#{@uploads.file_file_name}".html_safe,download_file_findings_path(upload_id: @uploads.id),title: 'Download')%></td><td><%=j (link_to "<i class='glyphicon glyphicon-remove-circle text-danger'> </i>",delete_file_findings_path(upload_id: @uploads.id),title: 'Delete',method: :delete, remote: true)%></td></row>");
+//var files_count = $("#files_count").text();
+//$("#files_count").text(parseInt(files_count)+1);
+window.setTimeout(function() { // hide alert message
+        $(".alert").fadeOut('5000');
+}, 5000);

@@ -1,0 +1,17 @@
+<nav class="ts-sidebar teams-menu">
+	<ul class="nav analytics">
+		<li class="time">
+			<h1 class="animated">21:00</h1>
+			<p class="animated">Sat,October 1st 2029</p>
+		</li>
+		<li><hr class='left-navbar-divider'></li>
+		<li class='left-buffer'><b> Application Filter</b></li>
+		<li><hr class='left-navbar-divider'></li>
+		<li class='left-buffer right-buffer' style='margin-top: 1px;'>
+			<%= select :team, :ids, @teams.collect { |t| [t.name,t.name]},{:selected => @team.id},{:class=> "selectpicker",'data-live-search'=>"true",'data-size'=>"5"}%>
+		</li>
+		</div>
+	</ul>
+</nav>
+<script>
+</script>

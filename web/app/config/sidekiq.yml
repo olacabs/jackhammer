@@ -1,0 +1,16 @@
+---
+:verbose: false
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+:concurrency:  25
+:schedule:
+  scanner_scheduler:
+   every: 1d   # Runs once per day
+   class: SchedulerScanner
+:queues:
+   - default
+   - static
+   - dynamic
+   - wordpress
+   - gitpull
+   - uploads

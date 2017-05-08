@@ -1,0 +1,8 @@
+<div class="upload-form" id="upload-form">
+	<%= form_for([@finding,Upload.new],remote: true ) do |f| %>                                                                                                                                                           <div class="form-group">
+			<%= f.file_field :file,required: 'required',class: "btn btn-success" %>                                                                                                                             </div>
+		<div class="form-group">
+			<%=f.submit 'Upload',class: "btn btn-primary"%>                                                                                                                                                     </div>
+	<% end %>
+</div>
+

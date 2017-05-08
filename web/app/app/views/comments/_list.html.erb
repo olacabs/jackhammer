@@ -1,0 +1,18 @@
+<%@comments.each do |comment|%>
+	<div class="comment jumptarget" id="comment-<%= comment.id %>">
+		<p>
+		<% if comment.user == current_user %>
+			<span class="label">You:</span>
+		<% else %>
+			<span class="label"><%=comment.user.name%><span>
+				<% end %>
+		</p>
+
+		<blockquote>
+			<%=h(m comment.message.html_safe).html_safe %>
+		<small><em><%= l comment.created_at %></em></small>
+		</blockquote>
+	</div>
+
+<%end%>
+

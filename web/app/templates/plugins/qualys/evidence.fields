@@ -1,0 +1,6 @@
+evidence.cat_fqdn
+evidence.cat_misc
+evidence.cat_port
+evidence.cat_protocol
+evidence.cat_value
+evidence.result

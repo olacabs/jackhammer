@@ -1,0 +1,88 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="container">   
+			<div class="row">
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+					<li class="breadcrumb-item">Enable/Disable Tools</li>
+				</ul>
+			</div>
+			<div class='row pull-right'>
+				<div class='col-md-12'>
+					<%=link_to "<i class='glyphicon glyphicon-minus-sign'></i> Modify".html_safe,tasks_path,method: "GET",class: 'btn btn-danger'%>
+					<%=link_to "<i class='glyphicon glyphicon-plus-sign'></i>  Add".html_safe,new_task_path,method: "GET",class: 'btn btn-success'%>
+				</div>
+			</div>	
+			<ul class="nav nav-tabs">
+				<%first_iteration = true%>
+				<%@scan_types.each do |scan_type|%>
+					<%if first_iteration%>
+						<li class="active">
+						<%else%>
+							<li>
+							<%end%>
+							<a data-toggle="tab" href="#<%=scan_type.name.split(' ').join("_")%>"><%=scan_type.name%></a>
+							</li>
+							<%first_iteration = false%>
+						<%end%>
+			</ul>
+			<div class="tab-content top-buffer">
+				<%first_iteration = true%>
+				<%@scan_types.each do |scan_type|%>
+					<%active_class = first_iteration ? "tab-pane fade in active" : "tab-pane fade"%>
+					<div id="<%=scan_type.name.split(" ").join('_')%>" class="<%=active_class%>">
+						<%=form_for :task,method: "PUT",url: settings_path,remote: true do |f|%>
+							<%scan_tasks = scan_type.tasks.group(:group)%>
+							<%if scan_tasks.present?%>
+								<div class='row'>
+									<%if scan_tasks.first.group.present?%>
+										<%scan_tasks.each do |each_group|%>
+											<div class='col-md-6'>
+												<div class="panel panel-info">
+													<div class="panel-heading"><h4><%=each_group.group%></h4></div>
+													<div class="panel-body">
+														<%group_tools = Task.where(group: each_group.group)%>
+														<%group_tools.each do |each_tool|%>
+															<div class='col-md-6'>
+																<div class="checkbox checkbox-slider--b-flat">
+																	<label>
+																		<%=f.check_box each_tool.name.to_sym,checked: is_tool_enabled?(each_tool.name) %><span ><%=each_tool.name%></span>
+																	</label>
+																</div>
+															</div>
+														<%end%>
+													</div>
+												</div>
+											</div>
+										<%end%>
+									<%else%>
+										<%scan_tasks = scan_type.tasks%>
+										<div class='col-md-8'>
+											<div class="panel panel-info">
+												<div class="panel-heading"><h4><%=scan_type.name%></h4></div>
+												<div class="panel-body">
+													<%scan_tasks.each do |each_task|%>
+														<div class='col-md-6'>
+															<div class="checkbox checkbox-slider--b-flat">
+																<label>
+																	<%=f.check_box each_task.name.to_sym,checked: is_tool_enabled?(each_task.name)%><span ><%=each_task.name%></span>
+																</label>
+															</div>
+														</div>
+													<%end%>
+												</div>
+											</div>
+										</div>
+									<%end%>
+								</div>
+							<%end%>
+							<%=f.submit "Save",class: 'btn btn-danger' %>
+						<%end%>
+					</div>
+					<%first_iteration = false%>
+				<%end%> 
+			</div>
+		</div>
+	</div>
+</div>

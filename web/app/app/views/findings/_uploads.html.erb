@@ -1,0 +1,24 @@
+<div class='row'>
+	<div class='col-md-11'>
+		<div class='panel panel-default'>
+			<div class='panel-heading'> <h4 class="panel-title">Uploads</h4>
+				<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+			</div>
+			<div class='panel-body'>
+				<div class='uploads-list'>
+					<div id="uploads-list">
+						<%if @uploads.present?%>
+							<%= render 'uploads/list'%>
+						<%else%>
+							<p class="upload-alert alert-info">No Uploads yet.</p>
+						<%end%>
+					</div>
+					<div class='row top-buffer'>
+						<%= render partial: 'uploads/form.html', locals: { finding: @finding } %>
+						<!--<u><a href="#" onclick="open_message_box(event);"><i class='glyphicon glyphicon-comment'></i> Comment</a></u>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

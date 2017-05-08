@@ -1,0 +1,8 @@
+report_host.name
+report_host.ip
+report_host.fqdn
+report_host.operating_system
+report_host.mac_address
+report_host.netbios_name
+report_host.scan_start_time
+report_host.scan_stop_time

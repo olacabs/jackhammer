@@ -1,0 +1,31 @@
+<div class="content-wrapper">
+	<div class="container-fluid">
+		<%=render 'breadcrumb'%>
+		<div class='row chart-panels'>
+			<div class='col-md-6'>
+				<div class="panel panel-default each-panel panel-border">
+					<div class="panel-heading"><h5><b>Vulnerability Trending</b></h5></div>
+					<div class="panel-body">
+						<div class="time-legend" style="top:68px;">
+							<button class='btn btn-xs btn-success button-legend'>3M</button>
+							<button class='btn btn-xs button-legend'>6M</button>
+							<button class='btn btn-xs button-legend'>1Y</button>
+						</div>
+						<div id="scan_or_repo_trend_line" style="height: 390px"></div>
+					</div>
+
+				</div>
+			</div>
+			<div class='col-md-6 '>
+				<div class="panel panel-default each-panel panel-border">
+					<div class="panel-heading"><h5><b>Vulnerabilities Summary</b></h5></div>
+					<div class="panel-body">
+						<div class='row'>
+							<div id="scan_or_repo_pie_chart" style="height: 390px"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

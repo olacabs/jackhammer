@@ -1,0 +1,23 @@
+<vulnerability
+  id="ntpd-crypto"
+  resultCode="VV">
+
+  <id type="cve">CVE-2009-1252</id>
+  <id type="bid">35017</id>
+  <id type="secunia">35137</id>
+  <id type="secunia">35138</id>
+  <id type="secunia">35166</id>
+  <id type="secunia">35169</id>
+  <id type="secunia">35243</id>
+  <id type="secunia">35253</id>
+  <id type="secunia">35308</id>
+  <id type="secunia">35336</id>
+  <id type="secunia">35388</id>
+  <id type="secunia">35416</id>
+  <id type="secunia">35630</id>
+  <id type="secunia">37470</id>
+  <id type="secunia">37471</id>
+  <id type="url">http://bugs.ntp.org/1151</id>
+  <id type="url">http://www.kb.cert.org/vuls/id/853097</id>
+  <id type="url">https://lists.ntp.org/pipermail/announce/2009-May/000062.html</id>
+</vulnerability>

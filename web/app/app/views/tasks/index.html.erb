@@ -1,0 +1,46 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class='container'>
+			<div class="row">
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+					<li class="breadcrumb-item active"><%= link_to "Enable/ Disable Tools",scanner_settings_path%></li>
+					<li class="breadcrumb-item">Listing Tools</li>
+				</ul>   
+			</div>  
+			<div class='row'>
+				<div class="panel panel-default">
+					<div class="panel-heading"><h4>Listing Tools</h4></div>
+					<div class="panel-body">
+
+						<table class='table'>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Supported Language</th>
+									<th>Scan type</th>
+									<th>Edit</th>
+									<th>Delete</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<% @tasks.each do |task| %>
+									<tr>
+										<td><%= task.name %></td>
+										<td><%= task.group %></td>
+										<td><%= task.scan_type.name %></td>
+										<td><%= link_to '<i class="fa fa-pencil-square-o"> </i>'.html_safe, edit_task_path(task) %></td>
+										<td><%= link_to '<i class="glyphicon glyphicon-remove-circle text-danger"> </i>'.html_safe, task, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+									</tr>
+								<% end %>
+							</tbody>
+						</table>
+						<%= link_to 'New Task', new_task_path %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

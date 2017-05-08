@@ -1,0 +1,16 @@
+element.number
+element.severity
+element.cveid
+element.title
+element.last_update
+element.cvss_base
+element.cvss_temporal
+element.pci_flag
+element.vendor_reference_list
+element.cve_id_list
+element.bugtraq_id_list
+element.diagnosis
+element.consequence
+element.solution
+element.compliance
+element.result

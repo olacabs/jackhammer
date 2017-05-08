@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ReportItem id="32" color="red">
+  <Name><![CDATA[Cross site scripting (verified)]]></Name>
+  <ModuleName><![CDATA[Scripting (XSS.script)]]></ModuleName>
+  <Details><![CDATA[URL encoded GET input <b><font color="dark">p</font></b> was set to <b><font color="dark">1'&quot;()&amp;%&lt;ScRiPt &gt;prompt(951846)&lt;/ScRiPt&gt;</font></b>]]></Details>
+  <Affects><![CDATA[/hpp/params.php]]></Affects>
+  <Parameter><![CDATA[p]]></Parameter>
+  <AOP_SourceFile><![CDATA[]]></AOP_SourceFile>
+  <AOP_SourceLine>0</AOP_SourceLine>
+  <AOP_Additional><![CDATA[]]></AOP_Additional>
+  <IsFalsePositive><![CDATA[False]]></IsFalsePositive>
+</ReportItem>

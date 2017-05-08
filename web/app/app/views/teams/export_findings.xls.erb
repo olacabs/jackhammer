@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+xmlns:html="http://www.w3.org/TR/REC-html40">
+<Worksheet ss:Name="Sheet1">
+<Table>
+<Row>
+<Cell><Data ss:Type="String">Repo Name</Data></Cell>
+<Cell><Data ss:Type="String">Description</Data></Cell>
+<Cell><Data ss:Type="String">Severity</Data></Cell>
+<Cell><Data ss:Type="String">Scanner</Data></Cell>
+<Cell><Data ss:Type="String">Status</Data></Cell>
+<Cell><Data ss:Type="String">Detail</Data></Cell>
+<Cell><Data ss:Type="String">File</Data></Cell>
+<Cell><Data ss:Type="String">Line</Data></Cell>
+<Cell><Data ss:Type="String">Code</Data></Cell>
+<Cell><Data ss:Type="String">External Link</Data></Cell>
+<Cell><Data ss:Type="String">Is False Positive</Data></Cell>
+<Cell><Data ss:Type="String">Solution</Data></Cell>
+<Cell><Data ss:Type="String">Cvss Score</Data></Cell>
+<Cell><Data ss:Type="String">Advisory</Data></Cell>
+</Row>
+<%if @findings.present? %>
+	<% @findings.each do |find| %>
+		<Row>
+		<Cell><Data ss:Type="String"><%= find.repo.name %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.description %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.severity %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.scanner %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.status %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.detail %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.file %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.line %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.code %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.external_link %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.is_false_positive %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.solution %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.cvss_score %></Data></Cell>
+		<Cell><Data ss:Type="String"><%= find.advisory %></Data></Cell>
+		</Row>
+	<% end %>
+<%end%>
+</Table>
+</Worksheet>
+</Workbook>
+
+

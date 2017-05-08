@@ -1,0 +1,8 @@
+#[Title]#
+Note %host_note.id%
+
+#[Type]#
+%host_note.ntype%
+
+#[Data]#
+%host_note.data%

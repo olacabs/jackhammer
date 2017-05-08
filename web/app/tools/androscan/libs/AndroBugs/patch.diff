@@ -1,0 +1,23 @@
+diff --git a/androbugs.py b/androbugs.py
+index d4e4e87..1bdb884 100644
+--- a/androbugs.py
++++ b/androbugs.py
+@@ -975,9 +975,9 @@ def get_all_components_by_permission(xml, permission):
+                 dict_perms[tag].append(item.getAttribute("android:name"))
+     return dict_perms
+ 
++parser = argparse.ArgumentParser(description='AndroBugs Framework - Android App Security Vulnerability Scanner')
+ 
+ def parseArgument():
+-	parser = argparse.ArgumentParser(description='AndroBugs Framework - Android App Security Vulnerability Scanner')
+ 	parser.add_argument("-f", "--apk_file", help="APK File to analyze", type=str, required=True)
+ 	parser.add_argument("-m", "--analyze_mode", help="Specify \"single\"(default) or \"massive\"", type=str, required=False, default=ANALYZE_MODE_SINGLE)
+ 	parser.add_argument("-b", "--analyze_engine_build", help="Analysis build number.", type=int, required=False, default=ANALYZE_ENGINE_BUILD_DEFAULT)
+@@ -3447,6 +3447,7 @@ Please modify or remove these vulnerable code:
+ 
+ 	writer.update_analyze_status("success")
+ 	writer.writeInf_ForceNoPrint("time_finish_analyze", datetime.utcnow())
++	return allstrings, vmx, d
+ 
+ 
+ def __persist_db(writer, args) :

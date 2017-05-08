@@ -1,0 +1,24 @@
+<div class="row">
+	<div class="col-xs-4">
+		<%=link_to "  Scan Source Code Target".html_safe,new_scaner_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::STATIC),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+	<div class="col-xs-4">
+		<%=link_to "  Scan Mobile Target".html_safe,add_dynamic_scans_scaners_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::MOBILE),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+	<div class="col-xs-4">
+		<%=link_to "  Scan Hardcode Secret Target".html_safe,new_scaner_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::HARDCODE),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+</div>
+<br>
+<hr>
+<div class="row">
+	<div class="col-xs-4">
+		<%=link_to "  Scan Web Target".html_safe,add_dynamic_scans_scaners_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::WEB),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+	<div class="col-xs-4">
+		<%=link_to "  Scan Wordpress Target".html_safe,add_dynamic_scans_scaners_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::WORDPRESS),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+	<div class="col-xs-4">
+		<%=link_to "  Scan Network Target".html_safe,add_dynamic_scans_scaners_path(owner_type: owner_type,scan_type: AppConstants::ScanTypes::NETWORK),method: "GET",class: 'btn btn-primary  outline center-block'%>
+	</div>
+</div>  

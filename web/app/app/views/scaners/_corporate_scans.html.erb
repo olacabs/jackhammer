@@ -1,0 +1,36 @@
+<div class="page-header">
+	<%if params[:team] %>
+		<%header = 'Team'%>
+		<%scan_obj = @team_scans %>
+	<%else%>
+		<%header = 'Corporate'%>
+		<%scan_obj = @corporate_scans %>
+	<%end%>
+	<h2><%=header%> Scans</h2>
+</div>          
+<table class="table table-striped">
+	<thead>         
+		<tr>
+			<th>Application</th>
+			<th>Project</th>
+			<th>Branch</th>
+			<th>Action</th>
+			<th>Scan Results</th>
+			<th>Delete</th>
+		</tr>
+	</thead>        
+	<tbody>
+		<%scan_obj.each do |scan| %>
+			<tr id='<%=scan.id%>'>
+				<td><%=scan.team.name%></td>
+				<td><%=scan.repo.name%></td>
+				<td><%=scan.branch.name%></td>
+				<%findings = scan.findings.count %>
+				<td><%=link_to "Scan Now",run_scaners_path(scan_id: scan.id),method: :get, remote: true,class: 'label-class' %></td>
+				<td><%= findings > 0 ? (link_to "Scan Results",findings_index_path(scan_id: scan.id)) : "Scan Results"%></td>
+				<td><%=link_to '<i class="glyphicon glyphicon-remove-circle text-danger"> </i>'.html_safe,scaners_path(scan_id: scan.id),title: 'Delete',method: :delete, remote: true%> </td>              
+			</tr> 
+		<%end%>
+	</tbody>
+</table>
+<div class='text-center'> <%= will_paginate scan_obj ,renderer: BootstrapPagination::Rails%></div>

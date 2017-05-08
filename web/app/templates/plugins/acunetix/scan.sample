@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Scan>
+  <Name><![CDATA[Scan Thread 1 ( http://testphp.vulnweb.com:80/ )]]></Name>
+  <ShortName><![CDATA[Scan Thread 1]]></ShortName>
+  <StartURL><![CDATA[http://testphp.vulnweb.com:80/]]></StartURL>
+  <StartTime><![CDATA[7/10/2014, 11:56:03]]></StartTime>
+  <FinishTime><![CDATA[7/10/2014, 15:20:55]]></FinishTime>
+  <ScanTime><![CDATA[3 hours, 24 minutes]]></ScanTime>
+  <Aborted><![CDATA[False]]></Aborted>
+  <Responsive><![CDATA[True]]></Responsive>
+  <Banner><![CDATA[nginx/1.4.1]]></Banner>
+  <Os><![CDATA[Unknown]]></Os>
+  <WebServer><![CDATA[nginx]]></WebServer>
+  <Technologies><![CDATA[PHP]]></Technologies>
+</Scan>

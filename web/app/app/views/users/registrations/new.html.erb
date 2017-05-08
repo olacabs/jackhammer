@@ -1,0 +1,37 @@
+<div class="wrapper">
+	<%= form_for(resource,as: resource_name, url: registration_path(resource_name) ,:html=>{class: "login-form" ,role: "form"}) do |f| %>
+		<%= devise_error_messages! %>
+		<div class="form-group " >
+			<h2><label class='label-class'>Sign up</label> | <label class="label-class"><%=link_to 'Login' ,new_user_session_path%></label></h2>
+		</div>
+		<%unless Setting.application_mode == 'SingleUser'%>
+			<div class="form-group">
+				<%= f.label :team,class: 'label-class' %>
+				<%= f.select :team_ids, Team.order(:name).collect { |t| [t.name,t.id]},{prompt: 'Select Team'},{:class=> "selectpicker dropup show-tick show-menu-arrow",'data-live-search'=>"true",'data-show-subtext'=> "true",'data-width'=>"100%",'data-size'=>"5"}%>
+			</div>   
+		<%end%>
+		<div class="form-group " >
+			<%= f.label :name ,class: 'label-class'%>
+			<%= f.text_field :name, autofocus: true,requred: true, class: "form-control"%>
+		</div>
+		<div class="form-group " >
+			<%= f.label :email ,class: 'label-class'%>
+			<%= f.email_field :email, autofocus: true,requred: true, class: "form-control"%>
+		</div>
+		<div class="form-group" >
+			<%= f.label :password,class: 'label-class' %>
+			<% if @minimum_password_length %>
+				<label class='label-class'><em>(<%= @minimum_password_length %> characters minimum)</em></label>
+			<% end %><br />
+
+			<%= f.password_field :password, autocomplete: "off",requred: true, class: "form-control "%>
+		</div>
+		<div class="form-group">
+			<%= f.label :password_confirmation,class: 'label-class' %>
+			<%= f.password_field :password_confirmation, requred: true, class: "form-control",autocomplete: "off" %>
+		</div>
+		<div class="submit" >
+			<%= f.submit "Sign Up"%>
+		</div>
+	<%end%>
+</div>

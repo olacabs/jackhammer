@@ -1,0 +1,65 @@
+<node
+  address="10.0.0.1"
+  status="alive"
+  device-id="211"
+  hardware-address="00:de:ad:be:ef:00">
+
+  <names>
+      <name>iPad.local</name>
+      <name>Ted's iPad</name>
+  </names>
+
+  <fingerprints>
+    <os
+      certainty="1.00"
+      device-class="Server"
+      vendor="Microsoft"
+      family="Windows"
+      product="Windows Server 2003, Standard Edition"
+      version="SP2"
+      arch="x86_64"/>
+
+    <os
+      certainty="0.85"
+      device-class="General"
+      vendor="Microsoft"
+      family="Windows"
+      product="Windows Server 2003"
+      version="SP2"/>
+  </fingerprints>
+
+  <software>
+    <fingerprint
+      certainty="1.00"
+      software-class="General"
+      vendor="Sun"
+      family="Java"
+      product="JRE"
+      version="1.6.0.22"/>
+
+    <fingerprint
+      certainty="1.00"
+      software-class="General"
+      vendor="Sun"
+      family="Java"
+      product="JRE"
+      version="1.6.0.24"/>
+  </software>
+
+  <tests>
+    <test status="not-vulnerable" id="cifs-generic-0001">
+      <Paragraph>
+        <Paragraph>Running vulnerable CIFS service.</Paragraph>
+        Was not able to authenticate to the CIFS service with no credentials.
+      </Paragraph>
+    </test>
+
+    <test status="vulnerable" id="cifs-generic-0001">
+      <Paragraph>
+        <Paragraph>Something vulnerable or bad.</Paragraph>
+        Stuff
+      </Paragraph>
+    </test>
+  </tests>
+  <endpoints/>
+</node>

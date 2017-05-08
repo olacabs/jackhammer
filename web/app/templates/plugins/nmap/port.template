@@ -1,0 +1,14 @@
+#[Title]#
+%port.number%/%port.protocol% is %port.state% (%port.reason%)
+
+#[Service]#
+%port.service.name%
+
+#[Product]#
+%port.service.product%
+
+#[Version]#
+%port.service.version%
+
+#[Host]#
+%port.host%

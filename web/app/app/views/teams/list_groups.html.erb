@@ -1,0 +1,50 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h5><b>Teams</b></h5></div>
+				<div class="panel-body">
+					<div class='row'>
+						<div class='col-md-12'>
+                                                        <%=link_to "<i class='glyphicon glyphicon-plus-sign'></i>  Add".html_safe,new_team_path,method: "GET",class: 'btn btn-success'%>
+                                                </div>
+					</div>
+					<div class='row top-buffer'>
+						<div class='col-md-12'>
+							<table id="group_table" class="table table-hover"  data-source="<%= list_groups_teams_path(format: "json") %>">
+								<thead class="thead-inverse">
+									<tr>
+										<th>Name</th>
+										<th>Created</th>
+										<th>Updated</th>
+										<th>Edit</th>
+										<th>Delete</th>
+									</tr>
+								</thead>
+
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+		$('#group_table').dataTable({
+			bServerSide: true,
+			order: [],      
+			columnDefs: [ {
+				targets  : [3,4],
+				orderable: false,
+			}],  
+			sAjaxSource: $('#group_table').data('source')
+		}); 
+	});
+</script>

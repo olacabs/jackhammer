@@ -1,0 +1,85 @@
+<div class="page-header">
+	<%if params[:scan_type]== 'team'%>
+		<%header = 'Team'%>
+	<%elsif params[:scan_type] == 'corporate'%>
+		<%header = 'Corporate'%>
+	<%else%>
+		<%header = 'My'%>
+	<%end%>
+	<h2><%=header%> Scans
+		<%if current_user.is_admin? && params[:scan_type] == 'corporate'%>
+			<span class='pull-right'> 
+				<button class='btn btn-danger' onclick='start_scan_all_repos()'>Re-Scan/ Resume-scans</button>
+			</span>
+		<%end%>
+	</h2>
+</div>          
+<table class="table table-hover table-condensed scan_results">
+	<thead>
+		<tr>
+			<th>Project Title</th>
+			<th>Status Reason</th>
+			<th>Scan Results</th> 
+			<%if @is_scan_create_present%>
+				<th>Action</th>
+			<%end%>
+			<%if @is_scan_read_present%>
+				<th> View Results</th>
+			<%end%>
+			<%if @is_scan_delete_present %>
+				<th>Delete</th>
+			<%end%>
+		</tr>
+	</thead>
+	<tbody>         
+		<%@scans.each do |scan| %>
+			<tr id='<%=scan.id%>'>
+				<%project_title = scan.project_title.present? ? scan.project_title : scan.repo.name%>
+				<%findings = scan.findings.count%>
+				<td><%= findings > 0 ? link_to(project_title,list_scan_results_scaners_path(scan_id: scan.id,scan_type: params[:scan_type].present? ? params[:scan_type] : "my_scans")) : project_title%></td>
+				<td><%=scan.status_reason.present? ? scan.status_reason : scan.status%></td>
+				<td>
+				<ul class='inline alert-badges'>
+					<li class='severity-badge light critical-badge text-center' title='Critical'>
+						<%=scan.findings.where(severity: 'Critical').count%>
+					</li>
+					<li class='severity-badge light high-badge text-center' title='High'>
+						<%=scan.findings.where(severity: 'High').count%>
+					</li>
+					<li class='severity-badge light medium-badge text-center' title='Medium'>
+						<%=scan.findings.where(severity: 'Medium').count%>
+					</li>
+					<li class='severity-badge light low-badge text-center' title='Low'>
+						<%=scan.findings.where(severity: 'Low').count%>
+					</li>
+					<li class='severity-badge light info-badge text-center' title='Info'>
+						<%=scan.findings.where(severity: 'Info').count%>
+					</li>
+				 </ul>
+				</td>
+				<%if @is_scan_create_present%>
+					<%if scan.status == 'Scanning'%>
+						<td><%=link_to "<button class='btn-xs btn-success' disabled='disabled'> Scanning</button>".html_safe,run_scaners_path(scan_id: scan.id),method: :get, remote: true,'disabled' => 'disabled'%></td>
+					<%else%>
+						<td><%=link_to scan.is_scanned ? "<button class='btn-xs btn-success'>Re-Scan</button>".html_safe : "<button class='btn-xs btn-success'>Scan Now</button>".html_safe,run_scaners_path(scan_id: scan.id),method: :get, remote: true,class: 'label-class',id: scan.id%></td>
+					<%end%>
+				<%end%>
+				<%if @is_scan_read_present%>
+					<%if scan.status == 'Pending' || scan.status == 'Enqueued' || scan.status == 'Scanning'%>
+						<td><%= button_to "Not Scanned",findings_path(scan_id: scan.id,scan_type: params[:scan_type].present? ? params[:scan_type] : "my_scans"),class: 'btn-xs btn-primary','disabled': 'disabled'%></td>
+					<%elsif findings > 0 && scan.status == 'done'%>
+						<td><%= link_to "<button class='btn-xs btn-primary'>Scan Results</button>".html_safe,findings_path(scan_id: scan.id,scan_type: params[:scan_type].present? ? params[:scan_type] : "my_scans") %></td>
+					<%elsif (scan.status == 'failed'  || scan.status == 'done' ) && findings == 0%>
+						<td><%= button_to "No Resutls",findings_path(scan_id: scan.id,scan_type: params[:scan_type]),class: 'btn-xs btn-primary','disabled': 'disabled'%></td>
+					<%elsif scan.status == 'failed' && findings > 0 %>
+						<td><%= link_to "<button class='btn-xs btn-primary'>Scan Results</button>".html_safe,findings_path(scan_id: scan.id,scan_type: params[:scan_type]) %></td>
+					<%end%>
+				<%end%>
+				<%if @is_scan_delete_present%>
+					<td><%=link_to '<i class="glyphicon glyphicon-remove-circle text-danger"> </i>'.html_safe,scaner_path(scan),title: 'Delete',method: :delete, remote: true,confirm: "Are you sure you want to delete this?" %> </td>
+				<%end%>
+			</tr>
+		<%end%> 
+	</tbody>
+</table>
+<div class='text-center'> <%= will_paginate @scans ,renderer: BootstrapPagination::Rails%></div>

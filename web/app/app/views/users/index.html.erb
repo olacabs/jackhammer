@@ -1,0 +1,56 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item active">Listing Users</li>
+			</ul> 
+			<div class="panel panel-default">
+				<div class="panel-heading"><h5><b>Users</b></h5></div>
+				<div class="panel-body">
+					<div class='row'>
+						<div class='col-md-12'>
+							<%=link_to "Modify Role/Team".html_safe,new_user_path,method: "GET",class: 'btn btn-success'%>
+						</div>
+					</div>
+					<div class='row top-buffer'>
+						<div class='col-md-12'>
+							<table id="user_table" class="table table-hover"  data-source="<%= users_path(format: "json") %>">
+								<thead class="thead-inverse">
+									<tr>
+										<th>Name</th>
+										<th>Email</th>
+										<th>Group</th>
+										<th>is Admin?</th>
+										<th>Is Team Lead? </th>
+										<th>Is Security Team? </th>
+										<th><i class='fa fa-pencil-square-o' aria-hidden='true' title='Edit'></i></th>
+										<th><i class='fa fa-times text-danger' aria-hidden='true' title='Delete'></i></th>
+									</tr>
+								</thead>
+
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	$('#user_table').dataTable({
+		bServerSide: true,
+		order: [],      
+		columnDefs: [ {
+			targets  : [2,3,4,5,6,7],
+			orderable: false,
+		}],  
+		sAjaxSource: $('#user_table').data('source')
+	}); 
+});
+</script>

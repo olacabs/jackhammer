@@ -1,0 +1,63 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="continer">
+			<div id="settings_message"></div>
+		</div>
+		<div class='container'>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+				<li class="breadcrumb-item">SMTP Settings</li>
+			</ul>
+			<div class='row'>
+				<div class='col-md-8'> 
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>SMTP Settings</h4></div>
+						<div class="panel-body">
+							<%= form_for(:settings, url: update_details_settings_path ,method: :POST ,remote: true,:html=>{role: "form"}) do |form| %>
+								<%= form.fields_for :notification do |f| %>
+									<div class="form-group">
+										<%=f.label :host,"Application URL #{field_info("Ex: localhost:3000")}".html_safe%>
+										<%= f.text_field :host, autofocus: true,requred: true,class: "form-control",value: Setting["notification"].present? ? Setting["notification"]["host"] : ""%>
+									</div>
+									<div class="form-group">
+										<%=f.label :address,"Address #{field_info("Ex: smtp.gmail.com")}".html_safe%>
+										<%= f.text_field :address, autofocus: true,requred: true,class: "form-control",value: Setting["notification"].present? ? Setting["notification"]["address"] : ""%>              
+									</div>
+									<div class="form-group">                                               
+										<%=f.label :smtp_host,"SMTP Domain #{field_info("Ex: mail.gmail.com")}".html_safe%>
+										<%= f.text_field :domain, autofocus: true,requred: true,class: "form-control",value: Setting["notification"].present? ? Setting["notification"]["domain"] : ""%>
+									</div>          
+									<div class="form-group " >
+										<%=f.label :email,"From Email Address"%>
+										<%= f.text_field :email, autofocus: true,requred: true,class: "form-control",value: Setting["notification"].present? ? Setting["notification"]["email"]: ""%>
+									</div>                                          
+									<div class="form-group ">
+										<%=f.label :password,"SMTP Password #{field_info("Email Password")}".html_safe%>
+										<%= f.password_field :password, autofocus: true,requred: true, class: "form-control"%>
+									</div>                                                                  
+									<div class="form-group ">
+										<%=f.label :smtp_port,"SMTP Port #{field_info("Ex: 587")}".html_safe%>
+										<%= f.text_field :port, autofocus: true,requred: true, class: "form-control",value: Setting["notification"].present? ? Setting["notification"]["port"] : "" %>
+									</div>
+									<div class="form-group ">
+										<%=f.label :encryption_type,"Type of Encryption"%>
+										<%= f.select :encryption_type,options_for_select([["None", "None"],["SSL", "SSL"],["TLS", "TLS"]]),{},{class: "form-control"} %>
+									</div>
+									<div class="form-group ">
+										<%=f.label :smtp_authentication,"SMTP Authentication"%>
+										<%= f.select :smtp_authentication,options_for_select([["Yes", "yes"],["No", "no"]]),{},{class: "form-control"} %>
+									</div>
+									<div class="form-group" >                                                           
+										<%= f.submit "Save",class: 'btn btn-danger'%>                                        
+									</div>               
+								<%end%>
+							<%end%>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

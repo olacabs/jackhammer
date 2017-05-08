@@ -1,0 +1,23 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill" role="navigation">
+		<ul class="nav navbar-nav ">
+			<li>
+				<h2 class="animated" style="margin-left:10px;">Scan Results</h2>
+			</li>
+			<li class="<%=current_class?('/scaners/list_scan_results')%>"><%=link_to "Vulnerability Trending <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-line-chart'></span>".html_safe,list_scan_results_scaners_path(scan_id: params[:scan_id])%></li>
+			<li class="<%=current_class?(@scan_wise_results_active_path)%>"><%=link_to "Tools Result <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-wrench'></span>".html_safe,scan_wise_results_scaners_path(scan_id: params[:scan_id])%></li> 
+			<li class="dropdown open <%=current_class?('/scaners/severity_results')%>">
+				<a href="#severity" data-toggle="collapse">Results <i class="fa fa-caret-down"></i><span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-tasks"></span></a>                   
+				<div id="severity">
+					<ul class="nav" role="menu">
+						<%=link_to "<i class='fa fa-exclamation-triangle critical' aria-hidden='true'></i> Critical <span class='critical-row badge'> #{@scan.critical_count}</span> ".html_safe,severity_results_scaners_path(scan_id: params[:scan_id],severity: 'Critical'),class: "list-group-item"%>
+						<%=link_to "<i class='fa fa-level-up high' aria-hidden='true'></i> High <span class='high-row badge'>#{@scan.high_count} </span>".html_safe,severity_results_scaners_path(scan_id: params[:scan_id],severity: 'High'),class: "list-group-item"%>
+						<%=link_to "<i class='fa fa-arrows-h medium' aria-hidden='true'></i> Medium <span class='medium-row badge'>#{@scan.medium_count}</span>".html_safe,severity_results_scaners_path(scan_id: params[:scan_id],severity: 'Medium'),class: "list-group-item"%>
+						<%=link_to "<i class='fa fa-level-down low' aria-hidden='true'></i> Low <span class='low-row badge'> #{@scan.low_count} </span>".html_safe,severity_results_scaners_path(scan_id: params[:scan_id],severity: 'Low'),class: "list-group-item"%>
+						<%=link_to "<i class='glyphicon glyphicon-info-sign info' aria-hidden='true'></i> Info <span class='info-row badge'>#{@scan.info_count} </span>".html_safe,severity_results_scaners_path(scan_id: params[:scan_id],severity: 'Info'),class: "list-group-item"%>
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</nav>
+</div>

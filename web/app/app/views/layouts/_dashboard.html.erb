@@ -1,0 +1,20 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill" role="navigation">
+		<ul class="nav navbar-nav ">
+			<li>                       
+				<h2 class="animated" style="margin-left:10px;">Dashboard</h2>
+			</li> 
+			<li class="static"><%=link_to "Source Code Apps #{sidebar_icons('fa-git')}".html_safe,display_dashboards_path(dashboard_type: params[:dashboard_type],scan_type: AppConstants::ScanTypes::STATIC)%></li>
+			<li class="web"><%=link_to "Web Apps #{sidebar_icons('fa-globe')}".html_safe,display_dashboards_path(dashboard_type: params[:dashboard_type],scan_type: AppConstants::ScanTypes::WEB)%></li>
+			<li class="wordpress"><%=link_to "Wordpress Apps #{sidebar_icons('fa-wordpress')}".html_safe,display_dashboards_path(dashboard_type: params[:dashboard_type],scan_type: AppConstants::ScanTypes::WORDPRESS)%></li>
+			<li class="mobile"><%=link_to "Mobile  Apps #{sidebar_icons('fa-mobile')}".html_safe,display_dashboards_path(dashboard_type: params[:dashboard_type],scan_type: AppConstants::ScanTypes::MOBILE)%></li>
+			<li class="network"><%=link_to "Network  Apps #{sidebar_icons('fa-sitemap')}".html_safe,display_dashboards_path(dashboard_type: params[:dashboard_type],scan_type: AppConstants::ScanTypes::NETWORK)%></li>
+		</ul>
+	</nav>
+</div>
+<script>
+$(document).ready(function(){
+	var scan_type = '<%=params[:scan_type]%>';
+	$("." + scan_type.toLowerCase()).addClass("active");
+});
+</script>

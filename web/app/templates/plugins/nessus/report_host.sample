@@ -1,0 +1,12 @@
+<ReportHost name="10.0.0.1">
+  <HostProperties>
+    <tag name="host-ip">10.0.0.1</tag>
+    <tag name="host-fqdn">dc1.localdomain</tag>
+    <tag name="operating-system">Windows Server 2008</tag>
+    <tag name="mac-address">00:01:02:03:04:05</tag>
+    <tag name="netbios-name">DC1</tag>
+    <tag name="HOST_END">Tue Aug  9 09:59:24 2011</tag>
+    <tag name="HOST_START">Tue Aug  9 09:50:18 2011</tag>
+  </HostProperties>
+  <ReportItem/>
+</ReportHost>

@@ -1,0 +1,37 @@
+<script type="text/javascript">
+Highcharts.setOptions({
+	colors: ['#e31e25', '#a94442', '#f2b968', '#73c9e3', '#74c374']
+});
+Highcharts.chart('chartContainer', {
+	chart: {
+		type: 'pie',
+		options3d: {
+			enabled: true,
+			alpha: 45
+		}
+	},
+	title: {
+		text: ''
+	},
+	subtitle: {
+		text: 'Severity Levels'
+	},
+	plotOptions: {
+		pie: {
+			innerSize: 100,
+			depth: 45
+		}
+	},
+	series: [{
+		name: 'Severities',
+		data: [
+			['Critical', <%=@sev_hash["Critical"]%>],
+			['High', <%=@sev_hash["High"]%>],
+			['Medium', <%=@sev_hash["Medium"]%>],
+			['Low', <%=@sev_hash["Low"]%>],
+			['Info', <%=@sev_hash["Info"]%>]
+		]
+	}],
+	credits: {enabled: false}
+});
+</script>

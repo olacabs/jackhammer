@@ -1,0 +1,16 @@
+#[Details]#
+%evidence.details%
+
+
+#[Affects]#
+|_. Location |_. Parameter |
+| %evidence.affects% | %evidence.parameter% |
+
+
+#[AOP]#
+|_. File |_. Line |_. Additional |
+| %evidence.aop_source_file% | %evidence.aop_source_line% | %evidence.aop_additional% |
+
+
+#[FalsePositive]#
+%evidence.is_false_positive%

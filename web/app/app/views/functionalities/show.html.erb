@@ -1,0 +1,38 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<div class='row'>
+				<div class='col-md-6'>
+					<div class="panel panel-success target-stats">
+						<div class="panel-heading"><h5><b>Module</b></h5></div>
+						<div class="panel-body">
+							<div class='row'>
+								<div class='col-md-12'>
+									<strong class='label-class'>Name:</strong>
+									<%= @functionality.name %>
+									</p>
+
+									<p>
+									<strong class='label-class'>Operations:</strong>
+									<%= @functionality.permissions.map(&:name).join(",") %>
+									</p>
+									<p>
+									<strong class='label-class'>Created:</strong>
+									<%= @functionality.created_at.to_formatted_s(:short)%>
+									</p>
+									<p>
+									<strong class='label-class'>Updated:</strong>
+									<%= @functionality.updated_at.to_formatted_s(:short) %>
+									</p>
+									<%= link_to 'Edit', edit_functionality_path(@functionality) %> |
+									<%= link_to 'Back', functionalities_path %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

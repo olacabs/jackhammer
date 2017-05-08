@@ -1,0 +1,63 @@
+<script>
+$(document).ready(function () {  
+	var options = {
+		chart: {
+			renderTo: 'trend_line',
+			defaultSeriesType: 'spline'
+		},
+		credits: {
+			enabled: false
+		},
+		legend: {
+			x: 15,
+			verticalAlign: 'left',
+			y: 0,
+			floating: true,
+			backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+			borderColor: '#CCC',
+			borderWidth: 1,
+			shadow: false,
+		},
+		series: [{name: 'Critical', data: <%=@critical_count.last(3)%>,color: '#e31e25'},{name: 'High', data: <%=@high_count.last(3)%>,color: '#a94442'},{name: 'Medium', data: <%=@medium_count.last(3)%>,color: '#f2b968'},{name: 'Low', data: <%=@low_count.last(3)%>,color: '#73c9e3'},{name: 'Info', data: <%=@info_count.last(3)%>,color: '#74c374'}],
+		title: {
+			text: 'Trend line'
+		},
+		yAxis: {
+			allowDecimals: false,
+			title: {
+				text: 'Findings'
+			}
+		},
+		xAxis: [{
+			title: {
+				text: 'Month'
+			},
+			categories: <%=raw(@month_hash.keys.last(3))%>
+	}]
+
+	};
+	var trend_chart = new Highcharts.Chart(options);
+	$(".button-legend").on('click',function(){
+		var time_period = $(this).text();
+		$('.button-legend').removeClass('btn-success');
+		$(this).addClass('btn-success');
+		options.chart = {renderTo: 'trend_line'};
+		if(time_period == "3M")                 
+		{                                       
+			options.xAxis = [{categories: <%=raw(@month_hash.keys.last(3))%>}];
+			options.series = [{name: 'Critical', data: <%=@critical_count.last(3)%>,color: '#e31e25'},{name: 'High', data: <%=@high_count.last(3)%>,color: '#a94442'},{name: 'Medium', data: <%=@medium_count.last(3)%>,color: '#f2b968'},{name: 'Low', data: <%=@low_count.last(3)%>,color: '#73c9e3'},{name: 'Info', data: <%=@info_count.last(3)%>,color: '#74c374'}];
+		}               
+		else if(time_period == "6M")
+		{       
+			options.xAxis = [{categories: <%=raw(@month_hash.keys.last(6))%>}];
+			options.series = [{name: 'Critical', data: <%=@critical_count.last(6)%>,color: '#e31e25'},{name: 'High', data: <%=@high_count.last(6)%>,color: '#a94442'},{name: 'Medium', data: <%=@medium_count.last(6)%>,color: '#f2b968'},{name: 'Low', data: <%=@low_count.last(6)%>,color: '#73c9e3'},{name: 'Info', data: <%=@info_count.last(6)%>,color: '#74c374'}]
+		}                       
+		else                            
+		{                                       
+			options.xAxis = [{categories: <%=raw(@month_hash.keys)%>}];
+			options.series = [{name: 'Critical', data: <%=@critical_count%>,color: '#e31e25'},{name: 'High', data: <%=@high_count%>,color: '#a94442'},{name: 'Medium', data: <%=@medium_count%>,color: '#f2b968'},{name: 'Low', data: <%=@low_count%>,color: '#73c9e3'},{name: 'Info', data: <%=@info_count%>,color: '#74c374'}];
+		}                       
+		var chart = new Highcharts.Chart(options);
+	});     
+});
+</script>

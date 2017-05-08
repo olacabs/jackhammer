@@ -1,0 +1,12 @@
+<issue>
+  <serialNumber>5236964506139299840</serialNumber>
+  <type>6291712</type>
+  <name>Directory listing</name>
+  <host ip="10.0.0.1">http://wiki.local</host>
+  <path><![CDATA[/crmmanager/]]></path>
+  <location><![CDATA[/crmmanager/]]></location>
+  <severity>Information</severity>
+  <confidence>Firm</confidence>
+  <issueBackground><![CDATA[Directory listings do not necessarily constitute a security vulnerability. Any sensitive resources within your web root should be properly access-controlled in any case, and should not be accessible by an unauthorized party who happens to know the URL. Nevertheless, directory listings can aid an attacker by enabling them to quickly identify the resources at a given path, and proceed directly to analyzing and attacking them.]]></issueBackground>
+  <remediationBackground><![CDATA[There is not usually any good reason to provide directory listings, and disabling them may place additional hurdles in the path of an attacker. This can normally be achieved in two ways:<ul><li>Configure your web server to prevent directory listings for all paths beneath the web root; </li><li>Place into each directory a default file (such as index.htm) which the web server will display instead of returning a directory listing.</li></ul>]]></remediationBackground>
+</issue>

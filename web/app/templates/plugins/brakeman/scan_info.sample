@@ -1,0 +1,13 @@
+{
+  "app_path": "/Users/etd/Code/community/dradisframework",
+  "rails_version": "4.1.9",
+  "security_warnings": 8,
+  "start_time": "2015-08-07 05:21:12 +0200",
+  "end_time": "2015-08-07 05:21:12 +0200",
+  "duration": 0.618023,
+  "number_of_controllers": 14,
+  "number_of_models": 9,
+  "number_of_templates": 22,
+  "ruby_version": "2.1.6",
+  "brakeman_version": "3.0.5"
+}

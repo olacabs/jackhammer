@@ -1,0 +1,81 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="continer">
+			<div id="settings_message"></div>
+		</div>
+
+		<div class='container'>
+			<div class='row'>
+				<div class="row">
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+						<li class="breadcrumb-item">Default Sign Up Role</li>
+					</ul>   
+				</div> 
+				<div class='col-md-8'>
+					<div class="panel panel-default">
+						<div class="panel-heading">Default Sign Up Role</div>
+						<div class="panel-body">
+							<div id="category" data-id="github">
+								<%= form_for(:settings, url: update_details_settings_path,method: :POST ,remote: true,:html=>{role: "form"}) do |form| %>
+									<%= form.fields_for :roles do |f| %>
+										<fieldset>
+											<div class="row">
+												<div class="form-group col-md-4">
+													<%=f.label :default_role%>
+													<%selected_role = Setting['roles'].present? ? Setting['roles']['default_role'] : nil%>
+													<%= f.select :default_role, options_for_select(@roles.map { |r| [r.name,r.name]},selected_role),{prompt: 'Select Role'},{class: 'form-control'}%>
+												</div>
+											</div>
+											<div class="form-group row">
+												<div class='col-md-4'>
+													<div class="checkbox checkbox-slider--b-flat">
+														<label>
+															<%is_team_lead = Setting['roles'].present? && Setting['roles']['is_team_lead'].try(:to_i) == 1%>
+															<%=f.check_box :is_team_lead?,checked: is_team_lead,class: 'user-role' %><span class='label-class'>Is Team Lead?</span>
+														</label>
+													</div>
+												</div>
+												<div class='col-md-4'>
+													<div class="checkbox checkbox-slider--b-flat">
+														<label>
+															<%is_admin = Setting['roles'].present? && Setting['roles']['is_admin'].try(:to_i) == 1%>
+															<%=f.check_box :is_admin?,checked:is_admin,class: 'user-role' %><span class='label-class'>Is Admin?</span>
+														</label>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="checkbox checkbox-slider--b-flat">
+														<label>
+															<%is_security_member = Setting['roles'].present? && Setting['roles']['is_security_member'].try(:to_i) == 1%>
+															<%=f.check_box :is_security_member?,checked:is_security_member,class: 'user-role' %><span class='label-class'>Is Security Team?</span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+										</fieldset>
+										<div class="form-group  col-md-4">
+											<%=f.submit "Update Role",class: "btn btn-primary"%>
+										</div>
+									<%end%>
+								<%end%>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$('input.user-role').on('change', function() {
+	$("#settings_roles_default_role").val("");
+        $('input[type="checkbox"]').not(this).prop('checked', false);
+});             
+$("#settings_roles_default_role").on('change',function(){
+	$('input[type="checkbox"]').prop('checked', false);
+});
+</script>

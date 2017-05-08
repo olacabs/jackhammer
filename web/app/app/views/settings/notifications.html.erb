@@ -1,0 +1,61 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="continer">
+			<div id="settings_message"></div>
+		</div>
+
+		<div class='container'>
+			<div class='row'>
+				<div class='col-md-8'>
+					<div class="panel panel-default">
+						<div class="panel-heading">Email Notification </div>
+						<div class="panel-body">
+							<div id="category" data-id="github">
+								<%= form_for(@git, url: @url,:html=>{role: "form"}) do |f| %>
+									<%=hidden_field_tag :id,@git.id if @git.present?%>
+									<fieldset>
+										<legend>General</legend>
+										<div class="form-group">
+											<!--<span class='setting-label'> api_end_point</span>-->
+											<%=f.label :username%>
+											<%=f.text_field :user_name,class: "input-setting form-control floating-label"%>
+										</div>
+										<div class="form-group">
+											<%=f.label :password%>
+											<%=f.password_field :password,class: "input-setting form-control floating-label"%>
+										</div>
+										<div class="form-group">
+											<%=f.label :api_endpoint%>
+											<%=f.text_field :api_end_point,class: "input-setting form-control floating-label"%>
+										</div>
+										<div class="form-group">
+											<%=f.label :api_access_token%>
+											<%=f.text_field :api_access_token,class: "input-setting form-control floating-label"%>
+										</div>
+									</fieldset>
+									<br><br>
+									<fieldset>
+										<legend>OAuth</legend>
+										<span data-id="oauth">
+											<div class="form-group">
+												<%=f.label :client_ID%>
+												<%=f.text_field :client_id,class: "input-setting form-control floating-label"%>
+											</div>
+											<div class="form-group">
+												<%=f.label :client_secret%>
+												<%=f.text_field :client_secret,class: "input-setting form-control floating-label"%>
+											</div>
+										</span>
+									</fieldset>
+									<%=f.submit "Update Gitlab Settings",class: "btn btn-primary pull-right"%>
+								<%end%>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

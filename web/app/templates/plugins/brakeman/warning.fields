@@ -1,0 +1,14 @@
+warning.warning_type
+warning.warning_code
+warning.fingerprint
+warning.message
+warning.file
+warning.line
+warning.link
+warning.code
+warning.render_path
+warning.location_type
+warning.location_class
+warning.location_method
+warning.user_input
+warning.confidence

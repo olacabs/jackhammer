@@ -1,0 +1,145 @@
+<div class="container">
+	<ul class="breadcrumb">
+		<li class="breadcrumb-item"><%= link_to "Add Target",add_target_scaners_path,method: :get %></li>
+		<li class="breadcrumb-item"><%=params[:owner_type]%></li>
+		<li class="breadcrumb-item active"><%=params[:scan_type]%></li>
+	</ul>
+	<div class="page-header">
+		<h2> Add Scan Target </h2>
+	</div>
+	<div class="jumbotron jumbo-background">
+		<div class="panel-heading">
+			<ul class="nav nav-tabs">
+				<%if params[:owner_type] == AppConstants::OwnerTypes::PERSONAL%>
+					<li class="active"><a data-toggle="tab" href="#my_project">Personal Scan</a></li>
+				<%end%>
+				<%if params[:owner_type] == AppConstants::OwnerTypes::TEAM %>
+					<li class="active"><a data-toggle="tab" href="#team_project">Team Scan</a></li>
+				<%end%>
+				<%if (current_user.is_admin? || current_user.is_security_member?) && params[:owner_type] != AppConstants::OwnerTypes::PERSONAL%>
+					<li class="<%=get_corporate_class%>"><a data-toggle="tab" href="#corporate_project">Corporate Scan</a></li>
+				<%end%>
+			</ul>
+		</div>
+		<div class="tab-content top-buffer">
+			<%if params[:owner_type] == AppConstants::OwnerTypes::PERSONAL%>	
+				<div id="my_project" class="tab-pane fade in active">
+					<%=form_for(Scaner.new,:url=>scaners_path,:method=>"post",:html=>{class: 'form-horizontal',role: "form"}) do |f| %>
+						<%=f.hidden_field :scan_type,:value=> params[:scan_type]%>
+						<%=f.hidden_field :owner_type,:value=> AppConstants::OwnerTypes::PERSONAL%>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.label :project_title,class: 'label-class' %>
+								<%= f.text_field :project_title, autofocus: true,required: 'required', class: "form-control"%>
+							</div>
+						</div>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.label :source,class: 'label-class' %>
+								<%= f.select :source, options_for_select(AppConstants::SourceTypes::SOURCE_TYPES),{},{class: "form-control",onchange: "enable_file_field();"}%>
+							</div>
+						</div>
+						<div class="form-group hide" id="directory_field">
+							<div class='col-md-6'>
+								<!-- The fileinput-button span is used to style the file input field as button -->
+								<%= f.label :upload_project,class: 'label-class' %>
+								<%= f.file_field :project_target,autofocus: true,required: 'required',class: "btn btn-success file-field" %>
+							</div>
+						</div>
+						<div class="form-group " id="repo_field">
+							<div class='col-md-4'>
+								<%= f.label :repo_url,"Repo URL <a href='#' data-toggle='popover' data-trigger='hover' style='overflow: hidden; white-space: nowrap;' data-content='https://github.com/username/repo_name.git' > <i class='glyphicon glyphicon-info-sign text-info'></i></a>".html_safe,class: 'label-class' %>
+								<%= f.text_field :target, autofocus: true,placeholder: "repo url in https format",required: 'required', class: "form-control repo_field"%>
+							</div>
+						</div>
+						<div class="form-group " id="branch_field">
+							<div class='col-md-4'>
+								<%= f.label :branch_name,class: 'label-class' %>
+								<%= f.text_field :branch_name, autofocus: true, :value=>'master',class: "form-control"%>
+							</div>
+						</div>
+						<div class="form-group periodic_schedule_field">
+							<div class='col-md-4'>
+								<%= f.label :periodic_schedule,class: 'label-class' %>
+								<%= f.select :periodic_schedule, options_for_select(AppConstants::ScheduledTypes::PERIODIC_TYPES),{prompt: "Select Periodic Time"},{class: "form-control"}%>
+							</div>
+						</div>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.submit "Add Scan Target", :class=>"btn btn-danger"%>
+								&nbsp&nbsp&nbsp<%= f.submit "Scan Now", :class=>"btn btn-danger"%>
+						</div>
+						</div>
+					<%end%>
+				</div>
+			<%end%>
+			<%if params[:owner_type] == AppConstants::OwnerTypes::TEAM%>
+				<div id="team_project" class="tab-pane fade in active">
+					<%=form_for(Scaner.new,:url=>scaners_path,:method=>"post",:html=>{class: 'form-horizontal',role: "form"}) do |f| %>
+						<%=f.hidden_field :scan_type,:value=>params[:scan_type]%>
+						<%=f.hidden_field :owner_type,:value=> AppConstants::OwnerTypes::TEAM%>
+						<%=f.hidden_field :source,:value=>"gitlab"%>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.label :project,class: 'label-class' %>
+								<%= f.select :repo_id, @user_repos.map { |repo| [repo.name,repo.id]},{prompt: 'select project'},{:class=> "selectpicker dropup show-tick show-menu-arrow",'data-live-search'=>"true",'data-show-subtext'=> "true",'data-width'=>"100%",'data-size'=>"5",:onChange=>'load_branches();'}%>
+							</div>
+						</div>
+						<div class="form-group " id="repo_field">
+							<div class='col-md-4'>
+								<%= f.label :branch,class: 'label-class' %>
+								<%= f.select :branch_id, [[]],{prompt: 'Select Branch'},{:class=> "selectpicker dropup show-tick show-menu-arrow",'data-live-search'=>"true",'data-show-subtext'=> "true",'data-width'=>"100%",'data-size'=>"5"}%>
+							</div>
+						</div>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.label :periodic_schedule,class: 'label-class' %>
+								<%= f.select :periodic_schedule, options_for_select(AppConstants::ScheduledTypes::PERIODIC_TYPES),{prompt: "Select Periodic Time"},{class: "form-control",onchange: "enable_file_field();"}%>
+							</div>
+						</div>
+						<div class="form-group ">
+							<div class='col-md-4'>
+								<%= f.submit "Add Scan Target", :class=>"btn btn-danger"%>
+								&nbsp&nbsp&nbsp<%= f.submit "Scan Now", :class=>"btn btn-danger"%>
+						</div>
+						</div>
+					<%end%>
+				</div>
+			<%end%>
+			<div id="corporate_project" class="tab-pane fade in <%=get_corporate_class%>">
+				<%=form_for(:scaners,:url=>store_bulk_scans_scaners_path,:method=>"post",:html=>{class: 'form-horizontal',id: 'corporate_scan_form',role: "form"}) do |f| %>
+					<%=f.hidden_field :scan_type,:value=>params[:scan_type]%>
+					<%=f.hidden_field :owner_type,:value=> AppConstants::OwnerTypes::CORPORATE%>
+					<%=f.hidden_field :source,:value=>"gitlab"%>
+					<div class="form-group">
+						<div class='col-md-4'>
+							<%= f.label :team,class: 'label-class' %>
+							<%= f.select :team_id, Team.get_non_default_team.order(:name).collect { |t| [t.name,t.id]},{},{'multiple'=>true,class: 'selectpicker show-tick show-menu-arrow','data-actions-box': 'true','data-live-search': 'true','data-size': "5" ,'data-width': "100%"}%>
+						</div>
+					</div>
+					<div class="form-group ">
+						<div class='col-md-4'>
+							<%= f.label :project,class: 'label-class' %>
+							<%= f.select :repo_id, [[]],{},{"multiple": true,class: 'selectpicker show-tick show-menu-arrow','data-actions-box': 'true','data-live-search': 'true','data-size': "5" ,'data-width': "100%"}%>
+						</div>
+					</div>
+					<div class="form-group ">
+						<div class='col-md-4'>
+							<%= f.label :periodic_schedule,class: 'label-class' %>
+							<%= f.select :periodic_schedule, options_for_select(AppConstants::ScheduledTypes::PERIODIC_TYPES),{prompt: "Select Periodic Time"},{class: 'selectpicker show-tick show-menu-arrow','data-actions-box': 'true','data-live-search': 'true','data-size': "5" ,'data-width': "100%",onchange: "enable_file_field();"}%>
+						</div>
+					</div>
+					<div class="form-group ">
+						<div class='col-md-4'>
+							<%= f.submit "Add Scan Target", :class=>"btn btn-danger"%>
+							&nbsp&nbsp&nbsp<%= f.submit "Scan Now", :class=>"btn btn-danger"%>
+					</div>
+					</div>
+				<%end%>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$('#scaners_team_id').change( function() { load_projects() });
+</script>

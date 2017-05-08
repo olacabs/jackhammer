@@ -1,0 +1,8 @@
+port.number
+port.protocol
+port.state
+port.reason
+port.service.name
+port.service.product
+port.service.version
+port.host

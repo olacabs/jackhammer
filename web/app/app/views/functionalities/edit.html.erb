@@ -1,0 +1,20 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<div class='row'>
+				<div class='col-md-6'>
+					<div class="panel panel-success target-stats">
+						<div class="panel-heading"><h5><b>Editing Module</b></h5></div>
+						<div class="panel-body">
+							<%= render 'form' %>
+
+							<%= link_to 'Show', @functionality %> |
+							<%= link_to 'Back', functionalities_path %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

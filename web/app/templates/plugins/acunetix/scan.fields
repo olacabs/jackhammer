@@ -1,0 +1,12 @@
+scan.name
+scan.short_name
+scan.start_url
+scan.start_time
+scan.finish_time
+scan.scan_time
+scan.aborted
+scan.responsive
+scan.banner
+scan.os
+scan.web_server
+scan.technologies

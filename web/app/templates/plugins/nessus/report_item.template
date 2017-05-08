@@ -1,0 +1,32 @@
+#[Title]#
+%report_item.plugin_name%
+
+#[Description]#
+%report_item.description%
+
+#[Solution]#
+%report_item.solution%
+
+#[Exploit information]#
+%report_item.exploitability_ease%
+Canvas Framework: %report_item.exploit_framework_canvas%
+Core Impact: %report_item.exploit_framework_core%
+Metasploit:%report_item.exploit_framework_metasploit%
+
+#[Buqtrack Entries]#
+%report_item.bid_entries%
+
+#[CVE Entries]#
+%report_item.cve_entries%
+
+#[XREF Entries]#
+%report_item.xref_entries%
+
+#[See also]#
+%report_item.see_also_entries%
+
+#[PluginID]#
+%report_item.plugin_id%
+
+#[Severity]#
+%report_item.severity%

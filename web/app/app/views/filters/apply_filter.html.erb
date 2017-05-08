@@ -1,0 +1,244 @@
+<div class='container'>
+	<%if params[:analytics_type].present?%>
+		<ul class="breadcrumb">                 
+			<li class="breadcrumb-item"><%=link_to "Anlytics",analytics_path(analytics_type: params[:analytics_type])%></li>
+			<li class="breadcrumb-item"><%=params[:analytics_type].try(:camelcase) + " " + "Analytics"%></li>
+			<li class="breadcrumb-item active">Filters</li>
+		</ul>
+	<%else%>
+		<ul class="breadcrumb"> 
+			<li class="breadcrumb-item">Filters</li>
+			<li class="breadcrumb-item"><%=params[:filter_type]%></li>
+		</ul>    
+	<%end%>
+	<section class="filter_options">
+		<div class='panel panel-default filter-section'>
+			<div class='panel-heading'> <h4 class="panel-title">Vulnerability Filter</h4>
+				<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+			</div>
+			<div class='panel-body'>
+				<%=form_for(:filter,url: results_filters_path,method: 'POST' ,remote: true,:html=>{id: 'filter_form'}) do |f|%>
+					<div class='row'>
+						<div class='form-group col-md-6'>
+							<div class='col-md-3'>
+								<%=f.label :tags%>
+							</div>
+							<div class='col-md-8'>
+								<%= f.select :tag_id, @tags.map { |t| [t.name,t.id]},{},{"multiple": true,class: 'form-control selectpicker show-tick dropup show-menu-arrow','data-live-search': 'true','data-max-options': "10"}%>
+							</div>
+						</div>
+						<div class='form-group col-md-6'>
+							<div class='col-md-3'>
+								<label>Status</label>
+							</div>
+							<div class='col-md-8'>
+								<%pre_selected_status = params[:analytics_type].present? ? [AppConstants::FindingStatus::NEW,AppConstants::FindingStatus::OPEN,AppConstants::FindingStatus::FIX_IN_PROGRESS,AppConstants::FindingStatus::DEFERRED] : []%>
+								<%=f.select :status,options_for_select(AppConstants::FindingStatus::STATUS_TYPES,pre_selected_status),{},{"multiple": true,class: 'form-control selectpicker show-tick dropup show-menu-arrow','data-live-search': 'true','data-max-options': "10"}%>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<div class='form-group col-md-6 date' id='datetimepicker1'>
+							<div class='col-md-3'>
+								<label>From Date</label>
+							</div>
+							<div class='col-md-8'>
+								<%=f.text_field :from_date,class: "form-control",value: session[:from_date]%>
+							</div>
+						</div>
+						<div class='form-group col-md-6 date' id='datetimepicker2'>
+							<div class='col-md-3'>
+								<label>To Date</label>
+							</div>
+							<div class='col-md-8'>
+								<%=f.text_field :to_date,class: "form-control",value: session[:to_date]%>
+							</div>
+						</div> 
+					</div>
+					<div class='row'>
+						<div class='form-group col-md-6'>
+
+							<div class='col-md-3'>
+								<%=f.label :repo%>
+							</div>
+							<div class='col-md-8'>
+								<%=f.select :repo_id,@repos.map { |t| [t.name,t.id]},{selected: session[:repo_ids]},{"multiple": true,class: 'selectpicker show-tick show-menu-arrow','data-live-search': 'true','data-max-options': "10",'data-size': "5" ,'data-width': "100%"}%>
+							</div>
+						</div>
+						<div class='form-group col-md-6' id='datetimepicker1'>
+							<div class='col-md-3'>
+								<label> Severity</label>
+							</div>
+							<div class='col-md-8'>
+								<%=f.select :severity,options_for_select(@severity_levels.uniq.map { |t| [t.name.camelcase,t.name.camelcase]},params[:severity]),{selected: session[:severity]},{"multiple": true,class: 'drop-box form-control selectpicker show-tick show-menu-arrow'}%>
+							</div>
+						</div>
+					</div>
+					<div class='row'>
+						<div class='form-group col-md-6'>
+							<div class='col-md-3'>
+								<label>Vulnerability</label>
+							</div>
+							<div class='col-md-8'>
+								<%=f.select :description,@vul_types.map{ |v| [v,v]},{selected: session[:vulnerability]},{"multiple": true,class: 'selectpicker show-tick dropup show-menu-arrow','data-live-search': 'true','data-max-options': "10",'data-size': "5" ,'data-width': "100%"}%>
+							</div>
+						</div>
+						<div class='form-group col-md-6'>
+							<div class='col-md-3'>
+								<label>Aging</label>
+							</div>
+							<div class='col-md-8'>
+								<%=f.select :aging,options_for_select([["Nothing Selected",""],["1 week ago",7],["1 month ago",30],["3 months ago",90],["6 months ago",180]]),{},{class: 'form-control selectpicker show-tick dropup show-menu-arrow','data-live-search': 'true','data-max-options': "10"}%>
+							</div>
+						</div>
+					</div>
+
+					<%if params[:filter_type] == AppConstants::OwnerTypes::CORPORATE || Setting.application_mode == AppConstants::UserMode::SINGLE_USER%>
+						<div class='row'>
+							<%if Setting.application_mode != AppConstants::UserMode::SINGLE_USER%>
+								<div class='form-group col-md-6'>
+									<div class='col-md-3'>
+										<%=f.label :team%>
+									</div>
+									<div class='col-md-8'>
+										<%=f.select :team_id, @teams.map { |t| [t.name,t.id]},{selected: session[:team_ids]},{"multiple": true,class: 'selectpicker show-tick show-menu-arrow','data-live-search': 'true','data-size': "5",'data-selected-text-format': "count",'data-max-options': "10",'data-width': "100%"}%>
+									</div>
+								</div>
+							<%end%>
+							<%if current_user.is_admin? || current_user.is_security_member? || Setting.application_mode == AppConstants::UserMode::SINGLE_USER%>
+								<div class='form-group col-md-6'>
+									<div class='col-md-3'>
+										<%=f.label :tool%>
+									</div>
+									<div class='col-md-8'>
+										<%=f.select :scanner, options_for_select(@tasks.map { |t| [t.name,t.name]}),{},{"multiple": true,class: 'selectpicker show-tick show-menu-arrow','data-live-search': 'true','data-size': "5",'data-max-options': "10",'data-width': "100%"}%>
+									</div>
+								</div>
+							<%end%>
+						</div>
+					<%end%>
+					<div class='row top-buffer'>
+						<div class='form-group col-md-7'>
+							<div class='col-md-4'>
+								<%=f.label :is_web_app,"Static App?"%>
+								<label class="custom-control custom-checkbox">
+									<%=f.check_box :static_app,{class: 'custom-control-input',:checked=> is_static_enabled}%>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+							<div class='col-md-4'>
+								<%=f.label :is_web_app,"Web App?"%>
+								<label class="custom-control custom-checkbox">
+									<%=f.check_box :web_app,{class: 'custom-control-input',:checked=> params[:analytics_type].present? ? true : false}%>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+							<div class='col-md-4'>
+								<%=f.label :is_wordpress_app,"Wordpress App?"%>
+								<label class="custom-control custom-checkbox">
+									<%=f.check_box :wordpress_app,{class: 'custom-control-input',:checked=> params[:analytics_type].present? ? true : false}%>	
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+						</div>
+						<div class='form-group col-md-5'>
+							<div class='col-md-6'>
+								<%=f.label :is_mobile_app,"Mobile App?"%>
+								<label class="custom-control custom-checkbox">
+									<%=f.check_box :mobile_app,{class: 'custom-control-input',:checked=> params[:analytics_type].present? ? true : false}%>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+							<div class='col-md-6'>
+								<%=f.label :is_network_app,"Network App?"%>
+								<label class="custom-control custom-checkbox">
+									<%=f.check_box :network_app,{class: 'custom-control-input',:checked=> params[:analytics_type].present? ? true : false}%>
+									<span class="custom-control-indicator"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class='row top-buffer'>
+						<div class='col-md-4'></div>
+						<div class='col-md-4'>
+							<span><%=f.submit "Apply Filters",class: 'btn btn-danger',id: 'apply_filter_button'%>
+							&nbsp;&nbsp;
+							<button class='btn btn-danger' onclick='return reset_filters();'> Reset Filter</button></span>
+						</div>
+						<div class='col-md-4'>
+							<%#=f.submit "Save Filters",class: 'btn btn-danger'%>
+						</div>
+					</div>
+
+				<%end%>
+			</div>
+
+		</div>
+	</section>
+	<section id="filter_charts">
+	</section>
+	<section id="filter_findings">
+	</section>
+</div>
+
+</div>
+<script>
+$(document).ready(function(){
+	<%if params[:analytics_type].present?%>
+			$("#apply_filter_button").click();
+<%end%>
+});
+$('#filter_from_date').datetimepicker({format: 'DD-MM-YYYY'});
+$('#filter_to_date').datetimepicker({format: 'DD-MM-YYYY'});
+
+//$('#filter_from_date').on('change', function(){
+//	var from = $(this).val();
+//	if(Date.parse(from) > Date.parse(to)){
+//	   alert("Invalid Date Range");
+//	}
+//	else{
+//	 //  alert("Valid date Range");
+//	}
+//});
+
+
+$("#apply_filter_button").click( function () {
+	$(".load-spin").spin({
+		lines: 12, // The number of lines to draw
+		length: 50, // The length of each line
+		width: 9, // The line thickness
+		radius: 30, // The radius of the inner circle
+		color: '#000', // #rgb or #rrggbb
+		speed: 1, // Rounds per second
+		trail: 60, // Afterglow percentage
+		shadow: true // Whether to render a shadow
+	}
+	); // Shows the default spinner
+});
+$('input.custom-control-input').on('change', function() {
+	var name = $(this).attr('name');
+	//	$('input[type="checkbox"]').not(this).prop('checked', false);
+}); 
+function reset_filters()
+{
+	$("#filter_tag_id").val('');
+	$("#filter_tag_id").selectpicker('refresh');
+	$("#filter_status").val('');
+	$("#filter_status").selectpicker('refresh');
+	$("#filter_from_date").val('');
+	$("#filter_to_date").val('');
+	$("#filter_repo_id").val('');
+	$("#filter_repo_id").selectpicker('refresh');
+	$("#filter_severity").val('');
+	$("#filter_severity").selectpicker('refresh');
+	$("#filter_description").val('');
+	$("#filter_description").selectpicker('refresh');
+	$("#filter_aging").val('');
+	$("#filter_aging").selectpicker('refresh');
+	$("#filter_team_id").val('');
+	$("#filter_team_id").selectpicker('refresh');
+	$("#filter_scanner").val('');
+	$("#filter_scanner").selectpicker('refresh');
+	return false;
+}
+</script>

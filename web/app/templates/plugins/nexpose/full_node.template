@@ -1,0 +1,13 @@
+#[Host]#
+%node.address%
+
+#[Details]#
+Status: %node.status%
+Device id: %node.device_id%
+HW address: %node.hardware_address%
+
+#[Names]#
+%node.names%
+
+#[Software]#
+%node.software%

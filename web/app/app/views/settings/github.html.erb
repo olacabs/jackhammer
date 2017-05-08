@@ -1,0 +1,84 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="continer">
+			<div id="settings_message"></div>
+		</div>
+
+		<div class='container'>
+			<div class='row'>
+				<div class="row">
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item active"><%= link_to "User Settings",scan_types_path%></li>
+						<li class="breadcrumb-item">Github Details</li>
+					</ul>   
+				</div> 
+				<div class='col-md-8'>
+					<div class="panel panel-default">
+						<div class="panel-heading">Github Details</div>
+						<div class="panel-body">
+							<div id="category" data-id="github">
+								<%= form_for(:settings, url: update_details_settings_path,method: :POST ,remote: true,:html=>{role: "form"}) do |form| %>
+									<%= form.fields_for :github do |f| %>
+										<%=f.hidden_field :user_id,value: current_user.id%>
+										<fieldset>
+											<legend>General</legend>
+											<div class="form-group">
+												<%=f.label :host,"Host #{field_info("Ex: https://gitlab.example.com")}".html_safe%>
+												<%=f.text_field :host,class: "form-control",value: Setting["github"].present? ? Setting["github"]["host"] : ""%>
+											</div>
+											<div class="form-group">
+												<%=f.label :username%>
+												<%=f.text_field :username,class: "form-control",value: Setting["github"].present? ? Setting["github"]["username"] : ""%>
+											</div>
+											<div class="form-group">
+												<%=f.label :password%>
+												<%=f.password_field :password,class: "form-control"%>
+											</div>
+											<div class="form-group">
+												<%=f.label :api_endpoint,"API Endpoint #{field_info("Ex: https://gitlab.example.com/api/v3")}".html_safe%>
+												<%=f.text_field :api_end_point,class: "form-control",value: Setting["github"].present? ? Setting["github"]["api_end_point"] : ""%>
+											</div>
+											<div class="form-group">
+												<%=f.label :api_access_token%>
+												<%=f.text_field :api_access_token,class: "form-control"%>
+											</div>
+										</fieldset>
+										<br><br>
+										<fieldset>
+											<legend>OAuth</legend>
+											<span data-id="oauth">
+												<div class="form-group">
+													<%=f.label :client_ID,"Client ID #{optional_text}".html_safe%>
+													<%=f.text_field :client_id,class: "form-control",value: Setting["github"].present? ? Setting["github"]["client_id"] : ""%>
+												</div>
+												<div class="form-group">
+													<%=f.label :client_secret,"Client Secret #{optional_text}".html_safe%>
+													<%=f.text_field :client_secret,class: "form-control"%>
+												</div>
+											</span>
+										</fieldset>
+										<%=f.submit "Update GitHub Settings",class: "btn btn-primary pull-right"%>
+									<%end%>
+								<%end%>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<%if  Setting.application_mode != AppConstants::UserMode::SINGLE_USER%>
+					<div class='col-md-4 top-buffer'>       
+						<%= form_for(:pull_repos,url: pull_corporate_info_settings_path,method: 'GET',remote: true) do |f|%>
+							<%=f.submit "Fetch repo, teams, users",class: "btn btn-primary"%>
+							<%=f.hidden_field :git_type,:value=>"github"%>
+							<%=f.hidden_field :git_worker,:value=>"github"%>
+							<a href="#" data-toggle="popover" data-trigger="hover" font-size="8px;" data-content="Clicking on Pull Corporate Info button , Jackhammer pulls the Users/Groups/Repos info .Make sure that API Endpoint && API Access token are configured">
+								<i class='glyphicon glyphicon-info-sign text-info'></i>
+							</a>
+						<%end%>
+					</div>
+				<%end%>
+			</div>
+		</div>
+	</div>
+</div>

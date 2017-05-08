@@ -1,0 +1,50 @@
+<div class="ts-main-content">   
+	<%=render "layouts/user_settings"%>
+	<div class="content-wrapper">
+		<div class="container">
+			<div id="settings_message"></div>
+			<div class="row">
+				<div class='col-md-10'>
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item active">User Settings</li>
+						<li class="breadcrumb-item active">Scanner Types</li>
+					</ul>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-md-10'>
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>Scanner Types</h4></div>
+						<div class="panel-body">
+							<div class='pull-right'>
+								<div class='col-md-12'>
+									<%=link_to "<i class='glyphicon glyphicon-plus-sign'></i> New Scanner Type".html_safe,new_scan_type_path,method: "GET",class: 'btn btn-success'%>
+								</div>
+							</div>
+							<div class='top-buffer'>
+								<%if @scan_types.present?%>
+									<table class='table borderless table-striped'>
+										<thead>	
+											<th>Name</th>
+											<th>Created</th>
+										</thead>
+										<tbody>
+											<%@scan_types.each do |type|%>
+												<tr>
+													<td><%=type.name%></td>
+													<td><%=local_time(type.created_at)%></td>
+												</tr>
+											<%end%>
+										</tbody>
+									</table>
+								<%else%>
+									<h4 class='text-center'> No Scan types are confgiured </h4>
+								<%end%>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

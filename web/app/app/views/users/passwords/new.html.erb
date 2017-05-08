@@ -1,0 +1,21 @@
+<div class="wrapper ">
+	<%= form_for(resource,as: resource_name, url: password_path(resource_name),:html=>{class: "login-form" ,role: "form",method: :post}) do |f| %>
+		<%= devise_error_messages! %>
+		<div class="form-group " >
+			<h2 class='label-class'>Forgot your password?</h2>
+		</div> 
+		<div class="form-group " >
+			<%= f.label :email, class: "label-class"%>
+			<%= f.email_field :email, autofocus: true,required: true, class: "form-control"%>
+		</div>
+		<div class="form-group " >
+			<%= f.submit "Send me reset password instructions",class: 'btn btn-danger'%>
+		</div>
+		<div class="form-group" >
+				<span class='col-md-8'><%= link_to("Login", new_user_session_path, id:"forget-password", class:"forget-password") %></span>
+				<span align='col-md-4'><%= link_to("Signup", new_user_registration_path, id:"forget-password", class:"forget-password") %></span>
+		</div>
+	<%end%>
+</div>
+
+

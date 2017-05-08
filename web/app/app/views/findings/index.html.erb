@@ -1,0 +1,130 @@
+<div class="container">
+	<div class="row">
+		<ul class="breadcrumb">
+			<li class="breadcrumb-item"><%=link_to "List Scan Targets",scaners_path(owner_type: session[:owner_type],scan_type: session[:scan_type],is_scheduled: session[:is_scheduled])%></li>
+			<li class="breadcrumb-item active">Scan Results</li>
+		</ul>
+	</div>
+	<div class='row'>
+		<div class="panel panel-success target-stats">
+			<div class="panel-heading"><b>Target Scan Stats</b> <a href="#" data-toggle="tooltip" title="No of Vulnerabilities" class='text-danger'>(<%=@findings.count%>)</a> </div>
+			<div class='panel-body'>
+				<div class='col-sm-3'>
+					<div>
+						<label class='label-class'>Application Name:</label> &nbsp
+						 <%project_title = @scaner.project_title.present? ? @scaner.project_title : @scaner.repo.try(:name)%>
+						<span><%=project_title%></span>
+					</div>
+					<div>
+						<label class='label-class'>Source:</label> &nbsp
+						<span><%=@scaner.source%></span>                     
+					</div>                                                                                      
+				</div>
+				<div class='col-sm-4'>
+					<div>
+						<label class='label-class'>Start Time:</label> &nbsp
+						<%start_time = @scaner.start_time%>
+						<span><%=local_time(start_time) if start_time.present?%></span>
+					</div>
+					<div>
+						<label class='label-class'>End Time:</label> &nbsp
+						<%end_time = @scaner.end_time%>
+						<span><%=local_time(end_time) if end_time.present?%></span>
+					</div>
+				</div>
+				<div class='col-sm-5'>
+					<div>
+						<label class='label-class'>Files Processed:</label> &nbsp
+						<span><%=@scaner.no_of_processed_files%></span>
+					</div>
+					<div>
+						<label class='label-class'>Application Languages:</label> &nbsp
+						<span><%=@scaner.found_langs%></span>                     
+					</div>                                                                                      
+				</div>
+				<div class='col-sm-10'>
+					<label class='label-class'>Target:</label> &nbsp       
+					<%#if #@scaner.scan_type == 'Mobile'%>
+					<!--<span><%#=@scaner.project_target.path.split("/").last%></span>-->
+					<%#else%>
+						<span><%=@scaner.repo.present? ? @scaner.repo.ssh_repo_url : @scaner.project_target.path.split("/").last%></span>                                    
+					<%#end%>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='row top-buffer'>
+		<div class="panel panel-success target-stats">
+			<div class="panel-heading"><b>Scan Results</b> </div>
+			<div class="panel-body">
+				<table class="table borderless table-striped" id="findings_table" data-source="<%= findings_path(scan_id: @scaner.id,scan_type: params[:scan_type],format: "json") %>">
+					<thead>
+						<tr>
+							<th>Severity</th>
+							<%if @scaner.scan_type == 'Network'%>
+								<th>Service </th>
+							<%else%>
+								<th>Vulnerability Type</th>
+							<%end%>
+							<%if current_user.is_admin?%>
+								<th>Scanner</th>
+							<%end%>
+							<th>Issue In</th>
+							<th>View Finding</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	'<%if current_user.is_admin?%>'
+			var target = [3,4];
+	'<%else%>'
+			var target = [2,3];
+
+	'<%end%>'
+	$('#findings_table').dataTable({               
+		bServerSide: true,      
+		order: [],      
+		columnDefs: [ {
+			targets  : target,
+			orderable: false,
+		}],  
+		dom: 'BFlfrtip',
+		buttons: [
+		{
+			extend:    'copyHtml5',
+			text:      '<i class="fa fa-files-o"></i> Copy',
+			titleAttr: 'Copy'
+		},
+		{
+			extend:    'excelHtml5',
+			text:      '<i class="fa fa-file-excel-o"></i> Excel',
+			titleAttr: 'Excel'
+		},
+		{
+			extend:    'csvHtml5',
+			text:      '<i class="fa fa-file-text-o"></i> CSV',
+			titleAttr: 'CSV'
+		},
+		{
+			extend:    'pdfHtml5',
+			text:      '<i class="fa fa-file-pdf-o"></i> PDF',
+			titleAttr: 'PDF'
+		}
+		],
+		sAjaxSource: $('#findings_table').data('source'),
+		fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+			//$('td:eq(0)', nRow).addClass(aData[0].toLowerCase()+'-row').addClass('badge').addClass("finds-row");
+		}
+	});
+});
+//      var table = $('#findings_table').DataTables();
+//      table.draw(false);
+</script>

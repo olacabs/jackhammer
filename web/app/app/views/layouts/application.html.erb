@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Jackhammer - Vulnerability Manager</title>
+		<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+		<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+		<%= csrf_meta_tags %>
+	</head>
+	<body >
+		<%if user_signed_in? %>
+			<%=render 'layouts/navbar'%>
+		<%end%>
+		<div id="wrap">
+			<!--<div class="container">
+				<% #flash.each do |key, value| %>
+					<%#key = 'success' if key == 'notice' %>
+					<%#key='danger' if key == 'alert'%>
+					<%#key= 'info' if key.blank? %>
+					<div class="alert alert-<%#= key %> fade in">
+						<a href="#" class="close" data-dismiss="alert">&times;</a>
+						<%#= value %>
+					</div>
+				<%# end %>
+			</div>-->
+			<% unless flash.empty? %>
+				<script type="text/javascript">
+					<% flash.each do |f| %>
+					      <% type = f[0].gsub('alert', 'error').gsub('notice', 'info') %>
+						toastr['<%= type %>']('<%= f[1] %>', '<%= type %>');
+					<% end %>
+				</script>
+			<% end %>
+		</div>
+		<%= yield %>
+		<!--<footer class="footer"> Olacabs </div>-->
+	</body>
+</html>

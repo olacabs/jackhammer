@@ -1,0 +1,105 @@
+<div class="ts-main-content">
+	<%=render "layouts/scaner_list"%>
+	<div class="content-wrapper right-buffer">
+		<div class='continer'>
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item"><%= link_to "Scans",scaners_path(owner_type: params[:owner_type],scan_type: params[:scan_type])%></li>
+				<li class="breadcrumb-item"><%= "#{params[:owner_type].present? ? params[:owner_type] : "Personal" } Scans"%></li>
+				<li class="breadcrumb-item active"><%=params[:scan_type] == AppConstants::ScanTypes::STATIC ? "Source Code" : params[:scan_type]%>  Scans</li>
+			</ul>
+			<div class="panel-default each-panel panel-border top-buffer">
+				<div class="panel-heading">
+					<h4> <%=params[:is_scheduled] == "true" ? "Scheduled Scans" : params[:scan_type] + "  Scans"%></h4>
+				</div>
+				<div class='panel-body'>
+					<div class='col-md-12' style="margin-bottom:-20px;">
+						<%=form_for :compare_scans,url: scans_diff_scaners_path,method: 'GET' do |f|%>
+							<div class='col-md-3'>
+								<%=f.hidden_field :scan_ids%>
+								<%=f.hidden_field :repo_urls%>
+							</div>
+							<div class='col-md-3'>
+								<%=f.submit "Scans Diff ",class: 'btn btn-success',disabled: 'disabled',id: 'scan_diff_btn'%>
+							</div>
+						<%end%>
+						<div class='col-md-3' style="margin-top:-12px;">
+							<%if ((current_user.is_admin? || current_user.is_security_member?) && params[:scan_type] !=AppConstants::ScanTypes::UPLOADED && params[:scan_type] != AppConstants::ScanTypes::MOBILE)%>
+								<button class='btn btn-success' onclick='start_scan_all_repos()'>Scan All</button>
+							<%end%>
+						</div>
+					</div>
+					<table class="table table-hover table-condensed scan_results" id="target_list" data-source="<%= scaners_path(owner_type: params[:owner_type],scan_type: params[:scan_type],is_scheduled: params[:is_scheduled],format: "json")%>" style="margin-top:-10px;">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Title</th>
+								<th>Created</th>
+								<th>Target</th>
+								<th>Status</th>
+								<th>Results</th> 
+								<%if @is_scan_create_present && params[:scan_type] !=AppConstants::ScanTypes::UPLOADED && params[:scan_type] != AppConstants::ScanTypes::MOBILE%>
+									<th>Action</th>
+								<%end%>
+								<%if @is_scan_read_present || params[:owner_type] == AppConstants::OwnerTypes::PERSONAL%>
+									<th> <i class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="View Results"></i></th>
+								<%end%>
+								<%if @is_scan_delete_present || params[:owner_type] == AppConstants::OwnerTypes::PERSONAL%>
+									<th><i class="fa fa-times" aria-hidden="true" title="Delete"></i></th>
+								<%end%>
+								<th><i class="glyphicon glyphicon-download-alt" aria-hidden="true" title="Download"> </i></th>
+								<%if params[:is_scheduled].present?%>
+									<th><i class="fa fa-stop text-danger" title="Unschedule"> </i></th>
+								<%end%>
+							</tr>
+						</thead>
+						<tbody>         
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+//setTimeout('window.location.href=window.location.href;', 30000);
+$(document).ready(function() {
+	var table = $('#target_list').dataTable({               
+		bServerSide: true,     
+		processing: true,
+		bSort: false,
+		sAjaxSource: $('#target_list').data('source')
+	});
+	setInterval( function () {
+		table.draw( 'page' );
+	}, 300000 );
+	$("[data-toggle=popover]").popover({html:true});
+});
+function compare_scans(scan_id,repo_url)
+{
+	added_scan_id = $("#compare_scans_scan_ids").val();
+	added_scan_url = $("#compare_scans_repo_urls").val();
+	if($("#scan_id_" + scan_id).prop("checked") == true)
+	{
+		if(added_scan_id == "")
+		{
+			$("#compare_scans_scan_ids").val(scan_id)
+				$("#compare_scans_repo_urls").val(repo_url)
+		}
+		else
+		{
+			if(repo_url == added_scan_url)
+			{
+				$('#scan_diff_btn').prop("disabled", false);
+				$("#compare_scans_scan_ids").val(scan_id + "," + $("#compare_scans_scan_ids").val());
+			}
+			else
+			{
+				alert("Selected Repos are not same");
+			}
+		}
+	}
+	else
+	{
+	}
+}
+</script>

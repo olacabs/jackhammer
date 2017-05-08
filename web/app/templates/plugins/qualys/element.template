@@ -1,0 +1,35 @@
+#[Title]#
+%element.title%
+
+
+#[Severity]#
+%element.severity%
+
+
+#[CVE]#
+%element.cveid%
+
+
+#[CVSS]#
+Base: %element.cvss_base%
+Temporal: %element.cvss_temporal%
+
+
+#[Diagnosis]#
+%element.diagnosis%
+
+
+#[Consequence]#
+%element.consequence%
+
+
+#[Solution]#
+%element.solution%
+
+
+#[Result]#
+%element.result%
+
+
+#[CVEList]#
+%element.cve_id_list%

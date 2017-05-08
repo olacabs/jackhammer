@@ -1,0 +1,20 @@
+<div class="ts-main-content">
+	<%=render "layouts/user_roles"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+			<ul class="breadcrumb">
+				<li class="breadcrumb-item "><%= link_to "Users",users_path%></li>
+				<li class="breadcrumb-item active">Edit User</li>
+			</ul>
+			<div class='col-md-6'>
+				<div class="panel panel-default">
+					<div class="panel-heading"><h5><b>Editing User</b></h5></div>
+					<div class="panel-body">
+						<%= render 'update_form' %>
+						<%= link_to 'Back',users_path %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<div class="ts-main-content">
+	<%=render "layouts/repo_results"%>
+	<div class="content-wrapper">
+		<div class="container-fluid">
+		</div>
+			<div class="container">
+				<div class="panel panel-default  table-hover">
+					<div class="panel-heading"><h5><b><%=params[:channel]%> Vulnerabilities</b></h5></div>
+					<div class="panel-body">
+						<table class="table table-striped" id="repo_channel_findings" data-source="<%= repo_channel_results_repos_path(repo_id: @repo.id,channel: params[:channel],date: params[:date],scan_type: params[:scan_type],owner_type: params[:woner_type],format: "json") %>">
+							<thead>                 
+								<tr>            
+									<th>Vulnerability Type</th>
+									<th>Severity</th>               
+									<th>Issue In</th>
+									<th>View Finding</th>           
+								</tr>                                   
+							</thead>                                                
+							<tbody>                                                 
+
+							</tbody>
+
+						</table>
+
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+<script>
+	var table = $('#repo_channel_findings').dataTable({               
+		bServerSide: true,      
+		order: [],      
+		columnDefs: [ {
+			targets  : [2,3],
+			orderable: false,
+		}],   
+		sAjaxSource: $('#repo_channel_findings').data('source')
+	});
+</script>
+

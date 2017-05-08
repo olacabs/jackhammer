@@ -1,0 +1,19 @@
+#[Title]#
+Nmap info: %host.ip%
+
+#[IP]#
+%host.ip%
+
+#[Hostnames]#
+%host.hostnames%
+
+#[OS]#
+%host.os%
+
+#[Services]#
+|_. Port number |_. Protocol |_. State |_. Service |_. Product |_. Version |
+%host.service_table%
+
+
+#[Type]#
+Properties

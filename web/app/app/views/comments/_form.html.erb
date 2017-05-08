@@ -1,0 +1,22 @@
+<div class="comment-form" id="comment-form">
+	<%= form_for([@finding,Comment.new],remote: true ) do |f| %>
+		<div class='row'> 
+			<div class='form-group col-md-12'>                
+				<%=f.label :comment%>:
+				<%= f.text_area :message, class: 'form-control'%>
+			</div>
+		</div>
+		<!--<div class='row'> 
+			<div class='form-group col-md-12'>
+				<%=f.label :tags%>:
+				<input name="tags" id="finding_tags">
+				<%#= f.select :tag_ids, Tag.all.map { |t| [t.name,t.id]},{},{"multiple": true,class: 'form-control selectpicker show-tick dropup show-menu-arrow','data-role': "tagsinput",'data-live-search': 'true' }%>
+			</div>
+		</div>-->
+		<div class='row'> 
+			<div class='form-group col-md-12'>
+				<%= f.submit "Add", class: 'btn btn-primary'%>
+			</div>
+		</div>
+	<% end %>
+</div>

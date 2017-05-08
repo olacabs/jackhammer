@@ -1,0 +1,68 @@
+<%= form_for(@user,url: add_users_path,:html=>{role: "form"}) do |f| %>
+	<% if @user.errors.any? %>
+		<div id="error_explanation">
+			<h2><%= pluralize(@user.errors.count, "error") %> prohibited this functionality from being saved:</h2>
+
+			<ul>
+				<% @user.errors.full_messages.each do |message| %>
+					<li><%= message %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+
+	<div class="form-group row">
+		<div class='col-md-6'>
+			<%= f.label :name,class: 'label-class' %><br>
+			<%= f.select :id,@users.collect { |t| [t.name.try(:upcase).to_s + " (#{t.email})",t.id]},{prompt: 'select user'},{class: 'form-control'} %>
+		</div>
+	</div>
+	<%if current_user.is_admin?%>
+		<div class="form-group row">
+			<div class='col-md-6'>
+				<%= f.label :team,class: 'label-class' %>
+				<%= f.select :team_ids,Team.order(:name).collect { |t| [t.name,t.id]},{},{:class=> "selectpicker dropup show-tick show-menu-arrow form-control",'data-live-search'=>"true",'data-show-subtext'=> "true",'data-size'=>"5"} %>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class='col-md-6'>
+				<div class="checkbox checkbox-slider--b-flat">
+					<label>
+						<%=f.check_box :is_team_lead? %><span class='label-class'>Is Team Lead?</span>
+					</label>
+				</div>                  
+			</div>
+		</div>
+		<div class="form-group row">            
+			<div class='col-md-6'>  
+				<div class="checkbox checkbox-slider--b-flat">
+					<label>
+						<%=f.check_box :is_admin? %><span class='label-class'>Is Admin?</span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">            
+			<div class='col-md-6'>  
+				<div class="checkbox checkbox-slider--b-flat">
+					<label>
+						<%=f.check_box :is_security_member? %><span class='label-class'>Is Security Member?</span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+	<%else%>
+		<!---<div class="form-group row">
+			<div class='col-md-6'>
+				<%#= f.label :assign_projects,class: 'label-class' %>
+				<%#= f.select :repo_ids,@projects.order(:name).collect { |t| [t.name,t.id]},{},{:class=> "selectpicker dropup show-tick show-menu-arrow form-control",'data-live-search'=>"true",'data-show-subtext'=> "true",'data-size'=>"5",'multiple'=>'multiple'}%>
+			</div>
+		</div>-->
+	<%end%>
+	<div class="form-group row">
+		<div class='col-md-6'>
+			<%= f.submit "Save" ,class: 'btn btn-success'%>
+		</div>
+	</div>
+<% end %>

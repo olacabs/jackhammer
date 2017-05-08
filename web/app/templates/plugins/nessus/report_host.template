@@ -1,0 +1,14 @@
+#[Title]#
+Nessus host summary
+
+#[Host information]#
+Name: %report_host.name%
+IP address: %report_host.ip%
+FQDN: %report_host.fqdn%
+OS: %report_host.operating_system%
+Mac address: %report_host.mac_address%
+Netbios name: %report_host.netbios_name%
+
+#[Scan information]#
+Scan started: %report_host.scan_start_time%
+Scan ended: %report_host.scan_stop_time%

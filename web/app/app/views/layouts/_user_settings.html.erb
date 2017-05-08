@@ -1,0 +1,46 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill" role="navigation">
+		<ul class="nav navbar-nav ">
+			<li>                       
+				<h2 class="animated" style="margin-left:10px;">Settings</h2>
+			</li>
+			<%if current_user.is_admin? || Setting.application_mode == AppConstants::UserMode::SINGLE_USER%>
+				<li class="<%=current_class?(@scan_type_class)%>"><%=link_to "Scanner Types <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-tripadvisor'></span>".html_safe,scan_types_path%></li>
+				<li class="dropdown <%=current_class?(@list_scans_class)%> open">
+					<a href="#tools" class="dropdown-toggle" data-toggle="collapse"> Scan Tools <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-wrench"></span></a>
+					<div id="tools">
+						<ul class=" nav" role="menu">
+							<%=link_to "List Tools <span style='font-size:16px;'></span>".html_safe,scanner_settings_path,class: "list-group-item"%>
+							<%=link_to "Upgrade Tools ".html_safe,tools_list_tasks_path,class: "list-group-item"%>
+							<%=link_to "Tools Configuration".html_safe,configure_view_tasks_path,class: "list-group-item"%>
+							<%#=link_to "Hard Coded Secret ".html_safe,truffle_params_tasks_path,class: "list-group-item"%>
+						</ul>
+					</div>
+
+				</li>
+				<li class="<%=current_class?('/settings/jira')%>"><%=link_to "Jira #{image_tag('iconJIRA16.jpg',class: 'pull-right hidden-xs showopacity',style: 'font-size:16px')}".html_safe,jira_settings_path%></li>
+				<%unless Setting['github'].present? && Setting['github']['username'].present?%>
+					<li class="<%=current_class?('/settings/gitlab')%>"><%=link_to "Gitlab  <span style='font-size:16px;'  class='pull-right hidden-xs showopacity fa fa-gitlab' aria-hidden='true'></span>".html_safe,gitlab_settings_path%></li>
+				<%end%>
+				<%unless Setting['gitlab'].present? && Setting['gitlab']['username'].present?%>
+					<li class="<%=current_class?('/settings/github')%>"><%=link_to "Github <i class='fa fa-github pull-right hidden-xs showopacity' aria-hidden='true'></i>".html_safe,github_settings_path%></li>
+				<%end%>
+				<%if Setting.application_mode != AppConstants::UserMode::SINGLE_USER%>
+					<li class="<%=current_class?('/settings/signup_role')%>"><%=link_to "Configure Sign Up Role <i class='fa fa-user pull-right hidden-xs showopacity' aria-hidden='true'></i>".html_safe,signup_role_settings_path%></li>
+				<%end%>
+				<!--<li><%#=link_to "Alert Notifications <i class='fa fa-bell pull-right hidden-xs showopacity' aria-hidden='true' aria-hidden='true'></i>".html_safe,get_mail_info_settings_path%></li>-->
+				<!--<li class="<%#=current_class?('/settings/get_check_mark_details')%>"><%#=link_to "Checkmarx <i class='glyphicon glyphicon-check pull-right hidden-xs showopacity'></i>".html_safe,get_check_mark_details_settings_path%></li>-->
+			<%end%>
+			<li class="<%=current_class?('/settings/severity')%>"><%=link_to "Severity <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-exclamation-triangle'></span>".html_safe,severity_settings_path%></li>
+			<li class="dropdown open <%=current_class?(@nav_notification_class)%>">
+				<a href="#notifications" class="dropdown-toggle" data-toggle="collapse">Alert Notifications <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity fa fa-bell"></span></a>
+				<div id="notifications">
+					<ul class="nav" role="menu">
+						<%=link_to "Configure Mails".html_safe,get_mail_info_settings_path,class: "list-group-item"%>
+						<%=link_to "SMTP Settings".html_safe,get_sender_mail_settings_path,class: "list-group-item" if current_user.is_admin? || Setting.application_mode == AppConstants::UserMode::SINGLE_USER%>
+					</ul>
+				</div>
+			</li> 
+		</ul>
+	</nav>
+</div>

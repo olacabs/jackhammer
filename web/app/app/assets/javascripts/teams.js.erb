@@ -1,0 +1,9 @@
+function export_finds()
+{
+	var team_id = $("#export_finds").val();
+	$.ajax({
+		url: "teams/export_findings",
+		type: "GET",
+		data: 'team_id='+ $("#team_ids").val(),
+	})
+}

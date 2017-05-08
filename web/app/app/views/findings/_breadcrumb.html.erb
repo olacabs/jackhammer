@@ -1,0 +1,7 @@
+<%if params[:page] == "list_findings" || params[:pagination].present?%>
+	<ul class="breadcrumb">
+		<li class="breadcrumb-item"><%=link_to "List Scan Targets",scaners_path(owner_type: session[:owner_type],scan_type: session[:scan_type],is_scheduled: session[:is_scheduled])%></li>
+		<li class="breadcrumb-item"><%=link_to "Scan Results",findings_path(scan_id: session[:scan_id])%></li>
+		<li class="breadcrumb-item active">Vulnerability Details</li>
+	</ul>
+<%end%>

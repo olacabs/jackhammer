@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<result id="e2ccf551-ea4e-4186-9b24-76287d6244f3">
+  <subnet>172.31.253.9</subnet>
+  <host>172.31.253.9</host>
+  <port>general/tcp</port>
+  <nvt oid="1.3.6.1.4.1.25623.1.0.802610">
+    <name>Oracle Java SE JRE Multiple Vulnerabilities - February 2012 (Windows - 01)</name>
+    <cvss_base>10.0</cvss_base>
+    <risk_factor>Critical</risk_factor>
+    <cve>CVE-2011-3563, CVE-2012-0499, CVE-2012-0502, CVE-2012-0503, CVE-2012-0505, CVE-2012-0506</cve>
+    <bid>52011, 52012, 52014, 52016, 52017, 52018</bid>
+    <xref>URL:http://secunia.com/advisories/48009, URL:http://www.pre-cert.de/advisories/PRE-SA-2012-01.txt, URL:http://www.oracle.com/technetwork/topics/security/javacpufeb2012-366318.html, URL:http://www.oracle.com/technetwork/java/javase/documentation/overview-142120.html, URL:http://www.oracle.com/technetwork/java/javase/documentation/overview-137139.html</xref>
+  </nvt>
+  <threat>High</threat>
+  <description>
+  Summary:
+  This host is installed with Oracle Java SE JRE and is prone to
+  multiple vulnerabilities.
+
+  Vulnerability Insight:
+  Multiple flaws are caused by unspecified errors in the following
+  components:
+  - 2D
+  - AWT
+  - Sound
+  - I18n
+  - CORBA
+  - Serialization
+
+  Impact:
+  Successful exploitation allows remote attackers to affect confidentiality,
+  integrity, and availability via unknown vectors.
+
+  Impact Level: System/Application
+
+  Affected Software/OS:
+  Oracle Java SE JRE 7 Update 2 and earlier, 6 Update 30 and earlier, 5.0 Update 33
+  and earlier, and 1.4.2_35 and earlier
+
+  Solution:
+  Upgrade to Oracle Java SE JRE versions 7 Update 3, 6 Update 31, 5.0 Update
+  34, 1.4.2_36 or later. For updates refer to
+  http://www.oracle.com/technetwork/topics/security/javacpufeb2012-366318.html
+</description>
+  <original_threat>High</original_threat>
+  <notes/>
+  <overrides/>
+</result>

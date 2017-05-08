@@ -1,0 +1,67 @@
+# config/app.yml for rails-settings-cached
+defaults: &defaults
+  pipeline:
+    npm_registry: https://registry.npmjs.org/
+    tasks_for:
+      Ruby: BundleAudit,Brakeman,Dawnscanner
+      JavaScript: NPM,RetireJS,NodeSecurityProject
+      CoffeeScript: NPM,RetireJS,NodeSecurityProject
+      Java: Xanitizer,FindSecurityBugs,PMD
+      WebScanners: Arachni
+    pmd_path: /home/app/tools/pmd-bin-5.5.1 
+    findsecbugs_path: /home/app/tools/findsecbugs-cli-1.4.6
+    xanitizer_path: /home/app/tools/Xanitizer-3.1.0
+    #hardcode secrets configurations
+    truffle_hog_path: /home/app/tools/truffleHog
+    commit_start_date:
+    commit_end_date:
+    commits_depth:
+    enabled_tools: FindSecurityBugs,NPM,NodeSecurityProject,RetireJS,Brakeman,BundleAudit,Dawnscanner,Arachni,Wpscan,AndroScanner,Nmap,TruffleScanner
+    checkmarx_server:
+    checkmarx_user:
+    checkmarx_password:
+    checkmarx_log:
+  jira:
+    username:
+    password:
+    host:
+    default_project:
+    context_path:
+    use_ssl: false
+  github:
+    username:
+    password:
+    host:
+    user_id:
+    api_end_point:
+    api_access_token:
+  gitlab:
+    username:
+    password:
+    host:
+    user_id:
+    api_end_point:
+    api_access_token: 
+  notification:
+    email:
+    password:
+    address: 
+    domain:
+    host:
+    port:
+    authentication:
+    encryption_type:
+  roles:
+    default_role: 'Dev'
+    is_team_lead: 0
+    is_admin: 0
+    is_security_member: 0
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

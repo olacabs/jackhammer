@@ -1,0 +1,51 @@
+<thead class="thead-inverse">
+	<tr>
+		<th>Repo Name</th>
+		<th>Total</th>
+		<th>Critical</th>
+		<th>High</th>
+		<th>Medium</th>
+		<th>Low</th>
+		<th>Info</th>
+	</tr>
+</thead>
+<%total,critical,high,medium,low,info=0,0,0,0,0,0%>
+<tbody>
+	<%@repo_names_with_sev_hash.each do |repo_name,repo_sev_hash|%>
+		<tr>
+			<td><%= link_to repo_name.split(",").first,repo_summary_repos_path(repo_id: repo_name.split(",").last,scan_type: params[:scan_type],owner_type: params[:owner_type])%></td>
+			<td><%=total_c=repo_sev_hash["Total"]%></td>
+			<%total = total + total_c%>
+			<td><%=critical_c=repo_sev_hash["Critical"]%></td>
+			<%critical = critical + critical_c%>
+			<td><%=high_c=repo_sev_hash["High"]%></td>
+			<%high = high + high_c%>
+			<td><%=medium_c=repo_sev_hash["Medium"]%></td>
+			<%medium = medium + medium_c%>
+			<td><%=low_c=repo_sev_hash["Low"]%></td>
+			<%low = low + low_c%>
+			<td><%=info_c=repo_sev_hash["Info"]%></td>
+			<%info = info + info_c%>
+		</tr>
+	<%end%>
+
+</tbody>
+<tfoot>
+	<tr>
+
+		<td colspan="7"><hr class='left-navbar-divider remove-down-space'></td>
+	</tr>
+	<tr class='remove-space'>
+		<td><b>Total</b></td>
+		<td id="t_td"><%=total%></td>
+		<td id="c_td"><%=critical%></td>
+		<td id="h_td"><%=high%></td>
+		<td id="m_td"><%=medium%></td>
+		<td id="l_td"><%=low%></td>
+		<td id="i_td"><%=info%></td>
+	</tr>
+	<tr class='remove-space'>
+		<td colspan="7"><hr class='left-navbar-divider remove-up-space'></td>
+	</tr>
+</tfoot>
+

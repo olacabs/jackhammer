@@ -1,0 +1,11 @@
+<div id="sidebar-wrapper">
+	<nav class="navbar navbar-default sidebar fill">
+		<ul class="nav navbar-nav ">
+			<li class="<%=current_class?(@user_active_path)%>"><%=link_to "Users <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-user'></span>".html_safe,users_path%></li>
+			<li class="<%=current_class?(@team_active_path)%>"><%=link_to "Teams <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-users'></span>".html_safe,list_groups_teams_path%></li>
+			<li class="<%=current_class?(@roles_active_path)%>"><%=link_to "Roles <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-tasks'></span>".html_safe,roles_path%></li>
+			<!--<li class="<%#=current_class?('/functionalities')%>"><%#=link_to "Modules <span style='font-size:16px;' class='pull-right hidden-xs showopacity fa fa-puzzle-piece'></span>".html_safe,functionalities_path if current_user.is_admin?%></li>-->
+			<!--<li class="animated fadeInRight"><b><%#=link_to "<i class='fa fa-lock' aria-hidden='true'></i>CRUD Operations".html_safe,permissions_path if current_user.is_admin?%></b></li>-->
+		</ul>
+	</nav>
+</div>

@@ -1,0 +1,5 @@
+scan.end_time
+scan.name
+scan.scan_id
+scan.start_time
+scan.status

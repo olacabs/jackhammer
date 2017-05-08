@@ -1,0 +1,29 @@
+# MySQL.  Versions 5.0+ are recommended.
+#
+# Install the MYSQL driver
+#   gem install mysql2
+#
+# Ensure the MySQL gem is defined in your Gemfile
+#   gem 'mysql2'
+#
+# And be sure to use new-style password hashing:
+#   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
+#
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 25
+  username: <%=ENV['MYSQL_USER']%>
+  password: <%=ENV['MYSQL_PASSWORD']%>
+  host: <%=ENV['MYSQL_HOST']%>
+  #socket: /tmp/mysql.sock
+
+development:
+  <<: *default
+  database: jackhammer_development
+test:
+  <<: *default
+  database: jackhammer_test
+production:
+  <<: *default
+  database: <%=ENV['MYSQL_DB']%>

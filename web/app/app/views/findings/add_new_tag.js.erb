@@ -1,0 +1,6 @@
+alert("New tag added successfully");
+$("#tag_id").append($("<option />").val("<%=@tag.id%>").text("<%=@tag.name%>"));
+$('#tag_id').selectpicker('refresh'); 
+window.setTimeout(function() { // hide alert message
+        $(".alert").fadeOut('5000');
+}, 5000);

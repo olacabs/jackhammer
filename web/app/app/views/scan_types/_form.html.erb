@@ -1,0 +1,25 @@
+<%= form_for(@scan_type) do |f| %> 
+        <% if @scan_type.errors.any? %>
+                <div id="error_explanation">
+                        <h2><%= pluralize(@scan_type.errors.count, "error") %> prohibited this tag from being saved:</h2>
+                        
+                        <ul>    
+                                <% @scan_type.errors.full_messages.each do |message| %>
+                                        <li><%= message %></li>
+                                <% end %>
+                        </ul>   
+                </div>  
+        <% end %>
+        <div class='row'>
+                <div class='form-group col-md-4'>
+                        <%=f.label :name%>
+                        <%=f.text_field :name,class: 'form-control'%>
+                </div>
+        </div>
+        <div class='row'>
+                <div class='form-group col-md-4'>
+
+                        <%= f.submit class: 'btn btn-primary'%>
+                </div>
+        </div>
+<% end %>

@@ -1,0 +1,48 @@
+<div class="tag-form" id="tag-form">
+	<div class="form-group col-md-12">		
+		<label> Tags: </label>
+		<%=text_field :tag,:name,required: 'required',class: "form-control" ,:value=> @tags%>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	var existing_tags = [];
+	'<%Tag.all.each do |tag|%>'
+			existing_tags.push('<%=tag.name%>');
+	'<%end%>'
+	$("#tag_name").tagit({
+		availableTags: existing_tags,
+		afterTagAdded: function(event,ui){
+			var entered_tag = ui.tag.text();
+			if (!ui.duringInitialization)
+			{
+				entered_tag = entered_tag.substring(0, entered_tag.length - 1);
+				save_tag(entered_tag);
+				return true;
+			}
+		},
+		afterTagRemoved: function(event, ui){
+			var removed_tag = ui.tag.text();
+			removed_tag = removed_tag.substring(0, removed_tag.length - 1);
+			save_tag(removed_tag,true);
+		}
+	});
+});
+function save_tag(entered_tag,remove_tag=false){
+	var result = true;//personal choice to set the boolean value
+	$.ajax({
+		'url':'/findings/save_tag',//your own url
+		'type':'POST',
+		'data':{'finding_id': <%=@finding.id%>,'tag_name': entered_tag,'remove_tag': remove_tag},// any data if needed
+		'async':false, // this is important for this task
+		success:function(response,Status,code){
+			result = true;
+		},
+		error: function(jqXHR, exception) {
+			result = false;
+			console.log(exception);
+		}
+	});
+	return result; 
+}
+</script>

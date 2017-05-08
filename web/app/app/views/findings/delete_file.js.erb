@@ -1,0 +1,7 @@
+var element = document.getElementById("<%=@upload.id %>");
+element.remove();
+var files_count = $("#files_count").text();
+$("#files_count").text(parseInt(files_count)-1);
+window.setTimeout(function() { // hide alert message
+        $(".alert").fadeOut('3000');
+}, 3000);

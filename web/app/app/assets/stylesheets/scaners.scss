@@ -1,0 +1,237 @@
+.panel-heading .accordion-toggle:after {
+	/* symbol for "opening" panels */
+	font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+	content: "\e259";    /* adjust as needed, taken from bootstrap.css */
+	float: right;        /* adjust as needed */
+	color: grey;         /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed:after {
+	/* symbol for "collapsed" panels */
+	content: "\e258";    /* adjust as needed, taken from bootstrap.css */
+}
+.severity-accordion-toggle:after {
+	font-family: 'Glyphicons Halflings';
+	content: "\e259";
+	color: grey; 
+}
+.severity-accordion {
+	color: grey !important;
+
+}
+.scan-results {
+
+	padding: 10px 15px 30px  !important;
+}
+.result-group
+{
+	margin-bottom: -25px !important;
+}
+.check-mark {
+	color:#8ce48c;
+}
+.not-active {
+	pointer-events: none;
+	cursor: default;
+	color: #777777 !important;
+}
+span.false-positive::before
+{
+	margin-top:-8px !important;
+}
+.scan_results {
+	font-size: 14px;
+	line-height: 12px;	
+}
+ul.alert-badges {
+	margin-left:-60px !important;
+}
+li.severity-badge {
+	width:40px;
+}
+.severity-badge {
+	border-radius: 2px;
+	padding-left: 9px !important;
+	padding-right: 9px !important;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 20px;
+	display: inline-block;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	vertical-align: baseline;
+	white-space: nowrap;
+
+}
+.severity-badge.light {
+	color: #fcfcfc !important;
+	font-weight: normal !important;
+}
+.critical-badge {
+	background-color: #e31e25 !important;
+}
+.high-badge {
+	background-color: #b94a48 !important;
+}
+
+.medium-badge {
+	background-color: #f89406 !important;
+}
+.low-badge {
+	background-color: #73c9e3 !important;
+}
+.info-badge {
+	background-color: #468847 !important;
+}
+.panel-pricing {
+	-moz-transition: all .3s ease;
+	-o-transition: all .3s ease;
+	-webkit-transition: all .3s ease;
+}
+.panel-pricing:hover {
+	box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
+}
+.panel-pricing .panel-heading {
+	padding: 20px 10px;
+}
+.panel-pricing .panel-heading .fa {
+	margin-top: 10px;
+	font-size: 58px;
+}
+.panel-pricing .list-group-item {
+	color: #777777;
+	border-bottom: 1px solid rgba(250, 250, 250, 0.5);
+}
+.panel-pricing .list-group-item:last-child {
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+.panel-pricing .list-group-item:first-child {
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+}
+.scan_title
+{
+	border-bottom: 1px dashed #ccc;
+	display: inline-block;
+}
+.input-setting {
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-color: -moz-use-text-color -moz-use-text-color #ddd;
+	border-image: none;
+	border-radius: 0;
+	border-style: none none solid;
+	border-width: medium medium 1px;
+}
+/*
+A custom Bootstrap 3.2 'Google Plus style' theme
+from http://bootply.com
+
+This CSS code should follow the 'bootstrap.css'
+in your HTML file.
+
+license: MIT
+author: bootply.com
+ */
+
+	@import url(http://fonts.googleapis.com/css?family=Roboto:400);
+	body {
+		background-color:#e0e0e0;
+		-webkit-font-smoothing: antialiased;
+		font: normal 14px Roboto,arial,sans-serif;
+	}
+	.navbar-default {background-color:#f4f4f4;margin-top:50px;border-width:0;z-index:5;}
+	.navbar-default .navbar-nav > .active > a,.navbar-default .navbar-nav > li:hover > a {border:1 solid;border-bottom-width:2px;font-weight:800;background-color:transparent;}
+	.navbar-default .dropdown-menu {background-color:#ffffff;}
+	.navbar-default .dropdown-menu li > a {padding-left:30px;}
+
+	/* end theme */
+	/*  bhoechie tab */
+	div.bhoechie-tab-container{
+		z-index: 10;
+		padding: 0 !important;
+		border-radius: 4px;
+		-moz-border-radius: 4px;
+		border:1px solid #ddd;
+		margin-top: 20px;
+		margin-left: 50px;
+		-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+		box-shadow: 0 6px 12px rgba(0,0,0,.175);
+		-moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+		background-clip: padding-box;
+		opacity: 0.97;
+		filter: alpha(opacity=97);
+	}
+	div.bhoechie-tab-menu{
+		padding-right: 0;
+		padding-left: 0;
+		padding-bottom: 0;
+	}
+	div.bhoechie-tab-menu div.list-group{
+		margin-bottom: 0;
+	}
+	div.bhoechie-tab-menu div.list-group>a{
+		margin-bottom: 0;
+	}
+	div.bhoechie-tab-menu div.list-group>a .glyphicon,
+	div.bhoechie-tab-menu div.list-group>a .fa {
+	}
+	div.bhoechie-tab-menu div.list-group>a:first-child{
+		border-top-right-radius: 0;
+		-moz-border-top-right-radius: 0;
+	}
+	div.bhoechie-tab-menu div.list-group>a:last-child{
+		border-bottom-right-radius: 0;
+		-moz-border-bottom-right-radius: 0;
+	}
+	div.bhoechie-tab-menu div.list-group>a.active,
+	div.bhoechie-tab-menu div.list-group>a.active .glyphicon,
+	div.bhoechie-tab-menu div.list-group>a.active .fa{
+		background-color: #5cb85c;
+		background-image: #5cb85c;
+		color: #ffffff;
+	}
+	div.bhoechie-tab-menu div.list-group>a.active:after{
+		content: '';
+		position: absolute;
+		left: 100%;
+		top: 50%;
+		margin-top: -13px;
+		border-left: 0;
+		border-bottom: 13px solid transparent;
+		border-top: 13px solid transparent;
+		border-left: 10px solid #5cb85c;
+	}
+
+	div.bhoechie-tab-content{
+		/* border: 1px solid #eeeeee; */
+		padding-left: 20px;
+		padding-top: 10px;
+	}
+
+	div.bhoechie-tab div.bhoechie-tab-content:not(.active){
+		display: none;
+	}
+	/* template layout*/
+
+	/*button styles*/
+
+	.btn-primary.outline {
+		background: -moz-linear-gradient(top,  #337ab7 50%, #337ab7 50%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#337ab7), color-stop(50%,#337ab7)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  #337ab7 50%,#337ab7 50%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  #337ab7 50%,#337ab7 50%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  #267c99 50%,#337ab7 50%); /* IE10+ */
+		background: linear-gradient(to bottom,  #337ab7 50%,#337ab7 50%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#267c99', endColorstr='#007299',GradientType=0 ); /* IE6-9 */
+	}
+	#severity_findings tbody tr,
+	#severity_findings thead th:first-child,#filter_findings_table thead th:first-child,#filter_findings_table tbody td:first-child,.regx {
+		cursor: pointer;
+	}
+	.selected{
+		background-color:#B0BED9 !important;
+		}
+
