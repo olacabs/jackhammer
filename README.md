@@ -71,7 +71,7 @@
 
 ## Adding Custom (other open source/commercial /personal) Scanners:
 
-   You can add any scanner to jackhammer within 10-30 minutes. [Check the links / video ](http://jch.olacabs.com/userguide/adding_new_tool) 
+   You can add any scanner to jackhammer within 10-30 minutes. [Check the links / video ](https://jch.olacabs.com/userguide/adding_new_tool) 
 
 ## Quick Start and Installation
 
