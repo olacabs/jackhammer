@@ -88,8 +88,8 @@
 
    Default credentials:
 
-   username: jackhammer@olacabs.com
-  <br> password: j4ckh4mm3r
+   username: admin@admin.com
+  <br> password: admin@admin.com
 
 ## Credits
    
