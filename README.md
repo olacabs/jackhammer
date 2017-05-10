@@ -1,17 +1,18 @@
 ## Jackhammer: 
-<p>One Security vulnerability assessment/management tool to solve all the security team problems.</p>
+One Security vulnerability assessment/management tool to solve all the security team problems.
 
 ## What is Jackhammer?
 
-<p>Jackhammer is a collaboration tool built with an aim of bridging the gap between Security team vs dev team , QA team and being a facilitator for TPM to understand and track the quality of the code going into production. It could do static code analysis and dynamic analysis with inbuilt vulnerability management capability. It finds security vulnerabilities in the target applications and it helps security teams to manage the chaos in this new age of continuous integration and continuous/multiple deployments.</p>
+Jackhammer is a collaboration tool built with an aim of bridging the gap between Security team vs dev team, QA team and being a facilitator for TPM to understand and track the quality of the code going into production. It could do static code analysis and dynamic analysis with inbuilt vulnerability management capability. It finds security vulnerabilities in the target applications and it helps security teams to manage the chaos in this new age of continuous integration and continuous/multiple deployments.
 
-<p>It completely works on RBAC (Role Based Access Control). There are cool dashboards for individual scans and team scans giving ample flexibility to collaborate with different teams. It is totally built on pluggable architecture which can be integrated with any open source/commercial tool.</p>
+It completely works on RBAC (Role Based Access Control). There are cool dashboards for individual scans and team scans giving ample flexibility to collaborate with different teams. It is totally built on pluggable architecture which can be integrated with any open source/commercial tool.
 
 
-<p>Jackhammer uses the OWASP pipeline project to run multiple open source and commercial tools against your code,webapp, mobile app, cms (wordpress), network.</p>
+Jackhammer uses the OWASP pipeline project to run multiple open source and commercial tools against your code,web app, mobile app, cms (wordpress), network.
 
 
 ## Key Features:
+
 * Provides unified interface to collaborate on findings
 * Scanning (code) can be done for all code management repositories
 * Scheduling of scans based on intervals # daily, weekly, monthly
@@ -22,7 +23,7 @@
 * Users and Roles management giving greater control
 * Configurable severity levels on list of findings across the applications
 * Built-in vulnerability status progression
-* Easy to use filters to review targetted sets from tons of vulnerabilities
+* Easy to use filters to review targeted sets from tons of vulnerabilities
 * Asynchronous scanning (via sidekiq) that scale
 * Seamless Vulnerability Management
 * Track statistics and graph security trends in your applications
@@ -30,7 +31,7 @@
 
 
 
-## Supported Vulnerability Scanners :
+## Supported Vulnerability Scanners:
 
 ### Static Analysis:
 
@@ -44,11 +45,12 @@
  * [PMD][]
  * [Retire.js][]
 
-   <p> &nbsp;&nbsp;&nbsp;&nbsp; * license required</p>
-   <p> &nbsp;&nbsp;&nbsp;&nbsp; ** commercial license required</p>
+
+ &nbsp;&nbsp; * license required
+ &nbsp;&nbsp;&nbsp;&nbsp; ** commercial license required
 
 
-## Finding hardcoded secrets/tokens/creds:
+## Finding hard coded secrets/tokens/creds:
 
   * [Trufflehog][] (Slightly modified/extended for better result and integration as of May 2017)
 
@@ -71,45 +73,67 @@
 
 ## Adding Custom (other open source/commercial /personal) Scanners:
 
-   You can add any scanner to jackhammer within 10-30 minutes. [Check the links / video ](https://jch.olacabs.com/userguide/adding_new_tool) 
+   You can add any scanner to jackhammer within 10-30 minutes. [Check the links/video ](https://jch.olacabs.com/userguide/adding_new_tool) 
 
 ## Quick Start and Installation
 
- See our [Quick Start/Installation Guide][] if you want to try out Jackhammer as quickly as possible using Docker Compose.
- 
+See our [Quick Start/Installation Guide][] if you want to try out Jackhammer as quickly as possible using Docker Compose.
 
- ####Run the following commands:
+##### Run the following commands for local setup (corporate mode):
 
-     git clone https://github.com/olacabs/jackhammer
-     sh ./docker-build.sh
-#####(For single user mode)
-     sh ./docker-build.sh SingleUser
+```
+ git clone https://github.com/olacabs/jackhammer
+ sh ./docker-build.sh
 
+```
+##### Default credentials for local setup:
+
+username: jackhammer@olacabs.com
+
+password: j4ckh4mm3r
+
+##### (For single user mode)
+``` 
+sh ./docker-build.sh SingleUser
+
+```
+
+do signup for access
+
+## Restarting Jackhammer
+
+```
+docker-compose stop
+docker-compose rm
+docker-compose up -d
+```
 ## User Guide
 
    The [User Guide][] will give you an overview of how to use Jackhammer once you have things up and running.
 
 ## Demo
-   Demo Environment Link:
 
-   https://jch.olacabs.com/
+##### Demo Environment Link: 
+https://jch.olacabs.com/
 
-   Default credentials:
+##### Default credentials:
 
-   username: admin@admin.com
-  <br> password: admin@admin.com
+username: admin@admin.com
 
+password: admin@admin.com
 ## Credits
    
-   Sentinels Team @Ola
-	<p>  Shout-out to:
-         <br> -Madhu
-         <br> -Habi
-         <br> -Krishna
-         <br> -Shreyas
-         <br> -Krutarth
-         <br> -Naveen
-         <br> -Mohan
+Sentinels Team @Ola
+
+##### Shout-out to:
+
+-Madhu<br/>
+-Habi<br/>
+-Krishna<br/>
+-Shreyas<br/>
+-Krutarth<br/>
+-Naveen<br/>
+-Mohan<br/>
 
 [Brakeman]: http://brakemanscanner.org/
 [Bundler-Audit]: https://github.com/rubysec/bundler-audit
