@@ -76,6 +76,13 @@
 ## Quick Start and Installation
 
  See our [Quick Start/Installation Guide][] if you want to try out Jackhammer as quickly as possible using Docker Compose.
+ <br>Build and Run
+ <br>Run the following commands:
+
+<br> git clone https://github.com/olacabs/jackhammer
+<br> sh ./docker-build.sh
+<br> (For single user mode)
+<br> sh ./docker-build.sh SingleUser
 
 ## User Guide
 
