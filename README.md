@@ -104,8 +104,24 @@ do signup for access
 
 ```
 docker-compose stop
+docker-compose up
+```
+
+## Resting Jackhammer
+
+```
+docker-compose stop
+docker-compose rm
+docker-compose up
+```
+
+## Updating Jackhammer
+
+```
+docker-compose stop
 docker-compose rm
 docker-compose up -d
+docker-compose up
 ```
 ## User Guide
 
