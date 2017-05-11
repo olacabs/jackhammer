@@ -104,6 +104,12 @@ do signup for access
 
 ```
 docker-compose stop
+docker-compose up -d
+```
+## Reseting Jackhammer
+
+```
+docker-compose stop
 docker-compose rm
 docker-compose up -d
 ```
