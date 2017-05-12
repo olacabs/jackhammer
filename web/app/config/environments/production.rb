@@ -4,6 +4,9 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.cache_classes = true
 
+  #Several of you may know that Rails provide force_ssl feature. 
+  #This is a handy option that will tell Rails application to load website as https when someone tries to access it via http.
+  config.session_options[:secure] = true
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
