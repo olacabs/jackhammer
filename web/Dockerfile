@@ -40,7 +40,7 @@ RUN \
 rm -rf /var/cache/oracle-jdk8-installer
 RUN apt-add-repository ppa:andrei-pozolotin/maven3
 RUN apt-get -y update
-RUN apt-get install maven3
+RUN apt-get -y --force-yes install maven3
 RUN apt-get -y install phantomjs
 
 # install rbenv
