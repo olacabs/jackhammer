@@ -6,7 +6,7 @@ volumes:
 services:
  mysqldb:
    image: mysql
-   container_name: jackhmmaer-db
+   container_name: jackhammer-db
    environment:
      MYSQL_ROOT_PASSWORD: root
      MYSQL_USER: root
