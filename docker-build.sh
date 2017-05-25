@@ -1,5 +1,6 @@
 docker-compose build
 sleep 30
+docker pull centurylink/openssl
 docker-compose run --rm -e COMMON_NAME=Jackhammer -e KEY_NAME=Jackhammer -v /var/certs:/certs centurylink/openssl
 docker-compose run web rake db:create
 docker-compose run web rake db:migrate
