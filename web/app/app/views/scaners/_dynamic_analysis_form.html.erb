@@ -48,7 +48,7 @@
 					</div>
 				<%else%>
 					<div class="form-group ">
-						<div class='col-md-6 top-buffer'>
+						<div class='col-md-6'>
 							<%= f.label :target,class: 'label-class' %>
 							<%= f.text_field :target,class: 'form-control',placeholder: 'Target'%>
 						</div>
@@ -65,9 +65,40 @@
 				<%if params[:scan_type] != AppConstants::ScanTypes::MOBILE%>
 					<div class="form-group ">
 						<div class='col-md-6'>
-							 <%= f.label :periodic_schedule,class: 'label-class' %>
+							<%= f.label :periodic_schedule,class: 'label-class' %>
 							<%= f.select :periodic_schedule, options_for_select(AppConstants::ScheduledTypes::PERIODIC_TYPES),{prompt: "Select Periodic Time"},{class: "form-control",onchange: "enable_file_field();"}%>
 						</div>
+					</div>
+				<%end%>
+				<%if params[:scan_type] == AppConstants::ScanTypes::WEB%>
+					<input type="checkbox" onclick="enabled_web_details()" id="box" /> <strong>Authenticated scan </strong>
+					<div class='hide top-buffer' id='web_details'>
+						<div class="form-group">
+                                                        <div class='col-md-6'>
+								<%=f.label :web_login_url,"Login URL #{field_info('Ex: https://example.com/login')}".html_safe,class: 'label-class' %>
+                                                                <%=f.text_field :web_login_url,class: "form-control",placeholder: 'Login URL',disabled: "disabled"%>
+                                                        </div>
+                                                </div>
+						<div class="form-group">
+							<div class='col-md-3'>
+								<%=f.label :username_param,"User ID parameter name #{field_info('This will be html text field name')}".html_safe,class: 'label-class' %>
+								<%=f.text_field :username_param,class: "form-control",placeholder: 'ex: username',disabled: "disabled"%>
+							</div>
+                                                        <div class='col-md-3'>
+                                                                <%=f.label :username_param_val,"User ID parameter value",class: 'label-class' %>
+                                                                <%=f.text_field :username_param_val,class: "form-control",placeholder: 'ex: test@test.com',disabled: "disabled"%>
+                                                        </div>
+                                                </div>
+						<div class="form-group">
+							<div class='col-md-3'>
+								<%=f.label :password_param,"Password parameter name #{field_info('This will be html password field name')}".html_safe,class: 'label-class' %>
+								<%=f.text_field :password_param,class: "form-control",placeholder: 'password',disabled: "disabled"%>
+							</div>
+                                                        <div class='col-md-3'>
+                                                                <%=f.label :password_param_val,"Password parameter value",class: 'label-class' %>
+                                                                <%=f.password_field :password_param_val,class: "form-control",placeholder: 'ex: ThisIsMyPassword',disabled: "disabled"%>
+                                                        </div>
+                                                </div>
 					</div>
 				<%end%>
 				<div class="form-group ">
@@ -81,3 +112,11 @@
 			<%end%>
 		</div>
 </div>
+<script>
+function enabled_web_details()
+{
+	$("#web_details").toggleClass("hide");
+	$("#scaner_web_login_url,#scaner_username_param,#scaner_username_param_val,#scaner_password_param,#scaner_password_param_val").prop("disabled", false);
+
+}
+</script>

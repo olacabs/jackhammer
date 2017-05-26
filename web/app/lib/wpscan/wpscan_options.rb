@@ -75,7 +75,7 @@ class WpscanOptions
   end
 
   def wordlist=(wordlist)
-    if File.exists?(wordlist)
+    if File.exists?(wordlist) || wordlist == '-'
       @wordlist = wordlist
     else
       raise "The file #{wordlist} does not exist"
@@ -150,11 +150,6 @@ class WpscanOptions
     else
       @enumerate_all_themes = enumerate_all_themes
     end
-  end
-
-  def basic_auth=(basic_auth)
-    raise 'Invalid basic authentication format, login:password expected' if basic_auth.index(':').nil?
-    @basic_auth = "Basic #{Base64.encode64(basic_auth).chomp}"
   end
 
   def debug_output=(debug_output)

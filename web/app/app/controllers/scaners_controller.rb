@@ -95,6 +95,7 @@ class ScanersController < ApplicationController
 				@scan.repo = repo
 			end
 			@scan.status = AppConstants::ScanStatus::PENDING
+			@scan.password_param_val = AESCrypt.encrypt(scaner_params[:password_param_val],Rails.application.secrets.secret_key_base) if scaner_params[:password_param_val].present?
 			respond_to do |format|
 				if @scan.save
 					logger.info "Scan instance id #{@scan.id} added by user #{current_user.id}"
@@ -287,7 +288,7 @@ class ScanersController < ApplicationController
 		end
 	end
 	def scaner_params
-		params.require(:scaner).permit(:project_title,:target,:branch_name,:source,:project_target,:team_id,:repo_id,:branch_id,:periodic_schedule,:scan_type,:parameters,:owner_type)
+		params.require(:scaner).permit(:project_title,:target,:branch_name,:source,:project_target,:team_id,:repo_id,:branch_id,:periodic_schedule,:scan_type,:parameters,:owner_type,:username_param,:password_param,:username_param_val,:password_param_val,:web_login_url)
 	end
 	def is_scan_read_enabled?
 		is_scan_enabled? || (@functionalities.present? && @functionalities.include?("Scan") &&  @operations_list.include?("scan_read"))

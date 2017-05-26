@@ -26,6 +26,7 @@ class GitlabPullInfoWorker
 						team = Team.find_or_create_by(name: group.name)
 						projects = group.projects
 						projects.each do |project|
+							begin
 							repo = Repo.where(name: project["name"]).first_or_initialize.tap do |repo|
 								repo.ssh_repo_url = project["http_url_to_repo"]
 								repo.team = team
@@ -43,7 +44,10 @@ class GitlabPullInfoWorker
 									puts "branch name....#{branch.name}"
 								end
 							end
+						rescue Exception=>e
+						@logfile.puts "branch Exception....#{e.inspect}"
 						end
+					end
 					rescue Exception=>e
 						@logfile.puts "Exception....#{e.inspect}"
 					end

@@ -64,6 +64,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.6)
+    aescrypt (1.0.0)
     arachni (1.5.1)
       addressable (= 2.3.6)
       arachni-rpc (~> 0.2.1.4)
@@ -596,6 +597,7 @@ DEPENDENCIES
   actionpack-action_caching
   activerecord-session_store
   addressable
+  aescrypt
   arachni
   arachni-reactor
   best_in_place

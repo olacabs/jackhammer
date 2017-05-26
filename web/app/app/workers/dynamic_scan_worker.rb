@@ -23,9 +23,9 @@ class DynamicScanWorker
 			if scan.target.present?
 				pipeline_options[:target] = scan.target
 			else 
-				dir = Dir.mktmpdir
-				system("cp" ,"-r", "#{scan.project_target.path}","#{dir}")
-				pipeline_options[:target] = "#{dir}"
+				@dir = Dir.mktmpdir
+				system("cp" ,"-r", "#{scan.project_target.path}","#{@dir}")
+				pipeline_options[:target] = "#{@dir}"
 			end
 			scan_type = ScanType.where("name like ?", "%#{scan.scan_type}%")
 			tools = scan_type.first.tasks.map(&:name)
@@ -57,6 +57,7 @@ class DynamicScanWorker
 			scan.update_scan_status("failed","Some error occured")
 			scan.end_time = Time.now.asctime
 			scan.save
+			FileUtils.remove_entry_secure(@dir) if Dir.exist?(@dir)
 			AlertNotification.create(user_id: scan.user_id,identifier: 'task',alert_type: 'danger',message: "#{scan.scan_type} Scanning failed",scaner_id: scan.id,task_name: @project_title)
 			@logfile.puts "Error occurred while running dynamicscan ...#{e.backtrace}"
 			@logfile.close
@@ -67,10 +68,18 @@ class DynamicScanWorker
 		scan.update_scan_status("Completed","completed")
 		scan.end_time = Time.now.asctime
 		scan.save
+		FileUtils.remove_entry_secure(@dir) if Dir.exist?(@dir)
 		AlertNotification.create(user_id: scan.user_id,identifier: 'task',alert_type: 'success',message: "#{scan.scan_type} Scanning completed",scaner_id: scan.id,task_name: @project_title)
 		@logfile.puts "sending notification mail..for scan id.#{scan_id}"
-		scan.send_notifications
+		#scan.send_notifications
 		@logfile.close	
+		if scan.project_target.present?
+			scan.project_target.destroy
+			scan.project_target.clear
+			scan.update(project_target: nil)
+			scan.project_target.save
+		end
+		scan.send_notifications
 	end
 
 end

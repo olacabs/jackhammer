@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502121027) do
+ActiveRecord::Schema.define(version: 20170524061211) do
 
   create_table "alert_notifications", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -271,8 +271,8 @@ ActiveRecord::Schema.define(version: 20170502121027) do
     t.integer  "user_id",                     limit: 4
     t.string   "target",                      limit: 255
     t.string   "project_title",               limit: 255
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
     t.integer  "repo_id",                     limit: 4
     t.string   "branch_name",                 limit: 255
     t.string   "status",                      limit: 255
@@ -292,18 +292,23 @@ ActiveRecord::Schema.define(version: 20170502121027) do
     t.integer  "team_id",                     limit: 4
     t.string   "periodic_schedule",           limit: 255
     t.date     "last_run"
-    t.boolean  "is_scanned",                              default: false
+    t.boolean  "is_scanned",                                default: false
     t.string   "scan_type",                   limit: 255
     t.string   "vulnerable_types",            limit: 255
-    t.integer  "total_count",                 limit: 4,   default: 0
-    t.integer  "critical_count",              limit: 4,   default: 0
-    t.integer  "high_count",                  limit: 4,   default: 0
-    t.integer  "medium_count",                limit: 4,   default: 0
-    t.integer  "low_count",                   limit: 4,   default: 0
-    t.integer  "info_count",                  limit: 4,   default: 0
+    t.integer  "total_count",                 limit: 4,     default: 0
+    t.integer  "critical_count",              limit: 4,     default: 0
+    t.integer  "high_count",                  limit: 4,     default: 0
+    t.integer  "medium_count",                limit: 4,     default: 0
+    t.integer  "low_count",                   limit: 4,     default: 0
+    t.integer  "info_count",                  limit: 4,     default: 0
     t.string   "parameters",                  limit: 255
     t.string   "owner_type",                  limit: 255
-    t.boolean  "is_upload_scan",                          default: false
+    t.boolean  "is_upload_scan",                            default: false
+    t.text     "username_param",              limit: 65535
+    t.text     "password_param",              limit: 65535
+    t.text     "username_param_val",          limit: 65535
+    t.text     "password_param_val",          limit: 65535
+    t.text     "web_login_url",               limit: 65535
   end
 
   add_index "scaners", ["critical_count"], name: "index_scaners_on_critical_count", using: :btree
