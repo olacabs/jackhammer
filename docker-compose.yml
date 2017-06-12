@@ -9,8 +9,6 @@ services:
    container_name: jackhammer-db
    environment:
      MYSQL_ROOT_PASSWORD: root
-     MYSQL_USER: root
-     MYSQL_PASSWORD: root
      MYSQL_DATABASE: jackhammer_production
    ports:
      - "3306:3306"
