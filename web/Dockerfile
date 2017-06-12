@@ -74,10 +74,9 @@ RUN apt-get install nmap -y
 
 # add app
 ADD app/ /home/app
+WORKDIR /home/app
 #create tmp dir
-RUN mkdir -p tmp
 RUN mkdir -p tmp/pids
 RUN mkdir -p log/scans
-WORKDIR /home/app
 # expose HTTP
 EXPOSE 3000
