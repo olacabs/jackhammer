@@ -27,7 +27,7 @@ services:
      - '.:/jackhammer'
    ports:
      - "5000:3000"
-   command: bash -c "mkdir -p tmp/pids && RAILS_ENV=production bundle exec rake db:migrate && RAILS_ENV=production bundle exec sidekiq -C config/sidekiq.yml -d && bundle exec puma -e production -b tcp://0.0.0.0:3000"
+   command: bash -c "mkdir -p tmp/pids && bundle exec sidekiq -C config/sidekiq.yml -d && bundle exec puma -e production -b tcp://0.0.0.0:3000"
    environment:
      - REDIS_URL=redis://redis:6379
      - SECRET_KEY_BASE=454ab84a2554a5e715db90c7560a06d8a20811d614e7313de05495ecdeac9614c4c3d263df1a5892b92d6c32ea06d4defbd2492c598e8295f89b8b316db25842
