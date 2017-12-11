@@ -1,5 +1,5 @@
 FROM ubuntu:14.04
-MAINTAINER JACKHAMMER "jackhammer@olacabs.com"
+LABEL maintainer="JACKHAMMER <jackhammer@olacabs.com>"
 
 
 ENV HOME /root
