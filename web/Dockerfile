@@ -66,6 +66,9 @@ ADD app/Gemfile Gemfile
 ADD app/Gemfile.lock Gemfile.lock
 ADD bundle.sh bundle.sh
 
+# force git in https
+RUN git config --global url."https://github.com".insteadOf git://github.com
+
 #RUN bundle install
 RUN bash bundle.sh
 RUN apt-get install python-pip -y
