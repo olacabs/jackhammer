@@ -24,7 +24,9 @@ RUN apt-get -y install libmysqlclient-dev
 
 RUN apt-get -y install mysql-client
 # install npm package
-RUN apt-get -y install nodejs nodejs-legacy npm
+RUN apt-get -y update
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get -y install nodejs
 RUN npm install -g nsp
 RUN npm install -g retire
 
