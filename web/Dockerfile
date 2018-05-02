@@ -23,8 +23,7 @@ RUN apt-get -y install libmysqlclient-dev
 # test install mysql client to connect
 
 RUN apt-get -y install mysql-client
-# install 
-package
+# install npm package
 RUN apt-get -y update
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get -y install nodejs
