@@ -5,7 +5,7 @@ volumes:
     driver: local
 services:
  mysqldb:
-   image: mysql
+   image: mysql:5.5
    container_name: jackhammer-db
    environment:
      MYSQL_ROOT_PASSWORD: root
@@ -34,7 +34,7 @@ services:
      - RAILS_SERVE_STATIC_FILES=true
      - RAILS_ENV=production
      - MYSQL_DB=jackhammer_production
-     - MYSQL_HOST=mysqldb
+     - MYSQL_HOST=jackhammer-db
      - MYSQL_USER=root
      - MYSQL_PASSWORD=root
    links:
