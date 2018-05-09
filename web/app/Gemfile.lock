@@ -163,7 +163,7 @@ GEM
       dm-validations (~> 1.2.0)
     data_objects (0.10.17)
       addressable (~> 2.1)
-    database_cleaner (1.6.2)
+    database_cleaner (1.6/.2)
     dawnscanner (1.6.8)
       cvss
       data_mapper
@@ -482,7 +482,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.8.0)
+    selenium-webdriver (3.7.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     sexp_processor (4.10.0)
