@@ -1,6 +1,0 @@
-$("#filter_charts").html("")
-$("#filter_findings").html("")
-var findings_charts = "<%=raw escape_javascript(render(partial: 'filter_charts')) %>";
-$("#filter_charts").html(findings_charts);
-var findings_records = "<%=raw escape_javascript(render(partial: 'filter_result')) %>";
-$("#filter_findings").html(findings_records);

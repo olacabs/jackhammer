@@ -1,6 +1,0 @@
-<%=custom_bootstrap_flash%>
-$("#publish_jira_section").html("")
-$("#spinner_section").spin(false);
-<%if @finding.jira_key.present?%>
-	$("#publish_jira_section").html('Jira ID:  <%=link_to @finding.jira_key,Setting["jira"]["host"] + "/browse/" + @finding.jira_key,target: '_blank'%>')
-<%end%>

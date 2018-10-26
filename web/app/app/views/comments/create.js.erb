@@ -1,7 +1,0 @@
-<%=custom_bootstrap_flash%>;
-$("#comments-list").html("");
-$("#comments_count").text('<%=@comments_count%>');
-var comments = '<%= raw escape_javascript(render 'list')%>';
-$("#comments-list").append(comments);
-$("#comment_message").val("");
-$('#comment_tag_ids option').prop("selected", false).trigger('change');

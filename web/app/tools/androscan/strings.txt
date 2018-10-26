@@ -1,6 +1,0 @@
-password
-username
-secret
-salt
-encrypted
-encryption

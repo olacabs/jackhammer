@@ -1,8 +1,0 @@
-#[Port]#
-%evidence.port%
-
-#[Severity]#
-%evidence.severity%
-
-#[Output]#
-bc.. %evidence.plugin_output%
