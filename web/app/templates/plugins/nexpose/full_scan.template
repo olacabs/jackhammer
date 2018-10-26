@@ -1,9 +1,0 @@
-#[Title]#
-%scan.name% (%scan.scan_id%)
-
-#[Timing]#
-Start time: %scan.start_time%
-End time: %scan.end_time%
-
-#[Status]#
-%scan.status%

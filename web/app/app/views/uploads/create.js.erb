@@ -1,8 +1,0 @@
-<%=custom_bootstrap_flash%>
-$("#uploads_count").text(<%=@uploads_count%>);
-<%unless flash[:error].present?%>
-	var uploads = "<%= raw escape_javascript(render 'list')%>"
-	$("#uploads-list").html(uploads);
-<%end%>
-$("#upload_file").val("");
-
