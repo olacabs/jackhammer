@@ -37,12 +37,10 @@ Jackhammer uses the OWASP pipeline project to run multiple open source and comme
 
  * [Brakeman][]
  * [Bundler-Audit][] 
- * [Checkmarx**][]
  * [Dawnscanner][]
  * [FindSecurityBugs][]
  * [Xanitizer*][]
  * [NodeSecurityProject][]
- * [PMD][]
  * [Retire.js][]
 
 
@@ -121,27 +119,12 @@ https://jch.olacabs.com/
 username: admin@admin.com
 
 password: admin@admin.com
-## Credits
-   
-Sentinels Team @Ola
-
-##### Shout-out to:
-
--Madhu<br/>
--Habi<br/>
--Krishna<br/>
--Shreyas<br/>
--Krutarth<br/>
--Naveen<br/>
--Mohan<br/>
 
 [Brakeman]: http://brakemanscanner.org/
 [Bundler-Audit]: https://github.com/rubysec/bundler-audit
 [Dawnscanner]: https://github.com/thesp0nge/dawnscanner
-[Checkmarx**]: https://www.checkmarx.com/technology/static-code-analysis-sca/
 [FindSecurityBugs]: https://find-sec-bugs.github.io/
 [Xanitizer*]: https://www.rigs-it.net/index.php/get-xanitizer.html
-[PMD]: https://pmd.github.io/
 [NodeSecurityProject]: https://nodesecurity.io/
 [Retire.js]: https://retirejs.github.io/retire.js/
 [Trufflehog]: https://github.com/dxa4481/truffleHog
