@@ -1,0 +1,12 @@
+language: java
+install: mvn --settings .maven.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+jdk:
+  - openjdk8
+branches:
+  only:
+   - jch-v2
+script:
+  mvn clean deploy --settings .maven.xml -DskipTests=true -B -U -Prelease
+sudo: required
+services:
+  - docker
