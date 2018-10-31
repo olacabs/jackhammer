@@ -1,0 +1,147 @@
+version: "3"
+volumes:
+  # We'll define a volume that will store the data from the mysql databases:
+  mysql-data:
+    driver: local
+services:
+  mysqldb:
+   image: mysql/mysql-server:5.7
+   container_name: jackhammer-db
+   environment:
+     MYSQL_ROOT_PASSWORD: root
+     MYSQL_USER: jch
+     MYSQL_PASSWORD: jch
+     MYSQL_DATABASE: jackhammer
+   ports:
+     - "3306:3306"
+   networks:
+     - jch_net
+   volumes:
+     - mysql-data:/var/lib/mysql
+     - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+   restart: always
+  jch-server:
+   build: .
+   ports:
+     - "8081:8080"
+   depends_on:
+     - mysqldb
+     - marathon
+   links:
+     - mysqldb
+     - marathon
+   networks:
+     - jch_net
+  jch-client:
+    image: jackhammer/jackhammer-client
+    ports:
+      - "5005:8080"
+    links:
+     - jch-server:jch-server
+    depends_on:
+     - jch-server
+    networks:
+     - jch_net
+  zookeeper:
+    image: zookeeper:3.4.11
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      jch_net:
+        ipv4_address: 172.16.121.4
+  mesos-master:
+    image: mesosphere/mesos-master:1.4.1
+    privileged: true
+    hostname: localhost
+    ports:
+      - "5050:5050"
+    networks:
+      jch_net:
+        ipv4_address: 172.16.121.5
+    links:
+      - zookeeper
+    depends_on:
+      - zookeeper
+    environment:
+      MESOS_ZK: zk://zookeeper:2181/mesos
+      MESOS_QUORUM: 1
+      MESOS_CLUSTER: docker-compose
+#      MESOS_REGISTRY: replicated_log # default is in_memory for some reason
+      MESOS_HOSTNAME: localhost
+      MESOS_WORK_DIR: /var/tmp/mesos
+      MESOS_LOG_DIR: /var/log/mesos
+      LIBPROCESS_IP: 172.16.121.5
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4056M
+        reservations:
+          cpus: '1'
+          memory: 4056M
+  mesos-slave:
+    image: mesosphere/mesos-slave:1.4.1
+    privileged: true
+    hostname: localhost
+    ports:
+      - "5051:5051"
+    networks:
+      jch_net:
+        ipv4_address: 172.16.121.6
+    links:
+      - zookeeper:zookeeper
+      - mesos-master:master.mesos
+    depends_on:
+      - zookeeper
+      - mesos-master
+    environment:
+      MESOS_MASTER: zk://zookeeper:2181/mesos
+      MESOS_CONTAINERIZERS: docker
+      MESOS_PORT: 5051
+      MESOS_RESOURCES: mem(*):30000;disk(*):40000;cpus(*):10;ports(*):[11000-11999]
+      MESOS_HOSTNAME: localhost
+      MESOS_WORK_DIR: /var/tmp/mesos
+      MESOS_LOG_DIR: /var/log/mesos
+      MESOS_SYSTEMD_ENABLE_SUPPORT: "false"
+      LIBPROCESS_IP: 172.16.121.6
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4056M
+        reservations:
+          cpus: '1'
+          memory: 4056M
+  marathon:
+    image: mesosphere/marathon:v1.5.5
+    entrypoint:
+      - ./bin/start
+      - --disable_ha
+    hostname: localhost
+    ports:
+     - "8080:8080"
+    networks:
+      jch_net:
+        ipv4_address: 172.16.121.7
+    links:
+      - zookeeper
+      - mesos-master
+    depends_on:
+      - zookeeper
+      - mesos-master
+      - mesos-slave
+    environment:
+      - MARATHON_ZK=zk://zookeeper:2181/marathon
+      - MARATHON_MASTER=zk://zookeeper:2181/mesos
+      - LIBPROCESS_IP=172.16.121.7 
+networks:
+  jch_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 172.16.121.0/24
