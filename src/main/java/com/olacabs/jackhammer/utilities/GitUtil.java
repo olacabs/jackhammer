@@ -72,7 +72,7 @@ public class GitUtil {
             ScanType scanType = scanTypeDAO.getStaticScanType();
             for (GitLabGroup gitLabGroup : gitlabGroups) {
                 Group group = groupDAO.findGroupByName(gitLabGroup.getName());
-                long groupId = 0;
+                long groupId = group == null ? 0 : group.getId();
                 if (group == null) {
                     Group newGroup = new Group();
                     newGroup.setName(gitLabGroup.getName());
@@ -103,7 +103,7 @@ public class GitUtil {
             ScanType scanType = scanTypeDAO.getStaticScanType();
             for (GitHubGroup gitHubGroup : gitHubGroups) {
                 Group group = groupDAO.findGroupByName(gitHubGroup.getName());
-                long groupId = 0;
+                long groupId = group == null ? 0 : group.getId();
                 if (group == null) {
                     Group newGroup = new Group();
                     newGroup.setName(gitHubGroup.getName());

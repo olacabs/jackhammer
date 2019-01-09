@@ -22,6 +22,7 @@ import java.util.concurrent.*;
 
 import com.olacabs.jackhammer.tool.interfaces.container.manager.MarathonClientManager;
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Slf4j
@@ -50,14 +51,21 @@ public class ScanPooler implements Managed {
     @Named(Constants.SCAN_DAO)
     ScanDAO scanDAO;
 
-    public void start() throws Exception {
+    public void start() {
+        try {
 
-        //setting thread pool
-        int threadPoolSize = jackhammerConfiguration.getScanMangerConfiguration().getThreadPoolSize();
-        int initialDelay = jackhammerConfiguration.getScanMangerConfiguration().getInitialDelay();
-        int period = jackhammerConfiguration.getScanMangerConfiguration().getPeriod();
-        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
-        executor.scheduleAtFixedRate(scanTask, initialDelay, period, TimeUnit.SECONDS);
+
+            //setting thread pool
+            int threadPoolSize = jackhammerConfiguration.getScanMangerConfiguration().getThreadPoolSize();
+            int initialDelay = jackhammerConfiguration.getScanMangerConfiguration().getInitialDelay();
+            int period = jackhammerConfiguration.getScanMangerConfiguration().getPeriod();
+            ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
+            executor.scheduleAtFixedRate(scanTask, initialDelay, period, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("Error while running scanTask..",e);
+        } catch (Throwable th) {
+            log.error("Error while running scanTask..",th);
+        }
     }
 
     public void stop() throws Exception {

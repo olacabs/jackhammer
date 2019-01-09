@@ -43,7 +43,7 @@ public class FilterDataService extends AbstractDataService<Filter> {
     public PagedResponse getAllRecords(Filter filter) {
         setOwnerAndScanType(paginationRecords, filter);
         if (filter.getLimit() == -1) {
-            List<Filter> filters = new ArrayList();
+            List<Filter> filters = new ArrayList<Filter>();
             Filter newFilter = new Filter();
             newFilter.setTags(tagDAO.getAll());
             newFilter.setGroups(groupDAO.getAll());

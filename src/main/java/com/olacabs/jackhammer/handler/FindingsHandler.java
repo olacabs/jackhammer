@@ -56,6 +56,8 @@ public class FindingsHandler extends AbstractHandler<Finding> {
     @Override
     public Response updateRecord(Finding finding) throws HandlerNotFoundException {
         try {
+            User user = currentUser(finding.getUserToken());
+            finding.setUser(user);
             dataServiceBuilderFactory.getService(Handler.FINDING_SERVICE).updateRecord(finding);
             return responseBuilderFactory.getResponseBuilder(Handler.FINDING_SERVICE).buildSuccessResponse();
         } catch (AbstractException e) {

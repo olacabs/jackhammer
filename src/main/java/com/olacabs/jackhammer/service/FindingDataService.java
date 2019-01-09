@@ -145,13 +145,14 @@ public class FindingDataService extends AbstractDataService<Finding> {
 
     @Override
     public void updateRecord(Finding finding) {
+        finding.setModifiedBy(finding.getUser().getName());
         if (!StringUtils.equals(finding.getStatus(), null)) findingDAO.updateStatus(finding);
-        if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && finding.getIds().size() == 0) {
+        if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && (finding.getIds()==null || finding.getIds().size() == 0)) {
             findingDAO.updateNotExploitable(finding);
         } else if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && finding.getIds().size() > 0) {
             findingDAO.bulkUpdateNotExploitable(finding.getIds());
         }
-        if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && finding.getIds().size() == 0) {
+        if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && (finding.getIds()==null || finding.getIds().size() == 0)) {
             findingDAO.updateFalsePositive(finding);
         } else if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && finding.getIds().size() > 0) {
             findingDAO.bulkUpdateFalsePositive(finding.getIds());

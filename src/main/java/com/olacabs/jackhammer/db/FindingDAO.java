@@ -121,22 +121,22 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlQuery("select * from findings where id=:id")
     Finding get(@Bind("id") long id);
 
-    @SqlUpdate("update findings set status=:status where id=:id")
+    @SqlUpdate("update findings set status=:status,modifiedBy=:modifiedBy where id=:id")
     void updateStatus(@BindBean Finding finding);
 
-    @SqlUpdate("update findings set notExploitable=:notExploitable where id=:id")
+    @SqlUpdate("update findings set notExploitable=:notExploitable,modifiedBy=:modifiedBy where id=:id")
     void updateNotExploitable(@BindBean Finding finding);
 
-    @SqlUpdate("update findings set notExploitable=true where id in (<findingIds>)")
+    @SqlUpdate("update findings set notExploitable=true,modifiedBy=:modifiedBy where id in (<findingIds>)")
     void bulkUpdateNotExploitable(@BindIn("findingIds") List<Long> findingIds);
 
-    @SqlUpdate("update findings set isFalsePositive=:isFalsePositive where id=:id")
+    @SqlUpdate("update findings set isFalsePositive=:isFalsePositive,modifiedBy=:modifiedBy where id=:id")
     void updateFalsePositive(@BindBean Finding finding);
 
-    @SqlUpdate("update findings set isFalsePositive=true where id in (<findingIds>)")
+    @SqlUpdate("update findings set isFalsePositive=true,modifiedBy=:modifiedBy where id in (<findingIds>)")
     void bulkUpdateFalsePositive(@BindIn("findingIds") List<Long> findingIds);
 
-    @SqlUpdate("update findings set pushedToJira=:pushedToJira where id=:id")
+    @SqlUpdate("update findings set pushedToJira=:pushedToJira,modifiedBy=:modifiedBy where id=:id")
     void updateJiraPublishedStatus(@BindBean Finding finding);
 
     @SqlQuery("select * from findings where scanId=:scanId")

@@ -19,7 +19,7 @@ public interface CommentDAO extends CrudDAO<Comment> {
     @GetGeneratedKeys
     int insert(@BindBean Comment comment);
 
-    @SqlQuery("select * from comments order by createdAt")
+    @SqlQuery("select * from comments where findingId=:findingId order by createdAt")
     List<Comment> getAll(@BindBean Comment comment);
 
     @SqlQuery("select * from ROLES where name like concat('%', :searchTerm,'%') order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
