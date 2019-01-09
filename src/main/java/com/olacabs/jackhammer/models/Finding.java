@@ -40,7 +40,6 @@ public class Finding extends AbstractModel {
     private String repoUrl;
     private String applicationName;
     private String status;
-    private String modifiedBy;
     private String cveCode;
     private String cweCode;
     private Boolean isFalsePositive;
@@ -50,6 +49,7 @@ public class Finding extends AbstractModel {
     private Boolean bulkUpdate;
     private Boolean exportCSV;
     private String responseType;
+    private String modifiedBy;
 
     //repo pages start
     private Boolean repoPage;

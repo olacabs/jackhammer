@@ -72,7 +72,7 @@ public class GroupDAOJdbi implements GroupDAO {
     }
 
     public List<Group> getSearchResults(Group group, String orderBy,String sortDirection) {
-        List<Group> groups = groupDAO.getAll(group,orderBy,sortDirection);
+        List<Group> groups = groupDAO.getSearchResults(group,orderBy,sortDirection);
         for (Group eachGroup : groups) {
             getGroupRole(eachGroup);
         }

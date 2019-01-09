@@ -102,7 +102,7 @@ public class JackhammerService extends Application<JackhammerConfiguration> {
         environment.jersey().register(SMTPDetailsController.class);
         environment.jersey().register(JiraDetailsController.class);
         environment.jersey().register(DefaultRolesController.class);
-//        environment.jersey().register(SeverityLevelsController.class);
+        environment.jersey().register(SeverityLevelsController.class);
         environment.jersey().register(HardcodeSecretsController.class);
         environment.jersey().register(DashboardsController.class);
         environment.jersey().register(ApplicationsController.class);

@@ -33,7 +33,7 @@ public class ScanResponse {
     public void saveScanResponse(String scanResponse, long toolInstanceId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            List<Finding> parsedFindings = new ArrayList();
+            List<Finding> parsedFindings = new ArrayList<Finding>();
             JsonNode scanNode = mapper.readTree(scanResponse);
             Scan scan = buildScanRecord(scanNode, mapper);
             Scan dbScan = scanDAO.get(scan.getId());

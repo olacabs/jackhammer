@@ -204,6 +204,7 @@ public class Constants {
     public static final String SCAN_QUEUED_STATUS = "Queued";
     public static final String SCAN_FAILED_STATUS = "Failed";
     public static final String STRING_SPACER = " ";
+    public static final String BRANCH_ARG_OPTION = "-b";
     public static final String HEALTHY = "Healthy";
     public static final String UN_HEALTHY = "UnHealthy";
     public static final String MARATHON_HEALTH_API = "/ping";

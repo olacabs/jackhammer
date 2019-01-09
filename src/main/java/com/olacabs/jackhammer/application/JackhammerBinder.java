@@ -5,7 +5,6 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import com.google.inject.AbstractModule;
 
-import com.olacabs.jackhammer.controllers.FindingsController;
 import com.olacabs.jackhammer.filters.AuthorizationFilter;
 import com.olacabs.jackhammer.models.Task;
 import com.olacabs.jackhammer.scan.manager.ScheduledScanPicker;

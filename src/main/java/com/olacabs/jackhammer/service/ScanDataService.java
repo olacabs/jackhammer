@@ -75,6 +75,10 @@ public class ScanDataService extends AbstractDataService<Scan> {
     @Inject
     JackhammerConfiguration jackhammerConfiguration;
 
+    @Inject
+    @Named(Constants.GROUP_DAO)
+    GroupDAO groupDAO;
+
     @Override
     public PagedResponse<Scan> getAllRecords(Scan scan) {
         if (scan.getSearchTerm() == null) {
@@ -88,6 +92,8 @@ public class ScanDataService extends AbstractDataService<Scan> {
                 for (Group group : userGroups) {
                     groupIds.add(group.getId());
                 }
+                Group additionalGroup = groupDAO.getByScanTypeId(scan.getScanTypeId());
+                if(additionalGroup!=null) groupIds.add(additionalGroup.getId());
                 List<Scan> scans = new ArrayList();
                 if (groupIds.size() > 0)
                     scans = scanDAO.getTeamScans(scan, scan.getOrderBy(), scan.getSortDirection(), groupIds);
