@@ -80,7 +80,7 @@ public interface ScanDAO extends CrudDAO<Scan> {
     @SqlQuery("select * from scans where status='Queued' order by RAND() limit 10")
     List<Scan> getQueuedScans();
 
-    @SqlQuery("select * from scans where scheduleTypeId not in(0) and lastRunDate is null order by RAND() limit 10")
+    @SqlQuery("select * from scans where scheduleTypeId not in(0) and lastRunDate is not null order by RAND() limit 10")
     List<Scan> getScheduledScans();
 
     @SqlUpdate("update scans set supported=:supported,isTaggedTools=true," +
@@ -90,6 +90,7 @@ public interface ScanDAO extends CrudDAO<Scan> {
     @SqlUpdate("delete from scans where id=:id")
     void delete(@Bind("id") long id);
 
+
     @SqlUpdate("update scans set status=:status where id=:id")
     void updateScanStatus(@BindBean Scan scan);
 
@@ -98,4 +99,19 @@ public interface ScanDAO extends CrudDAO<Scan> {
 
     @SqlUpdate("update scans set status=:status where id=:id")
     void updateScanStatusToQueue(@Bind("status") String status, @Bind("id") long id);
+
+    @SqlUpdate("update scans set criticalCount=criticalCount-1 where id=:id")
+    void updateCriticalSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set highCount=highCount-1 where id=:id")
+    void updateHighSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set mediumCount=mediumCount-1 where id=:id")
+    void updateMediumSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set lowCount=lowCount-1 where id=:id")
+    void updateLowSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set infoCount=infoCount-1 where id=:id")
+    void updateInfoSeverityCount(@Bind("id") long id);
 }

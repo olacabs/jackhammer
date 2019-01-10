@@ -27,7 +27,7 @@ public class GitPooler implements Managed {
         int initialDelay = jackhammerConfiguration.getGitConfiguration().getInitialDelay();
         int period = jackhammerConfiguration.getGitConfiguration().getPeriod();
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
-        executor.scheduleAtFixedRate(reposPuller, initialDelay, period, TimeUnit.DAYS);
+        executor.scheduleAtFixedRate(reposPuller, initialDelay, period, TimeUnit.MINUTES);
     }
 
     public void stop() throws Exception {

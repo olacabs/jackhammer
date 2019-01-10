@@ -33,7 +33,7 @@ import java.util.*;
         configurator = WebSocketsConfiguration.class)
 public class SdkCommunicator {
 
-    public static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
+    public static Set<Session> clients = new HashSet<Session>();
     private static Map<String, String> toolInstances = new HashMap();
 
 //    private static Session session;
@@ -58,7 +58,7 @@ public class SdkCommunicator {
         log.info("Connected ... " + session.getId());
     }
 
-    @OnMessage(maxMessageSize = 1 * 1024 * 1024)
+    @OnMessage(maxMessageSize = 20 * 1024 * 1024)
     public String onClientResponse(String message, Session session) {
         if (!toolResponse.isToolResponse(message)) {
             long toolInstanceId = Long.parseLong(toolInstances.get(session.getId()));
@@ -82,7 +82,7 @@ public class SdkCommunicator {
             log.info(String.format("Session %s closed because of %s", session.getId(), closeReason));
         } catch (NullPointerException ne) {
             toolResponse.deleteToolInstanceBySession(sessionId);
-            log.info("sessionId got killed {} {}",sessionId);
+            log.info("sessionId got killed {} {}", sessionId);
             clients.remove(session);
             log.error("Session was not exists", ne);
         }
@@ -91,44 +91,51 @@ public class SdkCommunicator {
 
     @OnError
     public void onError(Throwable t, Session session) {
-        if (t instanceof SocketTimeoutException) {
+        try {
+            if (t instanceof SocketTimeoutException) {
+                log.error("Error while reading  web socket with session id", session.getId());
+                long toolInstanceId = Long.getLong(toolInstances.get(session.getId()));
+                toolResponse.deleteToolInstance(toolInstanceId);
+                clients.remove(session);
+            }
+        } catch (NullPointerException ne) {
             log.error("Error while reading  web socket with session id", session.getId());
-            long toolInstanceId = Long.getLong(toolInstances.get(session.getId()));
-            toolResponse.deleteToolInstance(toolInstanceId);
-            clients.remove(session);
         }
     }
 
     public void sendScanRequest(Scan scan) {
         try {
-            synchronized (clients) {
-                List<Tool> toolList = scan.getToolList();
-                int pickedTools = 0;
-                for (Tool tool : toolList) {
-                    List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
-                    log.info("no of tool instances are {} {}", toolInstanceList.size());
-                    for (ToolInstance toolInstance : toolInstanceList) {
-                        Session session = getToolInstanceSession(toolInstance);
-                        if (session != null && scan.getScanPlatforms().contains(toolInstance.getPlatform().toLowerCase()) && toolInstance.getCurrentRunningScans() < toolInstance.getMaxAllowedScans()) {
-                            try {
-                                if (scan.getApkTempFile() != null) {
-                                    setApkFileName(scan);
-                                }
-                                session.getBasicRemote().sendObject(scan);
-                                pickedTools += 1;
-                                toolResponse.updateScanToolStatus(scan.getId(), tool.getId(), toolInstance.getId());
-                                break;
-                            } catch (WebSocketException we) {
-                                log.info("WebSocketException while sending scan to remote tool");
-                            } catch (NullPointerException nl) {
-                                log.info("NullPointerException while sending scan to remote tool");
+//            synchronized (clients) {
+            List<Tool> toolList = scan.getToolList();
+            int pickedTools = 0;
+            for (Tool tool : toolList) {
+                List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
+                log.info("no of tool instances are {} {}", toolInstanceList.size());
+                for (ToolInstance toolInstance : toolInstanceList) {
+                    Session session = getToolInstanceSession(toolInstance);
+                    if (session != null && scan.getScanPlatforms().contains(toolInstance.getPlatform().toLowerCase()) && toolInstance.getCurrentRunningScans() < toolInstance.getMaxAllowedScans()) {
+                        try {
+                            if (scan.getApkTempFile() != null) {
+                                setApkFileName(scan);
                             }
+                            session.getBasicRemote().sendObject(scan);
+                            pickedTools += 1;
+                            toolResponse.updateScanToolStatus(scan.getId(), tool.getId(), toolInstance.getId());
+                            break;
+                        } catch (WebSocketException we) {
+                            log.info("WebSocketException while sending scan to remote tool");
+                        } catch (NullPointerException nl) {
+                            log.info("NullPointerException while sending scan to remote tool");
                         }
                     }
                 }
-                if (pickedTools > 0) scanRequest.changeScanStatus(scan);
             }
+            if (pickedTools > 0) scanRequest.changeScanStatus(scan);
+//            }
+        } catch (Exception e) {
+            log.error("Error while picking session tool", e);
         } catch (Throwable e) {
+            log.error("Error while picking session tool", e);
             e.printStackTrace();
         }
     }

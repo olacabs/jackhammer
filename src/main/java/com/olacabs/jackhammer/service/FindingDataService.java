@@ -145,16 +145,21 @@ public class FindingDataService extends AbstractDataService<Finding> {
 
     @Override
     public void updateRecord(Finding finding) {
+        finding.setModifiedBy(finding.getUser().getName());
         if (!StringUtils.equals(finding.getStatus(), null)) findingDAO.updateStatus(finding);
-        if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && finding.getIds().size() == 0) {
+        if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && (finding.getIds() == null || finding.getIds().size() == 0)) {
             findingDAO.updateNotExploitable(finding);
+            decreaseSeverityCount(finding);
         } else if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && finding.getIds().size() > 0) {
             findingDAO.bulkUpdateNotExploitable(finding.getIds());
+            updateFindingsSeverity(finding.getIds());
         }
-        if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && finding.getIds().size() == 0) {
+        if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && (finding.getIds() == null || finding.getIds().size() == 0)) {
             findingDAO.updateFalsePositive(finding);
+            decreaseSeverityCount(finding);
         } else if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && finding.getIds().size() > 0) {
             findingDAO.bulkUpdateFalsePositive(finding.getIds());
+            updateFindingsSeverity(finding.getIds());
         }
         if (finding.getPushedToJira() != null && finding.getPushedToJira()) {
             Finding dbFinding = findingDAO.get(finding.getId());
@@ -266,6 +271,36 @@ public class FindingDataService extends AbstractDataService<Finding> {
                 if (StringUtils.equals(task.getName(), Constants.UPDATE) && StringUtils.equals(taskName, Constants.TASK_FINDINGS))
                     finding.setUpdateFinding(true);
             }
+        }
+    }
+
+    private void updateFindingsSeverity(List<Long> ids) {
+        for (long id : ids) {
+            Finding dbFinding = findingDAO.get(id);
+            decreaseSeverityCount(dbFinding);
+        }
+    }
+
+    private void decreaseSeverityCount(Finding finding) {
+        Finding dbFinding = findingDAO.get(finding.getId());
+        switch (Severities.valueOf(dbFinding.getSeverity().toUpperCase())) {
+            case CRITICAL:
+                scanDAO.updateCriticalSeverityCount(dbFinding.getScanId());
+                break;
+            case HIGH:
+                scanDAO.updateHighSeverityCount(dbFinding.getScanId());
+                break;
+            case MEDIUM:
+                scanDAO.updateMediumSeverityCount(dbFinding.getScanId());
+                break;
+            case LOW:
+                scanDAO.updateLowSeverityCount(dbFinding.getScanId());
+                break;
+            case INFO:
+                scanDAO.updateInfoSeverityCount(dbFinding.getScanId());
+                break;
+            default:
+                log.info("Invalid severity {} {}", dbFinding.getSeverity());
         }
     }
 }

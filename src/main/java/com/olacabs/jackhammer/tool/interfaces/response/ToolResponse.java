@@ -31,7 +31,7 @@ public class ToolResponse {
 
     public ToolInstance addToolInstance(String response, Session session) {
         ToolInstance toolInstance = buildToolInstance(response, session);
-//        toolInstanceDAO.deleteByToolId(toolInstance.getToolId());
+        toolInstanceDAO.deleteByToolId(toolInstance.getToolId());
         long id = toolInstanceDAO.insert(toolInstance);
         ToolInstance insertedToolInstance = toolInstanceDAO.get(id);
         return insertedToolInstance;

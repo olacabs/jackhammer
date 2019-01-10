@@ -42,6 +42,7 @@ public class FindingMapper implements ResultSetMapper<Finding> {
         finding.setCveCode(resultSet.getString("cveCode"));
         finding.setCweCode(resultSet.getString("cweCode"));
         finding.setPushedToJira(resultSet.getBoolean("pushedToJira"));
+        finding.setModifiedBy(resultSet.getString("modifiedBy"));
 //        finding.setSeverityCount(resultSet.getLong("severityCount"));
         return finding;
     }
