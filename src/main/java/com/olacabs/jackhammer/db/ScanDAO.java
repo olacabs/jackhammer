@@ -99,4 +99,19 @@ public interface ScanDAO extends CrudDAO<Scan> {
 
     @SqlUpdate("update scans set status=:status where id=:id")
     void updateScanStatusToQueue(@Bind("status") String status, @Bind("id") long id);
+
+    @SqlUpdate("update scans set criticalCount=criticalCount-1 where id=:id")
+    void updateCriticalSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set highCount=highCount-1 where id=:id")
+    void updateHighSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set mediumCount=mediumCount-1 where id=:id")
+    void updateMediumSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set lowCount=lowCount-1 where id=:id")
+    void updateLowSeverityCount(@Bind("id") long id);
+
+    @SqlUpdate("update scans set infoCount=infoCount-1 where id=:id")
+    void updateInfoSeverityCount(@Bind("id") long id);
 }
