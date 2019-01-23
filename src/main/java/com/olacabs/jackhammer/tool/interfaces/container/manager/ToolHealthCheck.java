@@ -5,7 +5,9 @@ import com.google.inject.name.Named;
 import com.olacabs.jackhammer.common.Constants;
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
 import com.olacabs.jackhammer.db.ToolDAO;
+import com.olacabs.jackhammer.db.ToolInstanceDAO;
 import com.olacabs.jackhammer.models.Tool;
+import com.olacabs.jackhammer.models.ToolInstance;
 import com.olacabs.jackhammer.models.ToolManifest;
 import com.olacabs.jackhammer.utilities.ToolUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -24,6 +27,10 @@ public class ToolHealthCheck implements Runnable {
     @Inject
     @Named(Constants.TOOL_DAO)
     ToolDAO toolDAO;
+
+    @Inject
+    @Named(Constants.TOOL_INSTANCE_DAO)
+    ToolInstanceDAO toolInstanceDAO;
 
     @Inject
     MarathonClientManager marathonClientManager;
@@ -57,6 +64,7 @@ public class ToolHealthCheck implements Runnable {
                         toolManifest.setInstances(scaleInstances);
                         marathonClientManager.updateApp(toolManifest);
                     }
+                    reDeployTool(eachTool,appId);
                 } catch (MarathonException me) {
                     updateToolStatus(noOfToolsRunning, configuredInstances, eachTool);
                     log.error("MarathonException While checking the tool health check", me.getMessage());
@@ -97,4 +105,17 @@ public class ToolHealthCheck implements Runnable {
         return toolManifest.getInstances();
     }
 
+    //redeploy tool if session not present with jch
+    private void reDeployTool(Tool tool,String appId) throws MarathonException {
+        Calendar calendar = Calendar.getInstance();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(calendar.getTime().getTime());
+        long milliseconds = timestamp.getTime() - tool.getUpdatedAt().getTime();
+        int seconds = (int) milliseconds / 1000;
+        long differenceHours = seconds / 3600;
+        List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
+        if(toolInstanceList.size() == 0 && differenceHours > 1) {
+            log.info("Session not hold with jackhammer for tool id {} {} ",tool.getId(),appId);
+            marathonClientManager.deleteApp(appId);
+        }
+    }
 }
