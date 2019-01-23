@@ -16,6 +16,9 @@ public interface ScanToolDAO extends CrudDAO<ScanTool> {
     @SqlQuery("select * from scanTools where scanId=:scanId and status = 'Queued'")
     List<ScanTool> getQueuedScanTools(@Bind("scanId") long scanId);
 
+    @SqlQuery("select * from scanTools where status = 'Progress'")
+    List<ScanTool> getAllProgressScans();
+
     @SqlQuery("select * from scanTools where toolInstanceId=:toolInstanceId and status = 'Progress'")
     List<ScanTool> getProgressScanTools(@Bind("toolInstanceId") long toolInstanceId);
 
