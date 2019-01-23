@@ -249,8 +249,9 @@ public class ScanDataService extends AbstractDataService<Scan> {
     private AmazonS3 getS3Client() {
         String accessKey = jackhammerConfiguration.getS3Configuration().getAccessKey();
         String secretKey = jackhammerConfiguration.getS3Configuration().getSecretKey();
+        String region = jackhammerConfiguration.getS3Configuration().getRegion();
         AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
+        AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
         return s3Client;
     }
 

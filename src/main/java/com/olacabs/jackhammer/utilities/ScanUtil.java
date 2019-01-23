@@ -113,10 +113,8 @@ public class ScanUtil {
     public void cloneRepo(Scan scan, Path tmpDir) throws GitCloneException {
         StringBuilder command = getGitCloneProcessBuilderWithCredentials(scan);
         String gitCommand = command.toString() + Constants.STRING_SPACER + tmpDir.toAbsolutePath().toString();
-        log.info("cloning Repo command....");
         try {
             runCloneCmd(gitCommand);
-            log.info("cloning Repo command is done....");
         } catch (Exception e) {
             log.error("Error while cloning the repo", e);
             throw new GitCloneException(ExceptionMessages.GIT_CLONE_ERROR, e, CustomErrorCodes.GIT_CLONE_ERROR);
@@ -172,9 +170,7 @@ public class ScanUtil {
             } catch (TempDirCreationException tce) {
                 log.error("TempDirCreationException => ", tce);
             }
-            log.info("tagging platforms.....");
             tagPlatform(scan, tempDirPath);
-            log.info("tagging platforms is done......");
         } else {
             for (ScanTool scanTool : scanTools) {
                 Tool tool = toolDAO.get(scanTool.getToolId());

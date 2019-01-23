@@ -100,18 +100,18 @@ public interface ScanDAO extends CrudDAO<Scan> {
     @SqlUpdate("update scans set status=:status where id=:id")
     void updateScanStatusToQueue(@Bind("status") String status, @Bind("id") long id);
 
-    @SqlUpdate("update scans set criticalCount=criticalCount-1 where id=:id")
-    void updateCriticalSeverityCount(@Bind("id") long id);
+    @SqlUpdate("update scans set criticalCount=:criticalCount where id=:id")
+    void updateCriticalSeverityCount(@Bind("id") long id,@Bind("criticalCount") long criticalCount);
 
-    @SqlUpdate("update scans set highCount=highCount-1 where id=:id")
-    void updateHighSeverityCount(@Bind("id") long id);
+    @SqlUpdate("update scans set highCount=:highCount where id=:id")
+    void updateHighSeverityCount(@Bind("id") long id,@Bind("highCount") long highCount);
 
-    @SqlUpdate("update scans set mediumCount=mediumCount-1 where id=:id")
-    void updateMediumSeverityCount(@Bind("id") long id);
+    @SqlUpdate("update scans set mediumCount=:mediumCount where id=:id")
+    void updateMediumSeverityCount(@Bind("id") long id,@Bind("mediumCount") long mediumCount);
 
-    @SqlUpdate("update scans set lowCount=lowCount-1 where id=:id")
-    void updateLowSeverityCount(@Bind("id") long id);
+    @SqlUpdate("update scans set lowCount=:lowCount where id=:id")
+    void updateLowSeverityCount(@Bind("id") long id,@Bind("lowCount") long lowCount);
 
-    @SqlUpdate("update scans set infoCount=infoCount-1 where id=:id")
-    void updateInfoSeverityCount(@Bind("id") long id);
+    @SqlUpdate("update scans set infoCount=:infoCount where id=:id")
+    void updateInfoSeverityCount(@Bind("id") long id,@Bind("lowCount") long infoCount);
 }

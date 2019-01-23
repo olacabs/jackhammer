@@ -41,5 +41,6 @@ s3Configuration:
   accessKey:
   secretKey:
   bucketName:
+  region:
 clientConfiguration:
   clientUrl: http://localhost:3004

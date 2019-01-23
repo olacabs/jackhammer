@@ -155,14 +155,21 @@ public class GitUtil {
                     endPointBuilder.append(Constants.GIT_LAB_GROUPS_END_POINT);
                     endPointBuilder.append(gitLabGroup.getId());
                     endPointBuilder.append(Constants.GIT_PROJECTS_END_POINT);
-
-                    WebTarget webTarget = ClientBuilder.newClient()
-                            .target(endPointBuilder.toString())
-                            .queryParam(Constants.PRIVATE_TOKEN, privateToken);
-                    Response response = webTarget.request(MediaType.APPLICATION_JSON).get();
-                    List<GitLabProject> fetchedProjects = response.readEntity(new GenericType<List<GitLabProject>>() {
-                    });
-                    gitLabGroup.setGitLabProjects(fetchedProjects);
+                    List<GitLabProject> gitLabProjects = new ArrayList<GitLabProject>();
+                    page = 1;
+                    while (true) {
+                        WebTarget webTarget = ClientBuilder.newClient()
+                                .target(endPointBuilder.toString())
+                                .queryParam(Constants.PRIVATE_TOKEN, privateToken)
+                                .queryParam(Constants.PAGE,page);
+                        Response response = webTarget.request(MediaType.APPLICATION_JSON).get();
+                        List<GitLabProject> fetchedProjects = response.readEntity(new GenericType<List<GitLabProject>>() {
+                        });
+                        if (fetchedProjects.size() == 0) break;
+                        gitLabProjects.addAll(fetchedProjects);
+                        page += 1;
+                    }
+                    gitLabGroup.setGitLabProjects(gitLabProjects);
                 }
             } catch (Throwable ex) {
                 log.error("Throwable Exception while fetching groups ", ex);
