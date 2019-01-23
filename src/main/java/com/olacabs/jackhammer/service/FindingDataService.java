@@ -283,21 +283,27 @@ public class FindingDataService extends AbstractDataService<Finding> {
 
     private void decreaseSeverityCount(Finding finding) {
         Finding dbFinding = findingDAO.get(finding.getId());
+        Scan scan = scanDAO.get(dbFinding.getScanId());
         switch (Severities.valueOf(dbFinding.getSeverity().toUpperCase())) {
             case CRITICAL:
-                scanDAO.updateCriticalSeverityCount(dbFinding.getScanId());
+                long criticalCount = findingDAO.getSeverityCount(scan.getId(),Constants.CRITICAL);
+                scanDAO.updateCriticalSeverityCount(scan.getId(),criticalCount);
                 break;
             case HIGH:
-                scanDAO.updateHighSeverityCount(dbFinding.getScanId());
+                long highCount = findingDAO.getSeverityCount(scan.getId(),Constants.HIGH);
+                scanDAO.updateHighSeverityCount(scan.getId(),highCount);
                 break;
             case MEDIUM:
-                scanDAO.updateMediumSeverityCount(dbFinding.getScanId());
+                long mediumCount = findingDAO.getSeverityCount(scan.getId(),Constants.MEDIUM);
+                scanDAO.updateMediumSeverityCount(scan.getId(),mediumCount);
                 break;
             case LOW:
-                scanDAO.updateLowSeverityCount(dbFinding.getScanId());
+                long lowCount = findingDAO.getSeverityCount(scan.getId(),Constants.LOW);
+                scanDAO.updateLowSeverityCount(scan.getId(),lowCount);
                 break;
             case INFO:
-                scanDAO.updateInfoSeverityCount(dbFinding.getScanId());
+                long infoCount = findingDAO.getSeverityCount(scan.getId(),Constants.INFO);
+                scanDAO.updateInfoSeverityCount(scan.getId(),infoCount);
                 break;
             default:
                 log.info("Invalid severity {} {}", dbFinding.getSeverity());

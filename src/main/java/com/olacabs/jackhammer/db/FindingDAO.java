@@ -153,4 +153,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
     void deleteToolFindings(@Bind("repoId") long repoId,@Bind("ownerType") String ownerType,
                             @Bind("scanType") String scanType,@Bind("toolName") String toolName);
 
+    @SqlQuery("select count(*) from findings where scanId=:scanId and severity=:severity and isFalsePositive=false and notExploitable=false")
+    long getSeverityCount(@Bind("scanId") long scanId,@Bind("severity") String severity);
+
 }
