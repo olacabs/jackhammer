@@ -191,35 +191,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>com.spotify</groupId>-->
-                <!--<artifactId>docker-maven-plugin</artifactId>-->
-                <!--<version>1.0.0</version>-->
-                <!--<configuration>-->
-                    <!--<imageName>artifactory.corp.olacabs.com:6001/jackhammer:${project.version}</imageName>-->
-                    <!--<serverId>docker</serverId>-->
-                    <!--&lt;!&ndash; copy the service's jar file from target into the root directory-->
-                        <!--of the image &ndash;&gt;-->
-                    <!--<dockerDirectory>${basedir}</dockerDirectory>-->
-                    <!--<resources>-->
-                        <!--<resource>-->
-                            <!--<targetPath>/</targetPath>-->
-                            <!--<directory>${project.build.directory}</directory>-->
-                            <!--<include>${project.build.finalName}.jar</include>-->
-                        <!--</resource>-->
-                    <!--</resources>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>build-image</id>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>build</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+              </plugin>
         </plugins>
     </build>
 </project>
