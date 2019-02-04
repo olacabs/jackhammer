@@ -30,12 +30,16 @@ public class ScanResponse {
     @Named(Constants.FINDING_DAO)
     FindingDAO findingDAO;
 
+    @Inject
+    ToolResponse toolResponse;
+
     public void saveScanResponse(String scanResponse, long toolInstanceId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             List<Finding> parsedFindings = new ArrayList<Finding>();
             JsonNode scanNode = mapper.readTree(scanResponse);
             Scan scan = buildScanRecord(scanNode, mapper);
+            updateToolInstanceRunningScanCount(toolInstanceId, mapper, scanNode);
             Scan dbScan = scanDAO.get(scan.getId());
             List<HashMap<String, String>> findingsList = mapper.convertValue(scanNode.get(Constants.FINDINGS), ArrayList.class);
             List<String> currentScanFingerPrints = currentScanFingerprints(dbScan);
@@ -47,7 +51,7 @@ public class ScanResponse {
                     if (!currentScanFingerPrints.contains(fingerprint)) {
                         Finding finding = buildFindingRecord(findingMap, dbScan);
                         updateSeverityCount(scan, findingMap.get(Constants.SEVERITY));
-                        parsedFindings.add(finding);
+                        if (finding.getName() != null) parsedFindings.add(finding);
                         scanToolDAO.updateStatusPostScan(toolInstanceId, scan.getStatus());
                         findingDAO.insert(finding);
                     }
@@ -172,5 +176,10 @@ public class ScanResponse {
             fingerprints.add(finding.getFingerprint());
         }
         return fingerprints;
+    }
+
+    private void updateToolInstanceRunningScanCount(long toolInstanceId, ObjectMapper mapper, JsonNode scanNode) {
+        Boolean fullListSent = mapper.convertValue(scanNode.get(Constants.SENT_FULL_LIST), Boolean.class);
+        if (fullListSent != null && fullListSent) toolResponse.decreaseRunningScans(toolInstanceId);
     }
 }

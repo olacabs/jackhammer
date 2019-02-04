@@ -39,6 +39,9 @@ public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
     @SqlUpdate("delete from toolInstances where toolId=:toolId")
     void deleteByToolId(@Bind("toolId") long toolId);
 
-    @SqlUpdate("delete from toolInstances")
+    @SqlUpdate("truncate table toolInstances")
     void deleteAll();
+
+    @SqlQuery("select * from toolInstances where maxAllowedScans=currentRunningScans and updatedAt > NOW() - INTERVAL 30 MINUTE and currentRunningScans <> 0 and platform <> 'Web'")
+    List<ToolInstance> hangInstances();
 }

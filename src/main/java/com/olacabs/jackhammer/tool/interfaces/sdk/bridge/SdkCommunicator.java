@@ -23,7 +23,9 @@ import org.eclipse.jetty.websocket.api.WebSocketException;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.*;
 
 @Slf4j
 @Metered
@@ -62,7 +64,7 @@ public class SdkCommunicator {
     public String onClientResponse(String message, Session session) {
         if (!toolResponse.isToolResponse(message)) {
             long toolInstanceId = Long.parseLong(toolInstances.get(session.getId()));
-            toolResponse.decreaseRunningScans(toolInstanceId);
+//            toolResponse.decreaseRunningScans(toolInstanceId);
             scanResponse.saveScanResponse(message, toolInstanceId);
         } else {
             log.info("received response from client....." + message);
@@ -160,5 +162,32 @@ public class SdkCommunicator {
         int index = scan.getApkTempFile().lastIndexOf(Constants.URL_SEPARATOR);
         String fileName = scan.getApkTempFile().substring(index + 1);
         scan.setApkTempFile(fileName);
+    }
+
+    private void verifyToolInstanceScanCount(final long toolInstanceId, final Timestamp updatedAt) {
+        ToolInstance toolInstance = toolInstanceDAO.get(toolInstanceId);
+        if (updatedAt != toolInstance.getUpdatedAt() || toolInstance.getCurrentRunningScans() == 0  ) return;
+        log.info("Running scan count not updated....{} {}", toolInstanceId);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                try {
+                    while (true) {
+                        ToolInstance toolInstance = toolInstanceDAO.get(toolInstanceId);
+                        if (updatedAt == toolInstance.getUpdatedAt() && toolInstance.getCurrentRunningScans()!= 0) {
+                            log.info("Record got locked,re-trying to update running scans count...{}..{}", toolInstanceId);
+                            toolResponse.decreaseRunningScans(toolInstanceId);
+                        } else {
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Error while re-trying to update running scans count..{}..{}", toolInstanceId);
+                }
+            }
+        };
+        int delay = 1;
+        scheduler.schedule(task, delay, TimeUnit.SECONDS);
+        scheduler.shutdown();
     }
 }

@@ -252,6 +252,9 @@ public class JackhammerBinder extends AbstractModule {
 
         //email operations
         bind(EmailOperations.class);
+        //Tool Instance check
+        bind(ToolInstanceCheck.class);
+        bind(ToolInstanceManager.class);
         //marathon client
 //        bind(MarathonClient.class);
     }

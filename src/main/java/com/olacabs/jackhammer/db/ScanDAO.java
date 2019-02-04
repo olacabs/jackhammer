@@ -114,4 +114,7 @@ public interface ScanDAO extends CrudDAO<Scan> {
 
     @SqlUpdate("update scans set infoCount=:infoCount where id=:id")
     void updateInfoSeverityCount(@Bind("id") long id,@Bind("lowCount") long infoCount);
+
+    @SqlUpdate("update scans set status='Queued' where status='Progress'")
+    void addProgressingScansToQueue();
 }
