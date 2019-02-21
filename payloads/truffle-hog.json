@@ -1,0 +1,34 @@
+{
+  "id": "jackhammer/truffle-hog",
+  "cpus": 1.0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jackhammer/truffle-hog-provider",
+      "network": "BRIDGE",
+      "portMappings": [{
+        "containerPort": 8080,
+        "hostPort": 0,
+        "protocol": "tcp"
+      }]
+    }
+  },
+  "mem": 4064,
+  "healthChecks": [{
+    "protocol": "COMMAND",
+    "command": {
+      "value": "curl -f -X GET http://127.0.0.1:8080/admin/healthcheck"
+    },
+    "gracePeriodSeconds": 300,
+    "intervalSeconds": 60,
+    "timeoutSeconds": 20,
+    "maxConsecutiveFailures": 3,
+    "ignoreHttp1xx": false
+  }],
+  "env": {
+    "SUPPORTED_PLATFORM": "Hardcoded Secret",
+    "MAX_ALLOWED_SCANS": "3",
+    "localSetup": "true"
+  }
+}

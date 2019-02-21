@@ -1,0 +1,30 @@
+{
+  "id": "jackhammer/retire",
+  "cpus": 1.0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jackhammer/retirejs-provider",
+      "network": "BRIDGE",
+      "portMappings": [
+	      { "containerPort": 8080, "hostPort": 0,"protocol": "tcp" }
+      ]
+    }
+  },
+  "mem": 2048,
+  "healthChecks": [{
+	"protocol": "COMMAND",
+	"command": {"value": "curl -f -X GET http://127.0.0.1:8080/admin/healthcheck"},
+	"gracePeriodSeconds": 300,
+	"intervalSeconds": 60,
+	"timeoutSeconds": 20,
+	"maxConsecutiveFailures": 3,
+	"ignoreHttp1xx": false
+  }],
+    "env": {
+	     "SUPPORTED_PLATFORM": "JavaScript",
+	     "MAX_ALLOWED_SCANS": "5",
+	     "localSetup": "true"
+    }
+}

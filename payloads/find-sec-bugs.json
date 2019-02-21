@@ -1,0 +1,30 @@
+{
+  "id": "jackhammer/findsecbugs",
+  "cpus": 2.0,
+  "instances": 2,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jackhammer/findsecbug-provider",
+      "network": "BRIDGE",
+      "portMappings": [
+	      { "containerPort": 8080, "hostPort": 0,"protocol": "tcp" }
+      ]
+    }
+  },
+  "mem": 4096,
+  "healthChecks": [{
+	"protocol": "COMMAND",
+	"command": {"value": "curl -f -X GET http://127.0.0.1:8080/admin/healthcheck"},
+	"gracePeriodSeconds": 300,
+	"intervalSeconds": 60,
+	"timeoutSeconds": 20,
+	"maxConsecutiveFailures": 3,
+	"ignoreHttp1xx": false
+  }],
+"env": {
+	 "SUPPORTED_PLATFORM": "Java",
+	 "MAX_ALLOWED_SCANS": "1",
+	 "localSetup": "true"
+}
+}
