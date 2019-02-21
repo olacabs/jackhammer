@@ -79,7 +79,7 @@ public class ScanUtil {
             ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
             if (scan.getIsTaggedTools() == false) {
                 Path tempDirPath = null;
-                if (scanType.getIsStatic()) {
+                if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
                     tempDirPath = createTempDirectory();
                     if (!cloneRepo(scan, tempDirPath)) {
                         scan.setStatus(Constants.SCAN_FAILED_STATUS);
@@ -94,7 +94,7 @@ public class ScanUtil {
                 Boolean toolsTagged = tagScanTools(scan);
                 if (toolsTagged) sdkCommunicator.sendScanRequest(scan);
             } else if (scan.isSupported() == false) {
-                String failedMessage = scanType.getIsStatic() && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
+                String failedMessage = (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
                 scan.setStatusReason(failedMessage);
                 scanDAO.updateScanStatusandReason(scan);
@@ -140,16 +140,19 @@ public class ScanUtil {
             ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
             if (scanType.getIsStatic()) {
                 tagStaticPlatform(scan, scanToolIds, tmpDir);
+            } else {
+                if (scanType.getIsHardCodeSecret()) scan.setCloneRequired(true);
+                tagNonStaticPlatform(scan, scanType, scanToolIds);
+            }
+            if (scanType.getIsHardCodeSecret() || scanType.getIsStatic()) {
                 File targetDir = new File(tmpDir.toAbsolutePath().toString());
                 if (targetDir.exists()) targetDir.delete();
-            } else {
-                tagNonStaticPlatform(scan, scanType, scanToolIds);
             }
             if (scan.getPlatforms().size() > 0) {
                 scan.setSupported(true);
                 scan.setScanPlatforms(String.join(",", scan.getPlatforms()));
             } else {
-                String failedMessage = scanType.getIsStatic() && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
+                String failedMessage = (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
                 scan.setStatusReason(failedMessage);
                 scanDAO.updateScanStatusandReason(scan);
@@ -169,7 +172,7 @@ public class ScanUtil {
         if (isToolDestroyed(scanTools, toolInstanceList) || scanTools.size() == 0) {
             scanToolDAO.deleteScanTools(scan.getId());
             Path tempDirPath = null;
-            if (scanType.getIsStatic()) {
+            if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
                 try {
                     tempDirPath = createTempDirectory();
                     if (!cloneRepo(scan, tempDirPath)) {
@@ -191,7 +194,7 @@ public class ScanUtil {
                 scan.addTool(tool);
             }
         }
-        if (scanType.getIsStatic()) {
+        if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
             StringBuilder gitCloneCmd = getGitCloneProcessBuilderWithCredentials(scan);
             scan.setTarget(gitCloneCmd.toString());
         } else {

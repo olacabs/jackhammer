@@ -128,13 +128,13 @@ public interface FindingDAO extends CrudDAO<Finding> {
     void updateNotExploitable(@BindBean Finding finding);
 
     @SqlUpdate("update findings set notExploitable=true,modifiedBy=:modifiedBy where id in (<findingIds>)")
-    void bulkUpdateNotExploitable(@BindIn("findingIds") List<Long> findingIds);
+    void bulkUpdateNotExploitable(@BindIn("findingIds") List<Long> findingIds,@Bind("modifiedBy") String modifiedBy);
 
     @SqlUpdate("update findings set isFalsePositive=:isFalsePositive,modifiedBy=:modifiedBy where id=:id")
     void updateFalsePositive(@BindBean Finding finding);
 
     @SqlUpdate("update findings set isFalsePositive=true,modifiedBy=:modifiedBy where id in (<findingIds>)")
-    void bulkUpdateFalsePositive(@BindIn("findingIds") List<Long> findingIds);
+    void bulkUpdateFalsePositive(@BindIn("findingIds") List<Long> findingIds,@Bind("modifiedBy") String modifiedBy);
 
     @SqlUpdate("update findings set pushedToJira=:pushedToJira,modifiedBy=:modifiedBy where id=:id")
     void updateJiraPublishedStatus(@BindBean Finding finding);

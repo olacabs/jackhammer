@@ -151,14 +151,14 @@ public class FindingDataService extends AbstractDataService<Finding> {
             findingDAO.updateNotExploitable(finding);
             decreaseSeverityCount(finding);
         } else if (finding.getNotExploitable() != null && finding.getNotExploitable() == true && finding.getIds().size() > 0) {
-            findingDAO.bulkUpdateNotExploitable(finding.getIds());
+            findingDAO.bulkUpdateNotExploitable(finding.getIds(),finding.getModifiedBy());
             updateFindingsSeverity(finding.getIds());
         }
         if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && (finding.getIds() == null || finding.getIds().size() == 0)) {
             findingDAO.updateFalsePositive(finding);
             decreaseSeverityCount(finding);
         } else if (finding.getIsFalsePositive() != null && finding.getIsFalsePositive() == true && finding.getIds().size() > 0) {
-            findingDAO.bulkUpdateFalsePositive(finding.getIds());
+            findingDAO.bulkUpdateFalsePositive(finding.getIds(),finding.getModifiedBy());
             updateFindingsSeverity(finding.getIds());
         }
         if (finding.getPushedToJira() != null && finding.getPushedToJira()) {

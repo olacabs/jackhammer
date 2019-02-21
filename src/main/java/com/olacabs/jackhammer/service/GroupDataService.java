@@ -30,7 +30,7 @@ public class GroupDataService extends AbstractDataService<Group> {
                 paginationRecords.setItems(groupDAOJdbi.getAll());
             } else {
                 List<Group> groupList = group.getUser().getGroups();
-                if(!paginationRecords.getScanType().getIsStatic()) {
+                if(!paginationRecords.getScanType().getIsStatic() && !paginationRecords.getScanType().getIsHardCodeSecret()) {
                     Group additionalGroup = groupDAO.getByScanTypeId(group.getScanTypeId());
                     additionalGroup.setIsDefault(true);
                     groupList.add(additionalGroup);
