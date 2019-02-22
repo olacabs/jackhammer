@@ -196,9 +196,10 @@ public class Constants {
     public static final String HTTPS_PROTOCOL_PATTERN = "https";
     public static final String GIT = "git";
     public static final String CLONE = "clone ";
+    public static final String GIT_CLONE_FAILED = "Please check repo size (Scan not allowed if cloning taking more than 5 minutes) / Repo inaccessible";
     public static final String TEMP_DIR_PREFIX = "jackhammer";
     public static final String TOOLS_NOT_SUPPORTED = "No Suitable tools found for given target";
-    public static final String STATIC_SCAN_FAILED_MESSAGE = "No files in repo / Repo inaccessible";
+    public static final String STATIC_SCAN_FAILED_MESSAGE = "No files in repo / Repo inaccessible / Not Supported";
     public static final String SCAN_PENDING_STATUS = "Pending";
     public static final String SCAN_PROGRESS_STATUS = "Progress";
     public static final String SCAN_QUEUED_STATUS = "Queued";
@@ -298,6 +299,7 @@ public class Constants {
     public static final String REPO_URL = "Repo Url";
     public static final String NMAP = "Nmap";
     public static final String JACKHAMMER_URL = "Jackhammer Url";
+    public static final String DESTROYED = "Destroyed";
 
     //scan fields
     public static final String START_TIME = "startTime";
@@ -306,6 +308,7 @@ public class Constants {
     public static final String SCAN_ID = "scanId";
     public static final String REPO_ID = "repoId";
     public static final String FAILED_REASONS = "failedReasons";
+    public static final String SENT_FULL_LIST = "sentFullList";
 
     //CRUD Operations
     public static final String CREATE = "Create";
@@ -338,4 +341,7 @@ public class Constants {
     public static final String CORPORATE = "Corporate";
     public static final String TEAM = "Team";
     public static final String PERSONAL = "Personal";
+
+    //scheduleTypes
+    public static final String WEEKLY = "WEEKLY";
 }

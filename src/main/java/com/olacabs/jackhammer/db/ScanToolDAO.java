@@ -44,4 +44,10 @@ public interface ScanToolDAO extends CrudDAO<ScanTool> {
 
     @SqlUpdate("insert into scanTools(scanId, toolId) values (:st.scanId, :st.toolId)")
     long insert(@BindBean("st") ScanTool scanTool);
+
+    @SqlQuery("select * from scanTools where toolInstanceId=:toolInstanceId and status = 'Progress'")
+    List<ScanTool> getByInstanceId(@Bind("toolInstanceId") long toolInstanceId);
+
+    @SqlUpdate("update scanTools set status=:status where toolInstanceId=:toolInstanceId and scanId=:")
+    void pushScanToQueued(@Bind("toolInstanceId") long toolInstanceId,@Bind("status") String status,@Bind("scanId") long scanId);
 }

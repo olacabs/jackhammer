@@ -50,6 +50,14 @@ public class GitUtil {
     GitDAO gitDAO;
 
     @Inject
+    @Named(Constants.SCHEDULE_TYPE_DAO)
+    ScheduleTypeDAO scheduleTypeDAO;
+
+    @Inject
+    @Named(Constants.SCAN_DAO)
+    ScanDAO scanDAO;
+
+    @Inject
     JackhammerConfiguration jackhammerConfiguration;
 
     public void pullGitRepos() {
@@ -57,7 +65,9 @@ public class GitUtil {
             Git git = gitDAO.get();
             if (StringUtils.equals(git.getGitType().toLowerCase(), Constants.GITHUB)) {
                 pullGitHubInfo();
+                log.info("Repo Type==> {}...{}", "Github");
             } else if (StringUtils.equals(git.getGitType().toLowerCase(), Constants.GITLAB)) {
+                log.info("Repo Type==> {}...{}", "Gitlb");
                 pullGitLabInfo();
             }
         } catch (Throwable t) {
@@ -70,6 +80,7 @@ public class GitUtil {
         try {
             OwnerType ownerType = ownerTypeDAO.getDefaultOwnerType();
             ScanType scanType = scanTypeDAO.getStaticScanType();
+            log.info("Total gitlab groups=> {} {}", gitlabGroups.size());
             for (GitLabGroup gitLabGroup : gitlabGroups) {
                 Group group = groupDAO.findGroupByName(gitLabGroup.getName());
                 long groupId = group == null ? 0 : group.getId();
@@ -80,14 +91,33 @@ public class GitUtil {
                 }
                 for (GitLabProject gitLabProject : gitLabGroup.getGitLabProjects()) {
                     Repo repo = repoDAO.findRepoByName(gitLabProject.getName());
-                    if (repo == null) {
-                        Repo newRepo = new Repo();
-                        newRepo.setName(gitLabProject.getName());
-                        newRepo.setGroupId(groupId);
-                        newRepo.setOwnerTypeId(ownerType.getId());
-                        newRepo.setScanTypeId(scanType.getId());
-                        newRepo.setTarget(gitLabProject.getHttp_url_to_repo());
-                        repoDAO.insert(newRepo);
+                    try {
+                        if (repo == null) {
+                            log.info("Adding new repo with ....{}",gitLabProject.getName());
+                            Repo newRepo = new Repo();
+                            newRepo.setName(gitLabProject.getName());
+                            newRepo.setGroupId(groupId);
+                            newRepo.setOwnerTypeId(ownerType.getId());
+                            newRepo.setScanTypeId(scanType.getId());
+                            newRepo.setTarget(gitLabProject.getHttp_url_to_repo());
+                            int repId = repoDAO.insert(newRepo);
+
+                            //insert scan
+                            log.info("Creating new scan .......");
+                            ScheduleType scheduleType = scheduleTypeDAO.findScheduleByName(Constants.WEEKLY);
+                            Scan scan = new Scan();
+                            scan.setName(newRepo.getName());
+                            scan.setGroupId(newRepo.getGroupId());
+                            scan.setOwnerTypeId(newRepo.getOwnerTypeId());
+                            scan.setScanTypeId(newRepo.getScanTypeId());
+                            scan.setStatus(Constants.SCAN_QUEUED_STATUS);
+                            scan.setTarget(newRepo.getTarget());
+                            scan.setScheduleTypeId(scheduleType.getId());
+                            scan.setRepoId(repId);
+                            scanDAO.insert(scan);
+                        }
+                    } catch (Exception e) {
+                        log.error("Error while creating new repo/ new scan...{}..{}", e);
                     }
                 }
             }
@@ -161,7 +191,7 @@ public class GitUtil {
                         WebTarget webTarget = ClientBuilder.newClient()
                                 .target(endPointBuilder.toString())
                                 .queryParam(Constants.PRIVATE_TOKEN, privateToken)
-                                .queryParam(Constants.PAGE,page);
+                                .queryParam(Constants.PAGE, page);
                         Response response = webTarget.request(MediaType.APPLICATION_JSON).get();
                         List<GitLabProject> fetchedProjects = response.readEntity(new GenericType<List<GitLabProject>>() {
                         });

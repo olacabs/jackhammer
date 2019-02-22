@@ -5,12 +5,12 @@ import com.google.inject.Inject;
 
 import com.google.inject.name.Named;
 import com.olacabs.jackhammer.common.Constants;
-import com.olacabs.jackhammer.db.ScanDAO;
-import com.olacabs.jackhammer.db.ScanToolDAO;
-import com.olacabs.jackhammer.db.ScanTypeDAO;
-import com.olacabs.jackhammer.db.ToolInstanceDAO;
+import com.olacabs.jackhammer.db.*;
 import com.olacabs.jackhammer.models.ScanTool;
+import com.olacabs.jackhammer.models.Tool;
 import com.olacabs.jackhammer.models.ToolInstance;
+import com.olacabs.jackhammer.models.ToolManifest;
+import com.olacabs.jackhammer.utilities.ToolUtil;
 import io.dropwizard.lifecycle.Managed;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +22,6 @@ import java.util.concurrent.*;
 
 import com.olacabs.jackhammer.tool.interfaces.container.manager.MarathonClientManager;
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @Slf4j
@@ -37,9 +36,6 @@ public class ScanPooler implements Managed {
     ScanPicker scanTask;
 
     @Inject
-    MarathonClientManager marathonClientManager;
-
-    @Inject
     @Named(Constants.TOOL_INSTANCE_DAO)
     ToolInstanceDAO toolInstanceDAO;
 
@@ -51,10 +47,21 @@ public class ScanPooler implements Managed {
     @Named(Constants.SCAN_DAO)
     ScanDAO scanDAO;
 
+    @Inject
+    @Named(Constants.TOOL_DAO)
+    ToolDAO toolDAO;
+
+    @Inject
+    ToolUtil toolUtil;
+
+    @Inject
+    MarathonClientManager marathonClientManager;
+
     public void start() {
         try {
 
-
+            toolInstanceDAO.deleteAll();
+            scanDAO.addProgressingScansToQueue();
             //setting thread pool
             int threadPoolSize = jackhammerConfiguration.getScanMangerConfiguration().getThreadPoolSize();
             int initialDelay = jackhammerConfiguration.getScanMangerConfiguration().getInitialDelay();
@@ -62,22 +69,44 @@ public class ScanPooler implements Managed {
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
             executor.scheduleAtFixedRate(scanTask, initialDelay, period, TimeUnit.SECONDS);
         } catch (Exception e) {
-            log.error("Error while running scanTask..",e);
+            log.error("Error while running scanTask..", e);
         } catch (Throwable th) {
-            log.error("Error while running scanTask..",th);
+            log.error("Error while running scanTask..", th);
         }
     }
 
-    public void stop() throws Exception {
-        // delete current running containers from db and make scan running scans as failed
-        List<ToolInstance> toolInstanceList = toolInstanceDAO.getAll();
-        for (ToolInstance toolInstance : toolInstanceList) {
-            List<ScanTool> scanToolList = scanToolDAO.getProgressScanTools(toolInstance.getId());
-            scanToolDAO.setToolInstanceScanStatusToQueue(toolInstance.getId(), Constants.SCAN_QUEUED_STATUS);
-            for (ScanTool scanTool : scanToolList) {
-                scanDAO.updateScanStatusToQueue(Constants.SCAN_QUEUED_STATUS, scanTool.getScanId());
+    public void stop() {
+        try {
+            log.info("jch server  going down.....");
+            // delete current running containers from db and make running scans as failed
+            List<ToolInstance> toolInstanceList = toolInstanceDAO.getAll();
+
+            for (ToolInstance toolInstance : toolInstanceList) {
+                List<ScanTool> scanToolList = scanToolDAO.getProgressScanTools(toolInstance.getId());
+                scanToolDAO.setToolInstanceScanStatusToQueue(toolInstance.getId(), Constants.SCAN_QUEUED_STATUS);
+                for (ScanTool scanTool : scanToolList) {
+                    scanDAO.updateScanStatusToQueue(Constants.SCAN_QUEUED_STATUS, scanTool.getScanId());
+                }
             }
+
+            List<Tool> tools = toolDAO.getAll();
+            //deleting tools from marathon
+            for (Tool tool : tools) {
+                try {
+//                    toolInstanceDAO.deleteByToolId(tool.getId());
+                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
+                    String appId = toolManifest.getId();
+                    marathonClientManager.deleteApp(appId);
+                } catch (Exception e) {
+                    log.error("Error while updating tool instance...", e);
+                }
+            }
+            log.info("Deleting all records from tool instances table");
+            toolInstanceDAO.deleteAll();
+        } catch (Exception e) {
+            log.error("Error while updating tool instance...", e);
+        } catch (Throwable th) {
+            log.error("Error while updating tool instance...", th);
         }
-        toolInstanceDAO.deleteAll();
     }
 }

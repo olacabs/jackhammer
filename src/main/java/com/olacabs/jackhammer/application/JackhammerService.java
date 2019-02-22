@@ -9,6 +9,7 @@ import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.olacabs.jackhammer.filters.AuthorizationFilter;
 import com.olacabs.jackhammer.git.manager.GitPooler;
 import com.olacabs.jackhammer.scan.manager.ScheduledScanPooler;
+import com.olacabs.jackhammer.tool.interfaces.container.manager.ToolInstanceManager;
 import com.olacabs.jackhammer.tool.interfaces.container.manager.ToolPooler;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -115,6 +116,7 @@ public class JackhammerService extends Application<JackhammerConfiguration> {
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ScheduledScanPooler.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ToolPooler.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(GitPooler.class));
+        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ToolInstanceManager.class));
     }
 
     @Override

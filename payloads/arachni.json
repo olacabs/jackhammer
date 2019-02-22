@@ -1,0 +1,30 @@
+{
+  "id": "jackhammer/arachni",
+  "cpus": 4.0,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jackhammer/arachni-provider",
+      "network": "BRIDGE",
+      "portMappings": [
+	      { "containerPort": 8080, "hostPort": 0,"protocol": "tcp" }
+      ]
+    }
+  },
+  "mem": 6144,
+  "healthChecks": [{
+	"protocol": "COMMAND",
+	"command": {"value": "curl -f -X GET http://127.0.0.1:8080/admin/healthcheck"},
+	"gracePeriodSeconds": 300,
+	"intervalSeconds": 60,
+	"timeoutSeconds": 20,
+	"maxConsecutiveFailures": 3,
+	"ignoreHttp1xx": false
+  }],
+    "env": {
+	     "SUPPORTED_PLATFORM": "Web",
+	     "MAX_ALLOWED_SCANS": "4",
+	     "localSetup": "true"
+    }
+}

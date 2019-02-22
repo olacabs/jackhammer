@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.*;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -77,17 +79,22 @@ public class ScanUtil {
             ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
             if (scan.getIsTaggedTools() == false) {
                 Path tempDirPath = null;
-                if (scanType.getIsStatic()) {
+                if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
                     tempDirPath = createTempDirectory();
-                    cloneRepo(scan, tempDirPath);
+                    if (!cloneRepo(scan, tempDirPath)) {
+                        scan.setStatus(Constants.SCAN_FAILED_STATUS);
+                        scan.setStatusReason(Constants.GIT_CLONE_FAILED);
+                        scanDAO.updateScanStatusandReason(scan);
+                        return;
+                    }
                 }
                 tagPlatform(scan, tempDirPath);
             }
             if (scan.isSupported() && SdkCommunicator.clients != null && SdkCommunicator.clients.size() > 0) {
-                tagScanTools(scan);
-                sdkCommunicator.sendScanRequest(scan);
+                Boolean toolsTagged = tagScanTools(scan);
+                if (toolsTagged) sdkCommunicator.sendScanRequest(scan);
             } else if (scan.isSupported() == false) {
-                String failedMessage = scanType.getIsStatic() && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
+                String failedMessage = (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
                 scan.setStatusReason(failedMessage);
                 scanDAO.updateScanStatusandReason(scan);
@@ -110,16 +117,18 @@ public class ScanUtil {
         return tempDirPath;
     }
 
-    public void cloneRepo(Scan scan, Path tmpDir) throws GitCloneException {
+    public Boolean cloneRepo(Scan scan, Path tmpDir) throws GitCloneException {
         StringBuilder command = getGitCloneProcessBuilderWithCredentials(scan);
         String gitCommand = command.toString() + Constants.STRING_SPACER + tmpDir.toAbsolutePath().toString();
         try {
-            runCloneCmd(gitCommand);
+            return runCloneCmd(gitCommand);
         } catch (Exception e) {
             log.error("Error while cloning the repo", e);
-            throw new GitCloneException(ExceptionMessages.GIT_CLONE_ERROR, e, CustomErrorCodes.GIT_CLONE_ERROR);
+            return false;
+//            throw new GitCloneException(ExceptionMessages.GIT_CLONE_ERROR, e, CustomErrorCodes.GIT_CLONE_ERROR);
         } catch (Throwable th) {
             log.error("Error while cloning the repo", th);
+            return false;
         }
     }
 
@@ -131,44 +140,52 @@ public class ScanUtil {
             ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
             if (scanType.getIsStatic()) {
                 tagStaticPlatform(scan, scanToolIds, tmpDir);
+            } else {
+                if (scanType.getIsHardCodeSecret()) scan.setCloneRequired(true);
+                tagNonStaticPlatform(scan, scanType, scanToolIds);
+            }
+            if (scanType.getIsHardCodeSecret() || scanType.getIsStatic()) {
                 File targetDir = new File(tmpDir.toAbsolutePath().toString());
                 if (targetDir.exists()) targetDir.delete();
-            } else {
-                tagNonStaticPlatform(scan, scanType, scanToolIds);
             }
             if (scan.getPlatforms().size() > 0) {
                 scan.setSupported(true);
                 scan.setScanPlatforms(String.join(",", scan.getPlatforms()));
             } else {
-                String failedMessage = scanType.getIsStatic() && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
+                String failedMessage = (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
                 scan.setStatusReason(failedMessage);
                 scanDAO.updateScanStatusandReason(scan);
             }
             scanDAO.updatedScanDetails(scan);
         } catch (Exception e) {
-            log.error("Error while doing tagPlatform.....",e);
+            log.error("Error while doing tagPlatform.....", e);
         } catch (Throwable th) {
-            log.error("Error while doing tagPlatform.....",th);
+            log.error("Error while doing tagPlatform.....", th);
         }
     }
 
-    public void tagScanTools(Scan scan) {
+    public Boolean tagScanTools(Scan scan) {
         List<ScanTool> scanTools = scanToolDAO.getQueuedScanTools(scan.getId());
         List<ToolInstance> toolInstanceList = toolInstanceDAO.getAll();
         ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
         if (isToolDestroyed(scanTools, toolInstanceList) || scanTools.size() == 0) {
             scanToolDAO.deleteScanTools(scan.getId());
             Path tempDirPath = null;
-            try {
-                if (scanType.getIsStatic()) {
+            if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
+                try {
                     tempDirPath = createTempDirectory();
-                    cloneRepo(scan, tempDirPath);
+                    if (!cloneRepo(scan, tempDirPath)) {
+                        scan.setStatus(Constants.SCAN_FAILED_STATUS);
+                        scan.setStatusReason(Constants.GIT_CLONE_FAILED);
+                        scanDAO.updateScanStatusandReason(scan);
+                        return false;
+                    }
+                } catch (GitCloneException gce) {
+                    log.error("GitCloneException => ", gce);
+                } catch (TempDirCreationException tce) {
+                    log.error("TempDirCreationException => ", tce);
                 }
-            } catch (GitCloneException gce) {
-                log.error("GitCloneException => ", gce);
-            } catch (TempDirCreationException tce) {
-                log.error("TempDirCreationException => ", tce);
             }
             tagPlatform(scan, tempDirPath);
         } else {
@@ -177,7 +194,7 @@ public class ScanUtil {
                 scan.addTool(tool);
             }
         }
-        if (scanType.getIsStatic()) {
+        if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
             StringBuilder gitCloneCmd = getGitCloneProcessBuilderWithCredentials(scan);
             scan.setTarget(gitCloneCmd.toString());
         } else {
@@ -188,11 +205,34 @@ public class ScanUtil {
         } else {
             scan.setIsMobileScan(false);
         }
+        return true;
     }
 
-    private void runCloneCmd(String command) throws IOException,InterruptedException {
-        Process process = Runtime.getRuntime().exec(command);
-        process.waitFor();
+    private Boolean runCloneCmd(final String command) throws IOException, InterruptedException, ExecutionException {
+        Boolean status;
+        final Duration timeout = Duration.ofMinutes(5);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        final Future<String> handler = executor.submit(new Callable() {
+            @Override
+            public String call() throws Exception {
+                log.info("started cloning the repo.....");
+                Process process = Runtime.getRuntime().exec(command);
+                process.waitFor();
+                return "Success";
+            }
+        });
+        try {
+            handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            log.info("cloning completed.....");
+            status = true;
+        } catch (TimeoutException e) {
+            handler.cancel(true);
+            status = false;
+            log.info("TimeoutException while cloning the repo.....");
+        }
+        executor.shutdownNow();
+        return status;
     }
 
     private void tagStaticPlatform(Scan scan, List<Long> scanToolIds, Path tmpDir) {
@@ -250,9 +290,9 @@ public class ScanUtil {
     private StringBuilder getGitCloneProcessBuilderWithCredentials(Scan scan) {
         com.olacabs.jackhammer.models.Git git = gitDAO.get();
         String target = scan.getTarget();
-        String privateToken = AES.decrypt(git.getApiAccessToken(), jackhammerConfiguration.getJwtConfiguration().getTokenSigningKey());
         try {
             if (git != null) {
+                String privateToken = AES.decrypt(git.getApiAccessToken(), jackhammerConfiguration.getJwtConfiguration().getTokenSigningKey());
                 StringBuilder targetWithCredentials = new StringBuilder();
                 String repoUrlWithoutHttps = target.split(Constants.GIT_HTTPS)[1];
                 targetWithCredentials.append(Constants.GIT_HTTPS);
@@ -264,15 +304,16 @@ public class ScanUtil {
                 target = targetWithCredentials.toString();
             }
         } catch (Exception e) {
-            log.error("Error while building cmd", e);
+            log.error("Error while building clone command", e);
         } catch (Throwable th) {
-            log.error("Error while building cmd", th);
+            log.error("Error while building git clone command", th);
         }
         StringBuilder gitCmd = new StringBuilder();
         gitCmd.append(Constants.GIT);
         gitCmd.append(Constants.STRING_SPACER);
         gitCmd.append(Constants.CLONE);
         if (scan.getBranch() != null) {
+            gitCmd.append(Constants.STRING_SPACER);
             gitCmd.append(Constants.BRANCH_ARG_OPTION);
             gitCmd.append(Constants.STRING_SPACER);
             gitCmd.append(scan.getBranch());
@@ -300,7 +341,7 @@ public class ScanUtil {
         } catch (Exception e) {
             log.error("Error while getting isToolDestroyed status", e);
         } catch (Throwable th) {
-            log.error("Error while getting isToolDestroyed status...",th);
+            log.error("Error while getting isToolDestroyed status...", th);
         }
         return toolDestroyed;
     }

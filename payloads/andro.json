@@ -1,0 +1,42 @@
+{
+  "id": "jackhammer/andro",
+  "cpus": 1,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jackhammer/andro-scan-provider",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 0,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "mem": 4096,
+  "healthChecks": [
+    {
+      "protocol": "COMMAND",
+      "command": {
+        "value": "curl -f -X GET http://127.0.0.1:8080/admin/healthcheck"
+      },
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "env": {
+    "SUPPORTED_PLATFORM": "Mobile",
+    "MAX_ALLOWED_SCANS": "5",
+    "S3_ACCESS_KEY": "S3_ACCESS_KEY",
+    "S3_SECRET_KEY": "S3_SECRET_KEY",
+    "S3_BUCKET": "your-s3-bucket",
+    "S3_REGION": "bucket-region",
+    "localSetup": "true"
+  }
+}

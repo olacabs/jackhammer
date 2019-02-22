@@ -17,6 +17,8 @@ public class ToolInstanceMapper implements ResultSetMapper<ToolInstance> {
         toolInstance.setStatus(resultSet.getString("status"));
         toolInstance.setSessionId(resultSet.getString("sessionId"));
         toolInstance.setPlatform(resultSet.getString("platform"));
+        toolInstance.setUpdatedAt(resultSet.getTimestamp("updatedAt"));
+        toolInstance.setCreatedAt(resultSet.getTimestamp("createdAt"));
         return toolInstance;
     }
 }

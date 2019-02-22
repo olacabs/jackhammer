@@ -32,7 +32,7 @@ gitConfiguration:
   period: 1 #one day
 marathonConfiguration:
   endpoint: http://marathon:8080
-  jchAppId: orc/sentinels/jch-auth
+  jchAppId: orc/jch-auth
 fileConfiguration:
   targetDirectory: uploads
   toolsDir: tools

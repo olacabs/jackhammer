@@ -1,6 +1,19 @@
-FROM openjdk:8
-RUN apt-get -y update
-RUN apt-get install -y maven
+FROM ubuntu:18.04
+
+RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates \
+    && apt-get install -y --no-install-recommends git \
+    && apt-get install -y --no-install-recommends iproute2 \
+    && apt-get install -y --no-install-recommends openjdk-8-jdk \
+    && apt-get install -y --no-install-recommends maven \
+    && rm -rf /var/lib/apt/lists/*
+
+#RUN apt-get update
+#RUN apt-get install -y openjdk-8-jdk
+
+#RUN apt-get -y update
+#RUN apt-get install -y maven
+
 RUN mkdir -p /home/src/jch_server
 ENV WORKSPACE /home/src/jch_server
 WORKDIR $WORKSPACE

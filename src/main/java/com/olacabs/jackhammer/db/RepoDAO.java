@@ -162,14 +162,14 @@ public interface RepoDAO extends CrudDAO<Repo> {
             "and f.scanTypeId=:scanTypeId " +
             "and r.userId=:userId " +
             "group by r.name,rId,f.severity) f " +
-            "where  userId=:userId and name like concat('%', :searchTerm,'%') and scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId " +
+            "where userId=:userId and name like concat('%', :searchTerm,'%') and scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId " +
             "group by name,id " +
             " order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
     @RegisterMapper(ApplicationMapper.class)
     List<Application> getPersonalRepoSearchResult(@BindBean Repo repo, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
     @SqlQuery("select count(*) from repos where name like concat('%', :searchTerm,'%') " +
-            " where userId=:userId and scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId")
+            " and userId=:userId and scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId")
     long totalPersonalRepoSearchCount(@BindBean Repo repo);
 
 }
