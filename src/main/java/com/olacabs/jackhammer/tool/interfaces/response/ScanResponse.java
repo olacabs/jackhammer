@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.olacabs.jackhammer.common.Constants;
+import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
 import com.olacabs.jackhammer.db.*;
 import com.olacabs.jackhammer.enums.Severities;
 import com.olacabs.jackhammer.models.*;
+import com.olacabs.jackhammer.utilities.EmailOperations;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -31,15 +34,24 @@ public class ScanResponse {
     FindingDAO findingDAO;
 
     @Inject
+    @Named(Constants.SCAN_TYPE_DAO)
+    ScanTypeDAO scanTypeDAO;
+
+    @Inject
     ToolResponse toolResponse;
+
+    @Inject
+    JackhammerConfiguration jackhammerConfiguration;
+
+    @Inject
+    EmailOperations emailOperations;
 
     public void saveScanResponse(String scanResponse, long toolInstanceId) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            List<Finding> parsedFindings = new ArrayList<Finding>();
             JsonNode scanNode = mapper.readTree(scanResponse);
             Scan scan = buildScanRecord(scanNode, mapper);
-            updateToolInstanceRunningScanCount(toolInstanceId, mapper, scanNode);
+            Boolean fullListSent = updateToolInstanceRunningScanCount(toolInstanceId, mapper, scanNode);
             Scan dbScan = scanDAO.get(scan.getId());
             List<HashMap<String, String>> findingsList = mapper.convertValue(scanNode.get(Constants.FINDINGS), ArrayList.class);
             List<String> currentScanFingerPrints = currentScanFingerprints(dbScan);
@@ -48,22 +60,26 @@ public class ScanResponse {
                 while (iterator.hasNext()) {
                     Map<String, String> findingMap = iterator.next();
                     String fingerprint = findingMap.get(Constants.FINGERPRINT);
-                    if (!currentScanFingerPrints.contains(fingerprint)) {
+                    String title = findingMap.get(Constants.TITLE);
+                    if (!currentScanFingerPrints.contains(fingerprint) && !StringUtils.isEmpty(title)) {
                         Finding finding = buildFindingRecord(findingMap, dbScan);
                         updateSeverityCount(scan, findingMap.get(Constants.SEVERITY));
-                        if (finding.getName() != null) parsedFindings.add(finding);
-                        scanToolDAO.updateStatusPostScan(toolInstanceId, scan.getStatus());
                         findingDAO.insert(finding);
                     }
                 }
             }
+            String scanTypeTitle = requireSendMail(dbScan, StringUtils.EMPTY);
+            if (fullListSent && !StringUtils.equals(scanTypeTitle, StringUtils.EMPTY))
+                emailOperations.sendAlertMail(dbScan, scanTypeTitle);
             scanDAO.update(scan);
+            scanToolDAO.updateStatusPostScan(toolInstanceId, scan.getStatus(), dbScan.getId());
         } catch (IOException e) {
-            log.error("Exception while receiving scan response....", e);
+            log.error("Exception while saving findings....", e);
         } catch (NullPointerException e) {
             log.error("Exception while saving findings....", e);
+        } catch (Exception e) {
+            log.error("Exception while saving findings...", e);
         }
-
     }
 
     private Finding buildFindingRecord(Map<String, String> findingMap, Scan scan) {
@@ -178,8 +194,45 @@ public class ScanResponse {
         return fingerprints;
     }
 
-    private void updateToolInstanceRunningScanCount(long toolInstanceId, ObjectMapper mapper, JsonNode scanNode) {
+    private Boolean updateToolInstanceRunningScanCount(long toolInstanceId, ObjectMapper mapper, JsonNode scanNode) {
         Boolean fullListSent = mapper.convertValue(scanNode.get(Constants.SENT_FULL_LIST), Boolean.class);
-        if (fullListSent != null && fullListSent) toolResponse.decreaseRunningScans(toolInstanceId);
+        if (fullListSent != null && fullListSent) {
+            toolResponse.decreaseRunningScans(toolInstanceId);
+        }
+        return fullListSent != null && fullListSent;
+    }
+
+    private String requireSendMail(Scan scan, String scanTitle) {
+        ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
+        Boolean wpScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getWpScanAlerts();
+        Boolean mobileScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getMobileScanAlerts();
+        Boolean networkScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getNetworkScanAlerts();
+        Boolean webScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getWebScanAlerts();
+        Boolean hardcodeSecretScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getHardcodeSecretScanAlerts();
+        Boolean staticCodeScanAlerts = jackhammerConfiguration.getScanMangerConfiguration().getStaticCodeScanAlerts();
+        if (scanType.getIsStatic() && staticCodeScanAlerts) {
+            return scanType.getName();
+        }
+
+        if (scanType.getIsHardCodeSecret() && hardcodeSecretScanAlerts) {
+            return scanType.getName();
+        }
+
+        if (scanType.getIsWeb() && webScanAlerts) {
+            return scanType.getName();
+        }
+
+        if (scanType.getIsNetwork() && networkScanAlerts) {
+            return scanType.getName();
+        }
+
+        if (scanType.getIsMobile() && mobileScanAlerts) {
+            return scanType.getName();
+        }
+
+        if (scanType.getIsWordpress() && wpScanAlerts) {
+            return scanType.getName();
+        }
+        return scanTitle;
     }
 }

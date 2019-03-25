@@ -7,8 +7,7 @@ import com.google.inject.AbstractModule;
 
 import com.olacabs.jackhammer.filters.AuthorizationFilter;
 import com.olacabs.jackhammer.models.Task;
-import com.olacabs.jackhammer.scan.manager.ScheduledScanPicker;
-import com.olacabs.jackhammer.scan.manager.ScheduledScanPooler;
+import com.olacabs.jackhammer.scan.manager.*;
 import com.olacabs.jackhammer.utilities.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,8 +19,6 @@ import com.olacabs.jackhammer.tool.interfaces.response.ToolResponse;
 
 
 import com.olacabs.jackhammer.configuration.WebSocketsConfiguration;
-import com.olacabs.jackhammer.scan.manager.ScanPooler;
-import com.olacabs.jackhammer.scan.manager.ScanPicker;
 import com.olacabs.jackhammer.db.*;
 import com.olacabs.jackhammer.filters.AuthenticationFilter;
 import com.olacabs.jackhammer.handler.*;
@@ -199,8 +196,8 @@ public class JackhammerBinder extends AbstractModule {
         bind(ScheduledScanPicker.class);
 
         //Tool manager
-        bind(ToolPooler.class);
-        bind(ToolHealthCheck.class);
+        bind(ActiveToolInstanceManager.class);
+        bind(ActiveToolInstanceHealthCheck.class);
         
         //WebsocketServerEndpoint
         bind(SdkCommunicator.class);
@@ -253,10 +250,15 @@ public class JackhammerBinder extends AbstractModule {
         //email operations
         bind(EmailOperations.class);
         //Tool Instance check
-        bind(ToolInstanceCheck.class);
-        bind(ToolInstanceManager.class);
+        bind(HangedToolInstanceCheck.class);
+        bind(HangedToolInstanceManager.class);
         //marathon client
 //        bind(MarathonClient.class);
+        bind(WpScanSchedulerPicker.class);
+        bind(WpScanSchedulerPooler.class);
+
+        //docker util
+        bind(DockerUtil.class);
     }
 
     @Provides

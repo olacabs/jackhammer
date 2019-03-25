@@ -21,22 +21,25 @@ public interface RoleDAO extends CrudDAO<Role> {
     @GetGeneratedKeys
     int insert(@BindBean Role role);
 
-    @SqlQuery("select name from roles inner join rolesUsers on rolesUsers.roleId = roles.id and rolesUsers.userId = :userId")
+    @SqlQuery("select name from roles " +
+            "inner join rolesUsers on rolesUsers.roleId = roles.id " +
+            " and rolesUsers.userId = :userId " +
+            " where roles.isDeleted=false and rolesUsers.isDeleted = false")
     Set<String> getCurrentUserRoles(@Bind("userId") long userId);
 
-    @SqlQuery("select * from roles order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from roles where isDeleted=false order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
     List<Role> getAll(@BindBean Role role, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
-    @SqlQuery("select * from roles where name like concat('%', :searchTerm,'%') order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from roles where isDeleted=false and name like concat('%', :searchTerm,'%') order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
     List<Role> getSearchResults(@BindBean Role role, @Define("sortColumn") String sortColumn,@Define("order") String order);
 
-    @SqlQuery("select count(*) from roles  where name like concat('%', :searchTerm,'%')")
+    @SqlQuery("select count(*) from roles  where name like concat('%', :searchTerm,'%') and isDeleted=false")
     long totalSearchCount(@BindBean Role role);
 
-    @SqlQuery("select count(*) from roles")
+    @SqlQuery("select count(*) from roles where isDeleted=false")
     long totalCount();
 
-    @SqlQuery("select * from roles")
+    @SqlQuery("select * from roles where isDeleted=false")
     List<Role>  getDropdownValues();
 
     @SqlQuery("select * from roles where id=:id")
@@ -48,6 +51,6 @@ public interface RoleDAO extends CrudDAO<Role> {
     @SqlUpdate("update roles set name=:name where id=:id ")
     void update(@BindBean Role role);
 
-    @SqlUpdate("delete from roles where id=:id")
+    @SqlUpdate("update roles set isDeleted=true where id=:id")
     void delete(@Bind("id") long id);
 }

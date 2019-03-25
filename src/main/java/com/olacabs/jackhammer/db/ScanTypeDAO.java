@@ -47,4 +47,8 @@ public interface ScanTypeDAO extends CrudDAO<ScanType> {
 
     @SqlUpdate("delete from scanTypes where id=:id")
     void delete(@Bind("id") long id);
+
+
+    @SqlQuery("select * from scheduleTypes where isWordpress=true")
+    ScanType getWpScanType();
 }

@@ -16,6 +16,7 @@ public interface AnalyticsDAO {
     //corporate
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -23,23 +24,24 @@ public interface AnalyticsDAO {
     @RegisterMapper(SeverityCountChartMapper.class)
     List<SeverityCountChart> getCorporateSeverityCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Progress' and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Progress' and ownerTypeId=:ownerTypeId")
     long getCorporateRunningScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Completed' and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Completed' and ownerTypeId=:ownerTypeId")
     long getCorporateCompletedScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Queued'  and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Queued'  and ownerTypeId=:ownerTypeId")
     long getCorporateQueuedScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and ownerTypeId=:ownerTypeId")
     long getCorporateTotalScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from findings where status='New' and isFalsePositive=false and notExploitable=false and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from findings where isDeleted=false and status='New' and isFalsePositive=false and notExploitable=false and ownerTypeId=:ownerTypeId")
     long getCorporateNewFindingCount(@BindBean Analytics analytics);
 
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -51,6 +53,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and repoId=:id" +
             " and status <> 'Closed'" +
             " and isFalsePositive=false " +
@@ -62,6 +65,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -75,6 +79,7 @@ public interface AnalyticsDAO {
     //group
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -83,20 +88,21 @@ public interface AnalyticsDAO {
     @RegisterMapper(SeverityCountChartMapper.class)
     List<SeverityCountChart> getGroupSeverityCount(@BindBean Analytics analytics, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where status='Progress' and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Progress' and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
     long getGroupRunningScanCount(@BindBean Analytics analytics, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where status='Completed' and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Completed' and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
     long getGroupCompletedScanCount(@BindBean Analytics analytics, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where status='Queued'  and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Queued'  and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
     long getGroupQueuedScanCount(@BindBean Analytics analytics, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where isDeleted=false and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
     long getGroupTotalScanCount(@BindBean Analytics analytics, @BindIn("groupIds") List<Long> groupIds);
 
     @SqlQuery("select count(*) from findings where status='New' " +
             " and isFalsePositive=false " +
+            " and isDeleted=false " +
             " and notExploitable=false " +
             " and ownerTypeId=:ownerTypeId " +
             " and groupId in (<groupIds>)")
@@ -104,6 +110,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -116,6 +123,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and repoId=:id" +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -128,6 +136,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -143,6 +152,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -151,20 +161,21 @@ public interface AnalyticsDAO {
     @RegisterMapper(SeverityCountChartMapper.class)
     List<SeverityCountChart> getPersonalSeverityCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Progress' and ownerTypeId=:ownerTypeId and userId=:userId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Progress' and ownerTypeId=:ownerTypeId and userId=:userId")
     long getPersonalRunningScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Completed' and ownerTypeId=:ownerTypeId and userId=:userId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Completed' and ownerTypeId=:ownerTypeId and userId=:userId")
     long getPersonalCompletedScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where status='Queued'  and ownerTypeId=:ownerTypeId and userId=:userId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and status='Queued'  and ownerTypeId=:ownerTypeId and userId=:userId")
     long getPersonalQueuedScanCount(@BindBean Analytics analytics);
 
-    @SqlQuery("select count(*) from scans where ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where isDeleted=false and ownerTypeId=:ownerTypeId")
     long getPersonalTotalScanCount(@BindBean Analytics analytics);
 
     @SqlQuery("select count(*) from findings where status='New' " +
             " and isFalsePositive=false " +
+            " and isDeleted=false " +
             " and notExploitable=false " +
             " and ownerTypeId=:ownerTypeId " +
             " and userId=:userId")
@@ -172,6 +183,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -184,6 +196,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,severity from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and repoId=:id" +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -196,6 +209,7 @@ public interface AnalyticsDAO {
 
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +

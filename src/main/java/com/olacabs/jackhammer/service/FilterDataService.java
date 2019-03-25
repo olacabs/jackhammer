@@ -90,7 +90,7 @@ public class FilterDataService extends AbstractDataService<Filter> {
     }
 
     private String getFilterQuery(Filter filter) {
-        String whereClause = " isFalsePositive = false and ownerTypeId=:ownerTypeId ";
+        String whereClause = " isDeleted=false and isFalsePositive = false and ownerTypeId=:ownerTypeId ";
         if (isGroupRequest(filter.getOwnerTypeId())) {
             List<Group> userGroups = filter.getUser().getGroups();
             List<Long> groupIds = new ArrayList();

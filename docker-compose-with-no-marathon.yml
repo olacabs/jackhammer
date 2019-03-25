@@ -1,0 +1,52 @@
+version: "3"
+volumes:
+  # We'll define a volume that will store the data from the mysql databases:
+  mysql-data:
+    driver: local
+services:
+  mysqldb:
+   image: mysql/mysql-server:5.7
+   container_name: jackhammer-db
+   environment:
+     MYSQL_ROOT_PASSWORD: root
+     MYSQL_USER: jch
+     MYSQL_PASSWORD: jch
+     MYSQL_DATABASE: jackhammer
+   ports:
+     - "3306:3306"
+   networks:
+     - jch_net
+   volumes:
+     - mysql-data:/var/lib/mysql
+     - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+   restart: always
+  jch-server:
+   build: .
+   ports:
+     - "8081:8080"
+   depends_on:
+     - mysqldb
+   links:
+     - mysqldb
+   networks:
+     - jch_net
+   environment:
+     ENABLED_MARATHON: 'false'
+  jch-client:
+    image: jackhammer/jackhammer-client
+    ports:
+      - "5005:8080"
+    links:
+     - jch-server:jch-server
+    depends_on:
+     - jch-server
+    networks:
+     - jch_net
+networks:
+  jch_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 172.16.121.0/24

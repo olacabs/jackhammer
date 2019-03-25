@@ -3,7 +3,6 @@ FROM ubuntu:18.04
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates \
     && apt-get install -y --no-install-recommends git \
-    && apt-get install -y --no-install-recommends iproute2 \
     && apt-get install -y --no-install-recommends openjdk-8-jdk \
     && apt-get install -y --no-install-recommends maven \
     && rm -rf /var/lib/apt/lists/*

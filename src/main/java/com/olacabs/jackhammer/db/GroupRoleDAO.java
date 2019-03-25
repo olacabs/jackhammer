@@ -17,9 +17,9 @@ public interface GroupRoleDAO {
     @SqlUpdate("insert into groupsRoles (groupId, roleId) values (:rp.groupId, :rp.roleId)")
     long insert(@BindBean("rp") GroupRole groupRole);
 
-    @SqlQuery("select * from groupsRoles where groupId=:groupId")
+    @SqlQuery("select * from groupsRoles where groupId=:groupId and isDeleted=true")
     List<GroupRole> findByGroupId(@Bind("groupId") long groupId);
 
-    @SqlUpdate("delete from groupsRoles where roleId = :g.roleId and groupId = :g.groupId")
+    @SqlUpdate("update groupsRoles set isDeleted=true where roleId = :g.roleId and groupId = :g.groupId")
     void delete(@BindBean("g") GroupRole groupRole);
 }

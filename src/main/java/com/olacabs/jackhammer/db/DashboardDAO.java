@@ -14,7 +14,7 @@ public interface DashboardDAO {
     //execute dashboard queries
 
     @SqlQuery("select count(*) as count,severity from findings" +
-            " where ownerTypeId=:ownerTypeId  " +
+            " where isDeleted=false and ownerTypeId=:ownerTypeId  " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -23,7 +23,7 @@ public interface DashboardDAO {
     List<SeverityCountChart> getExecutiveSeverityCount(@BindBean Dashboard dashboard);
 
     @SqlQuery("select count(*) as count,severity from findings" +
-            " where ownerTypeId=:ownerTypeId  " +
+            " where isDeleted=false and ownerTypeId=:ownerTypeId  " +
             " and scanTypeId=:scanTypeId" +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -33,7 +33,7 @@ public interface DashboardDAO {
     List<SeverityCountChart> getExecutiveScanTypeCount(@BindBean Dashboard dashboard);
 
     @SqlQuery("select count(*) as count, groupId from findings " +
-            " where ownerTypeId=:ownerTypeId " +
+            " where isDeleted=false and ownerTypeId=:ownerTypeId " +
             " and status <> 'Closed'" +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -46,7 +46,7 @@ public interface DashboardDAO {
 
 
     @SqlQuery("select count(*) as count,severity from findings" +
-            " where ownerTypeId=:ownerTypeId " +
+            " where isDeleted=false and ownerTypeId=:ownerTypeId " +
             " and groupId=:id " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -57,7 +57,8 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,groupId from findings " +
             "where MONTH(createdAt) = MONTH(CURRENT_DATE()) and YEAR(createdAt) = YEAR(CURRENT_DATE()) " +
-            "and ownerTypeId=:ownerTypeId" +
+            "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and severity='Critical' " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -69,7 +70,8 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,groupId from findings " +
             "where MONTH(createdAt) = MONTH(CURRENT_DATE()) and YEAR(createdAt) = YEAR(CURRENT_DATE()) " +
-            "and ownerTypeId=:ownerTypeId" +
+            "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and severity='High' " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -82,6 +84,7 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and groupId=:id " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -94,6 +97,7 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and groupId=:id " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -106,6 +110,7 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status = 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -118,6 +123,7 @@ public interface DashboardDAO {
     // corporate dashboard
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
+            " and isDeleted=false " +
             "and ownerTypeId=:ownerTypeId " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -128,6 +134,7 @@ public interface DashboardDAO {
 
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where scanTypeId=:scanTypeId " +
+            " and isDeleted=false " +
             " and ownerTypeId=:ownerTypeId  " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -140,6 +147,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -152,6 +160,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and repoId=:id " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -163,6 +172,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             "where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -177,6 +187,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -188,6 +199,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId  " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -200,6 +212,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -213,6 +226,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and repoId=:id " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -225,6 +239,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             "where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -240,6 +255,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and userId=:userId " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
@@ -251,6 +267,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity,MONTH(createdAt) as month FROM findings " +
             "where scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId  " +
+            " and isDeleted=false " +
             "and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -263,6 +280,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,repoId from findings" +
             " where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
@@ -276,6 +294,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and repoId=:id " +
             " and userId=:userId " +
             " and status <> 'Closed' " +
@@ -288,6 +307,7 @@ public interface DashboardDAO {
     @SqlQuery("select count(*) as count,name as vulnerabilityType,severity from findings " +
             "where scanTypeId=:scanTypeId " +
             " and ownerTypeId=:ownerTypeId " +
+            " and isDeleted=false " +
             " and status <> 'Closed' " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +

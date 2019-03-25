@@ -24,24 +24,24 @@ public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
     @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans - 1 where id=:id")
     void decreaseRunningScans(@Bind("id") long id);
 
-    @SqlQuery("select * from toolInstances where toolId=:toolId order by id desc")
+    @SqlQuery("select * from toolInstances where toolId=:toolId and isDeleted=false order by id desc")
     List<ToolInstance> getByToolId(@Bind("toolId") long toolId);
 
-    @SqlQuery("select * from toolInstances")
+    @SqlQuery("select * from toolInstances where isDeleted=false")
     List<ToolInstance> getAll();
 
-    @SqlQuery("select * from toolInstances where sessionId=:sessionId")
+    @SqlQuery("select * from toolInstances where sessionId=:sessionId and isDeleted=false")
     ToolInstance getBySessionId(@Bind("sessionId") String sessionId);
 
-    @SqlUpdate("delete from toolInstances where id=:id")
+    @SqlUpdate("update toolInstances set isDeleted=true where id=:id")
     void deleteById(@Bind("id") long id);
 
-    @SqlUpdate("delete from toolInstances where toolId=:toolId")
+    @SqlUpdate("update toolInstances set isDeleted=true where toolId=:toolId")
     void deleteByToolId(@Bind("toolId") long toolId);
 
-    @SqlUpdate("truncate table toolInstances")
+    @SqlUpdate("update toolInstances set isDeleted=true")
     void deleteAll();
 
-    @SqlQuery("select * from toolInstances where maxAllowedScans=currentRunningScans and updatedAt > NOW() - INTERVAL 30 MINUTE and currentRunningScans <> 0 and platform <> 'Web'")
+    @SqlQuery("select * from toolInstances where isDeleted=false and maxAllowedScans=currentRunningScans and updatedAt > NOW() - INTERVAL 30 MINUTE and currentRunningScans <> 0 and platform <> 'Web'")
     List<ToolInstance> hangInstances();
 }

@@ -16,9 +16,9 @@ public interface RoleUserDAO {
     @SqlUpdate("insert into rolesUsers(roleId,userId) values(:roleId,:userId)")
     int insert(@BindBean RoleUser roleUser);
 
-    @SqlQuery("select * from rolesUsers where userId=:userId")
+    @SqlQuery("select * from rolesUsers where userId=:userId and isDeleted=false")
     List<RoleUser> findByUserId(@Bind("userId") long userId);
 
-    @SqlUpdate("delete from rolesUsers where roleId = :ru.roleId and userId = :ru.userId")
+    @SqlUpdate("update rolesUsers set isDeleted=true where roleId = :ru.roleId and userId = :ru.userId")
     void delete(@BindBean("ru") RoleUser roleUser);
 }

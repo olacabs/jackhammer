@@ -3,11 +3,9 @@ package com.olacabs.jackhammer.utilities;
 import java.io.File;
 import java.io.IOException;
 
-import java.io.InterruptedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.*;
@@ -33,6 +31,7 @@ import com.olacabs.jackhammer.common.CustomErrorCodes;
 import com.olacabs.jackhammer.common.ExceptionMessages;
 import com.olacabs.jackhammer.exceptions.GitCloneException;
 import com.olacabs.jackhammer.exceptions.TempDirCreationException;
+import org.apache.commons.lang3.StringUtils;
 
 
 @Slf4j
@@ -61,11 +60,6 @@ public class ScanUtil {
     @Named(Constants.LANGUAGE_DAO)
     LanguageDAO languageDAO;
 
-
-    @Inject
-    @Named(Constants.TOOL_INSTANCE_DAO)
-    ToolInstanceDAO toolInstanceDAO;
-
     @Inject
     @Named(Constants.GIT_DAO)
     GitDAO gitDAO;
@@ -76,6 +70,8 @@ public class ScanUtil {
     public void startScan(Scan scan) {
         try {
             log.info("picking scan with id {} {}", scan.getId());
+            scan.setStatus(Constants.SCAN_PICKED_STATUS);
+            scanDAO.updateScanStatus(scan);
             ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
             if (scan.getIsTaggedTools() == false) {
                 Path tempDirPath = null;
@@ -125,7 +121,6 @@ public class ScanUtil {
         } catch (Exception e) {
             log.error("Error while cloning the repo", e);
             return false;
-//            throw new GitCloneException(ExceptionMessages.GIT_CLONE_ERROR, e, CustomErrorCodes.GIT_CLONE_ERROR);
         } catch (Throwable th) {
             log.error("Error while cloning the repo", th);
             return false;
@@ -150,7 +145,7 @@ public class ScanUtil {
             }
             if (scan.getPlatforms().size() > 0) {
                 scan.setSupported(true);
-                scan.setScanPlatforms(String.join(",", scan.getPlatforms()));
+                scan.setScanPlatforms(String.join(Constants.COMMA, scan.getPlatforms()));
             } else {
                 String failedMessage = (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) && scan.isAccessible() == false ? Constants.STATIC_SCAN_FAILED_MESSAGE : Constants.TOOLS_NOT_SUPPORTED;
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
@@ -167,9 +162,8 @@ public class ScanUtil {
 
     public Boolean tagScanTools(Scan scan) {
         List<ScanTool> scanTools = scanToolDAO.getQueuedScanTools(scan.getId());
-        List<ToolInstance> toolInstanceList = toolInstanceDAO.getAll();
         ScanType scanType = scanTypeDAO.findScanTypeById(scan.getScanTypeId());
-        if (isToolDestroyed(scanTools, toolInstanceList) || scanTools.size() == 0) {
+        if (scanTools.size() == 0) {
             scanToolDAO.deleteScanTools(scan.getId());
             Path tempDirPath = null;
             if (scanType.getIsStatic() || scanType.getIsHardCodeSecret()) {
@@ -273,8 +267,9 @@ public class ScanUtil {
     }
 
     private void pickStaticPlatforms(Scan scan, Language language, List<Long> scanToolIds) {
-        scan.getPlatforms().add(language.getName().toLowerCase());
         List<Tool> languageTools = toolDAO.findByLanguageId(language.getId());
+        if (languageTools.size() == 0) return;
+        scan.getPlatforms().add(language.getName().toLowerCase());
         for (Tool eachLanguageTool : languageTools) {
             if (!scanToolIds.contains(eachLanguageTool.getId())) {
                 scanToolIds.add(eachLanguageTool.getId());
@@ -288,8 +283,12 @@ public class ScanUtil {
     }
 
     private StringBuilder getGitCloneProcessBuilderWithCredentials(Scan scan) {
-        com.olacabs.jackhammer.models.Git git = gitDAO.get();
+        Git git = gitDAO.get();
         String target = scan.getTarget();
+        String internalUrl = jackhammerConfiguration.getGitConfiguration().getInternalUrl();
+        String externalUrl = jackhammerConfiguration.getGitConfiguration().getExternalUrl();
+        if (!StringUtils.isEmpty(internalUrl)) target = target.replace(externalUrl, internalUrl);
+        StringBuilder gitCmd = new StringBuilder();
         try {
             if (git != null) {
                 String privateToken = AES.decrypt(git.getApiAccessToken(), jackhammerConfiguration.getJwtConfiguration().getTokenSigningKey());
@@ -303,46 +302,22 @@ public class ScanUtil {
                 targetWithCredentials.append(repoUrlWithoutHttps);
                 target = targetWithCredentials.toString();
             }
+            gitCmd.append(Constants.GIT);
+            gitCmd.append(Constants.STRING_SPACER);
+            gitCmd.append(Constants.CLONE);
+            if (scan.getBranch() != null) {
+                gitCmd.append(Constants.STRING_SPACER);
+                gitCmd.append(Constants.BRANCH_ARG_OPTION);
+                gitCmd.append(Constants.STRING_SPACER);
+                gitCmd.append(scan.getBranch());
+            }
+            gitCmd.append(Constants.STRING_SPACER);
+            gitCmd.append(target);
         } catch (Exception e) {
             log.error("Error while building clone command", e);
         } catch (Throwable th) {
             log.error("Error while building git clone command", th);
         }
-        StringBuilder gitCmd = new StringBuilder();
-        gitCmd.append(Constants.GIT);
-        gitCmd.append(Constants.STRING_SPACER);
-        gitCmd.append(Constants.CLONE);
-        if (scan.getBranch() != null) {
-            gitCmd.append(Constants.STRING_SPACER);
-            gitCmd.append(Constants.BRANCH_ARG_OPTION);
-            gitCmd.append(Constants.STRING_SPACER);
-            gitCmd.append(scan.getBranch());
-        }
-        gitCmd.append(Constants.STRING_SPACER);
-        gitCmd.append(target);
         return gitCmd;
-    }
-
-    private boolean isToolDestroyed(List<ScanTool> scanToolList, List<ToolInstance> toolInstanceList) {
-        Boolean toolDestroyed = false;
-        try {
-            List<Long> scanToolIds = new ArrayList<Long>();
-            List<Long> toolInstanceIds = new ArrayList<Long>();
-            for (ScanTool scanTool : scanToolList) {
-                scanToolIds.add(scanTool.getToolId());
-            }
-
-            for (ToolInstance toolInstance : toolInstanceList) {
-                toolInstanceIds.add(toolInstance.getId());
-            }
-            for (Long scanToolId : scanToolIds) {
-                if (!toolInstanceIds.contains(scanToolId)) toolDestroyed = true;
-            }
-        } catch (Exception e) {
-            log.error("Error while getting isToolDestroyed status", e);
-        } catch (Throwable th) {
-            log.error("Error while getting isToolDestroyed status...", th);
-        }
-        return toolDestroyed;
     }
 }

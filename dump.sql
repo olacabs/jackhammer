@@ -634,32 +634,6 @@ INSERT INTO `rolesTasks` VALUES (70,41),(70,42),(70,43),(70,44),(70,45),(70,46),
 /*!40000 ALTER TABLE `rolesTasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `rolesTeams`
---
-
-DROP TABLE IF EXISTS `rolesTeams`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rolesTeams` (
-  `roleId` int(11) NOT NULL,
-  `teamId` int(11) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`roleId`,`teamId`),
-  KEY `roleIdIndex` (`roleId`),
-  KEY `teamIdIndex` (`teamId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rolesTeams`
---
-
-LOCK TABLES `rolesTeams` WRITE;
-/*!40000 ALTER TABLE `rolesTeams` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rolesTeams` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `rolesUsers`
@@ -1087,8 +1061,24 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 alter table findings add column modifiedBy varchar(255);
 INSERT INTO languages (name,fileExtension) VALUES ('Python','py');
+INSERT INTO languages (name,fileExtension) VALUES ('PHP','.php');
 insert into groups(name,scanTypeId) values('Web',(select id from scanTypes where name='Web'));
 insert into groups(name,scanTypeId) values('Wordpress',(select id from scanTypes where name='Wordpress'));
 insert into groups(name,scanTypeId) values('Mobile',(select id from scanTypes where name='Mobile'));
 insert into groups(name,scanTypeId) values('Network',(select id from scanTypes where name='Network'));
+
+alter table comments add column isDeleted tinyint(1) default false;
+alter table findings add column isDeleted tinyint(1) default false;
+alter table scans add column isDeleted tinyint(1) default false;
+alter table findingsTags add column isDeleted tinyint(1) default false;
+alter table groups add column isDeleted tinyint(1) default false;
+alter table groupsRoles add column isDeleted tinyint(1) default false;
+alter table groupsUsers add column isDeleted tinyint(1) default false;
+alter table roles add column isDeleted tinyint(1) default false;
+alter table rolesTasks add column isDeleted tinyint(1) default false;
+alter table rolesUsers add column isDeleted tinyint(1) default false;
+alter table scanTools add column isDeleted tinyint(1) default false;
+alter table tools add column isDeleted tinyint(1) default false;
+alter table toolInstances add column isDeleted tinyint(1) default false;
+alter table uploads add column isDeleted tinyint(1) default false;
 -- Dump completed on 2018-09-19 11:35:46

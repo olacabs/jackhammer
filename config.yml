@@ -20,16 +20,25 @@ jwtConfiguration:
   tokenIssuer: jackhammer
 scanManagerConfiguration:
   threadPoolSize: 5 # 5 threads
-  initialDelay: 30 # 30 seconds delay on startup
-  period: 30 #seconds
+  initialDelay: 60 # 30 seconds delay on startup
+  period: 60 #seconds
+  alertMails:
+  wpScanAlerts: true
+  webScanAlerts: false
+  staticCodeScanAlerts: false
+  hardcodeSecretScanAlerts: false
+  networkScanAlerts: false
+  mobileScanAlerts: false
 toolManagerConfiguration:
   threadPoolSize: 5 # 5 threads
-  initialDelay: 30 # 30 seconds delay on startup
-  period: 30 #seconds
+  initialDelay: 60 # 30 seconds delay on startup
+  period: 60 #seconds
 gitConfiguration:
   threadPoolSize: 5 # 5 threads
   initialDelay: 0 # 0 days delay on startup
   period: 1 #one day
+  internalUrl:
+  externalUrl:
 marathonConfiguration:
   endpoint: http://marathon:8080
   jchAppId: orc/jch-auth

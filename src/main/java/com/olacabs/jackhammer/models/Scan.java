@@ -51,7 +51,7 @@ public class Scan extends AbstractModel {
     private Boolean isMobileScan;
     private Date lastRunDate;
     private List<Language> languageList = Lists.newArrayList();
-    private List<Tool> toolList = Lists.newArrayList();
+    private Set<Tool> toolList = new HashSet<Tool>();
     private List<Long> groupIds = Lists.newArrayList();
     private List<Long> repoIds = Lists.newArrayList();
     private List<Finding> findingList = Lists.newArrayList();

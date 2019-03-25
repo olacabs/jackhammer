@@ -79,6 +79,7 @@ public interface RepoDAO extends CrudDAO<Repo> {
             " and f.notExploitable=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +
+            " and f.isDeleted=false " +
             "group by r.name,rId,r.groupId,f.severity) f " +
             "where grpid=:groupId and ownerTypeId=:ownerTypeId and scanTypeId=:scanTypeId " +
             "group by name,id " +
@@ -104,6 +105,7 @@ public interface RepoDAO extends CrudDAO<Repo> {
             " and f.notExploitable=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +
+            " and f.isDeleted=false " +
             "group by r.name,rId,r.groupId,f.severity) f " +
             "where grpid=:groupId and name like concat('%', :searchTerm,'%') and ownerTypeId=:ownerTypeId and scanTypeId=:scanTypeId " +
             "group by name,id " +
@@ -133,6 +135,7 @@ public interface RepoDAO extends CrudDAO<Repo> {
             " and f.notExploitable=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +
+            " and f.isDeleted=false " +
             "and r.userId=:userId " +
             "group by r.name,rId,f.severity) f " +
             "where userId=:userId and scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId " +
@@ -158,6 +161,7 @@ public interface RepoDAO extends CrudDAO<Repo> {
             "and f.status not in('Closed') " +
             " and f.isFalsePositive=false " +
             " and f.notExploitable=false " +
+            " and f.isDeleted=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +
             "and r.userId=:userId " +

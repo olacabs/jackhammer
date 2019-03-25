@@ -65,6 +65,7 @@ public class SdkCommunicator {
         if (!toolResponse.isToolResponse(message)) {
             long toolInstanceId = Long.parseLong(toolInstances.get(session.getId()));
 //            toolResponse.decreaseRunningScans(toolInstanceId);
+            log.info("Received response from tool instance id..{} {}", toolInstanceId);
             scanResponse.saveScanResponse(message, toolInstanceId);
         } else {
             log.info("received response from client....." + message);
@@ -79,13 +80,13 @@ public class SdkCommunicator {
         String sessionId = session.getId();
         try {
             long toolInstanceId = Long.getLong(toolInstances.get(sessionId));
-            toolResponse.deleteToolInstance(toolInstanceId);
             clients.remove(session);
+            toolResponse.deleteToolInstance(toolInstanceId);
             log.info(String.format("Session %s closed because of %s", session.getId(), closeReason));
         } catch (NullPointerException ne) {
-            toolResponse.deleteToolInstanceBySession(sessionId);
-            log.info("sessionId got killed {} {}", sessionId);
+            log.info("sessionId getting killed {} {}", sessionId);
             clients.remove(session);
+            toolResponse.deleteToolInstanceBySession(sessionId);
             log.error("Session was not exists", ne);
         }
     }
@@ -107,10 +108,12 @@ public class SdkCommunicator {
 
     public void sendScanRequest(Scan scan) {
         try {
-//            synchronized (clients) {
-            List<Tool> toolList = scan.getToolList();
+            Set<Tool> toolList = scan.getToolList();
             int pickedTools = 0;
+            Set<Long> toolIds = new HashSet<Long>();
             for (Tool tool : toolList) {
+                if (toolIds.contains(tool.getId())) continue;
+                toolIds.add(tool.getId());
                 List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
                 log.info("no of tool instances are {} {}", toolInstanceList.size());
                 for (ToolInstance toolInstance : toolInstanceList) {
@@ -129,11 +132,16 @@ public class SdkCommunicator {
                         } catch (NullPointerException nl) {
                             log.info("NullPointerException while sending scan to remote tool");
                         }
+                    } else {
+                        scan.setStatus(Constants.SCAN_QUEUED_STATUS);
                     }
                 }
             }
-            if (pickedTools > 0) scanRequest.changeScanStatus(scan);
-//            }
+            if (pickedTools > 0) {
+                scanRequest.changeScanStatus(scan, Constants.SCAN_PROGRESS_STATUS);
+            } else {
+                scanRequest.changeScanStatus(scan, Constants.SCAN_QUEUED_STATUS);
+            }
         } catch (Exception e) {
             log.error("Error while picking session tool", e);
         } catch (Throwable e) {
@@ -162,32 +170,5 @@ public class SdkCommunicator {
         int index = scan.getApkTempFile().lastIndexOf(Constants.URL_SEPARATOR);
         String fileName = scan.getApkTempFile().substring(index + 1);
         scan.setApkTempFile(fileName);
-    }
-
-    private void verifyToolInstanceScanCount(final long toolInstanceId, final Timestamp updatedAt) {
-        ToolInstance toolInstance = toolInstanceDAO.get(toolInstanceId);
-        if (updatedAt != toolInstance.getUpdatedAt() || toolInstance.getCurrentRunningScans() == 0  ) return;
-        log.info("Running scan count not updated....{} {}", toolInstanceId);
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        Runnable task = new Runnable() {
-            public void run() {
-                try {
-                    while (true) {
-                        ToolInstance toolInstance = toolInstanceDAO.get(toolInstanceId);
-                        if (updatedAt == toolInstance.getUpdatedAt() && toolInstance.getCurrentRunningScans()!= 0) {
-                            log.info("Record got locked,re-trying to update running scans count...{}..{}", toolInstanceId);
-                            toolResponse.decreaseRunningScans(toolInstanceId);
-                        } else {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    log.error("Error while re-trying to update running scans count..{}..{}", toolInstanceId);
-                }
-            }
-        };
-        int delay = 1;
-        scheduler.schedule(task, delay, TimeUnit.SECONDS);
-        scheduler.shutdown();
     }
 }
