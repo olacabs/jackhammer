@@ -150,15 +150,14 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false")
     List<Finding> getAllScanFindings(@Bind("scanId") long scanId);
 
-    @SqlUpdate("delete from findings where scanId=:scanId")
+    @SqlUpdate("update findings set isDeleted=true where scanId=:scanId")
     void deleteScanFindings(@Bind("scanId") long scanId);
 
-    @SqlUpdate("delete from findings " +
+    @SqlUpdate("update findings set isDeleted=true " +
             "where repoId=:repoId" +
             " and toolName=:toolName " +
-            " and isDeleted=false " +
             "and scanType=:scanType " +
-            "and ownerType=:ownerType limit 1")
+            "and ownerType=:ownerType ")
     void deleteToolFindings(@Bind("repoId") long repoId,@Bind("ownerType") String ownerType,
                             @Bind("scanType") String scanType,@Bind("toolName") String toolName);
 
