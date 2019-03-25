@@ -1,3 +1,0 @@
-var repos = "<%=raw escape_javascript(render(partial: 'display_repos')) %>";
-$("#findings_table").html(repos);
-$(".exl_export").attr("href","/teams/export_findings.xls?team_id=<%=@team.id%>")

@@ -1,7 +1,0 @@
-$("#addTagModal").modal('toggle');
-$(".tags").append("<span><%=@tags%></span>")
-$("#status_message").addClass("alert alert-success fade in flash-setting");
-$("#status_message").html("<a href='#' class='close' data-dismiss='alert'>&times;</a> <strong class='text-center'><%=@msg%></strong> ");
-window.setTimeout(function() { // hide alert message
-	$(".alert").fadeOut('5000');
-}, 5000);

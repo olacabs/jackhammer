@@ -1,7 +1,0 @@
-#[Description]#
-URI: %evidence.uri%
-Param: %evidence.param%
-
-Attack:
-
-bc.. %evidence.attack%

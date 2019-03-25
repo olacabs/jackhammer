@@ -1,6 +1,9 @@
-docker-compose build
-docker-compose up -d
-docker-compose run web rake db:create
-docker-compose run web rake db:migrate
-docker-compose run  -e APPLICATION_MODE=$1 web rake db:seed
-docker-compose run web figlet -k -w 500 "JACKHAMMER IS UP" 
+if [ $# -eq 0 ]; then
+	echo "Building project with out marathon configuraiton..."
+	docker-compose -f docker-compose-with-no-marathon.yml build
+	docker-compose -f docker-compose-with-no-marathon.yml up -d
+else
+	echo "Building project with marathon configuraiton..."
+	docker-compose -f docker-compose-with-marathon.yml build
+	docker-compose -f docker-compose-with-marathon.yml up -d
+fi

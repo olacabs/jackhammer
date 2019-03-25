@@ -1,0 +1,55 @@
+server:
+  type: simple
+  applicationContextPath: /
+  connector:
+    type: http
+    port: 8080
+swagger:
+  resourcePackage: com.olacabs.jackhammer.controllers
+database:
+  driverClass: com.mysql.jdbc.Driver
+  user: jch
+  password: jch 
+  url: jdbc:mysql://mysqldb:3306/jackhammer
+logging:
+  level: INFO
+jwtConfiguration:
+  tokenExpirationTime: 60 # Number of minutes
+  refreshTokenExpTime: 60 # Minutes
+  tokenSigningKey: fgcahblofbemojbccicfnnggf
+  tokenIssuer: jackhammer
+scanManagerConfiguration:
+  threadPoolSize: 5 # 5 threads
+  initialDelay: 60 # 30 seconds delay on startup
+  period: 60 #seconds
+  alertMails:
+  wpScanAlerts: true
+  webScanAlerts: false
+  staticCodeScanAlerts: false
+  hardcodeSecretScanAlerts: false
+  networkScanAlerts: false
+  mobileScanAlerts: false
+toolManagerConfiguration:
+  threadPoolSize: 5 # 5 threads
+  initialDelay: 60 # 30 seconds delay on startup
+  period: 60 #seconds
+gitConfiguration:
+  threadPoolSize: 5 # 5 threads
+  initialDelay: 0 # 0 days delay on startup
+  period: 1 #one day
+  internalUrl:
+  externalUrl:
+marathonConfiguration:
+  endpoint: http://marathon:8080
+  jchAppId: orc/jch-auth
+fileConfiguration:
+  targetDirectory: uploads
+  toolsDir: tools
+  fileLimitSize: 1
+s3Configuration:
+  accessKey:
+  secretKey:
+  bucketName:
+  region:
+clientConfiguration:
+  clientUrl: http://localhost:3004

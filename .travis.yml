@@ -1,0 +1,11 @@
+language: java
+install: mvn clean install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+jdk:
+  - openjdk8
+branches:
+  only:
+   - jch-v2
+deploy:
+  provider: script
+  script: "cp .maven.xml $HOME/.m2/settings.xml && mvn deploy"
+  skip_cleanup: true
