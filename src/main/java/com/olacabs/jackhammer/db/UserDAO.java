@@ -19,7 +19,7 @@ public interface UserDAO extends CrudDAO<User>  {
     @GetGeneratedKeys
     int insert(@BindBean User user);
 
-    @SqlQuery("select * from users where email=:email")
+    @SqlQuery("select * from users where email=:email and isDeleted=false")
     User findByEmail(@Bind("email") String email);
 
     @SqlQuery("select * from users where id=:id")

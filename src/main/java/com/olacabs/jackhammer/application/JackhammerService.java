@@ -9,8 +9,9 @@ import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.olacabs.jackhammer.filters.AuthorizationFilter;
 import com.olacabs.jackhammer.git.manager.GitPooler;
 import com.olacabs.jackhammer.scan.manager.ScheduledScanPooler;
-import com.olacabs.jackhammer.tool.interfaces.container.manager.ToolInstanceManager;
-import com.olacabs.jackhammer.tool.interfaces.container.manager.ToolPooler;
+import com.olacabs.jackhammer.scan.manager.WpScanSchedulerPooler;
+import com.olacabs.jackhammer.tool.interfaces.container.manager.HangedToolInstanceManager;
+import com.olacabs.jackhammer.tool.interfaces.container.manager.ActiveToolInstanceManager;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -114,9 +115,10 @@ public class JackhammerService extends Application<JackhammerConfiguration> {
         //adding thread pool
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ScanPooler.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ScheduledScanPooler.class));
-        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ToolPooler.class));
+        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ActiveToolInstanceManager.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(GitPooler.class));
-        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(ToolInstanceManager.class));
+        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(HangedToolInstanceManager.class));
+        environment.lifecycle().manage(guiceBundle.getInjector().getInstance(WpScanSchedulerPooler.class));
     }
 
     @Override

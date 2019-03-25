@@ -20,42 +20,42 @@ public interface ScanDAO extends CrudDAO<Scan> {
     int insert(@BindBean Scan scan);
 
     //CORPORATE SCANS
-    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
     List<Scan> getCorporateScans(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false")
     long getCorporateTotalScanCount(@BindBean Scan scan);
 
-    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%') order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%') order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
     List<Scan> getCorporateSearchResults(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%')")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%')")
     long getCorporateTotalSearchCount(@BindBean Scan scan);
 
     //GROUP SCANS
-    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and groupId in (<groupIds>) order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and groupId in (<groupIds>) order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
     List<Scan> getTeamScans(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and groupId in (<groupIds>)")
     long getGroupTotalScanCount(@BindBean Scan scan, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%') and groupId in (<groupIds>) order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%') and groupId in (<groupIds>) order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
     List<Scan> getGroupSearchResults(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order, @BindIn("groupIds") List<Long> groupIds);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%') and groupId in (<groupIds>)")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%') and groupId in (<groupIds>)")
     long getGroupTotalSearchCount(@BindBean Scan scan, @BindIn("groupIds") List<Long> groupIds);
 
     //PERSONAL SCANS
-    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and userId=:userId order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and userId=:userId order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
     List<Scan> getPersonalScans(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and userId=:userId")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and userId=:userId")
     long getPersonalTotalScanCount(@BindBean Scan scan);
 
-    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%') and userId=:userId order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from scans  where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%') and userId=:userId order by <sortColumn> <order> LIMIT :limit OFFSET :offset")
     List<Scan> getPersonalSearchResults(@BindBean Scan scan, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
-    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and name like concat('%', :searchTerm,'%') and userId=:userId")
+    @SqlQuery("select count(*) from scans where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false and name like concat('%', :searchTerm,'%') and userId=:userId")
     long getPersonalTotalSearchCount(@BindBean Scan scan);
 
 
@@ -77,17 +77,20 @@ public interface ScanDAO extends CrudDAO<Scan> {
     @SqlQuery("select * from scans where target=:name")
     Scan findScanByName(@Bind("name") String name);
 
-    @SqlQuery("select * from scans where status='Queued' order by RAND() limit 10")
+    @SqlQuery("select * from scans where status='Queued' and isDeleted=false order by RAND() limit 10")
     List<Scan> getQueuedScans();
 
-    @SqlQuery("select * from scans where scheduleTypeId not in(0) and lastRunDate is not null order by RAND() limit 10")
+    @SqlQuery("select * from scans where scheduleTypeId not in(0) and isDeleted=false and lastRunDate is not null order by RAND() limit 10")
     List<Scan> getScheduledScans();
+
+    @SqlQuery("select * from scans where scanTypeId=:scanTypeId and isDeleted=false")
+    List<Scan> getWordpressScans(@Bind("scanTypeId") long scanTypeId);
 
     @SqlUpdate("update scans set supported=:supported,isTaggedTools=true," +
             "scanPlatforms=:scanPlatforms,cloneRequired=:cloneRequired where id=:id")
     int updatedScanDetails(@BindBean Scan scan);
 
-    @SqlUpdate("delete from scans where id=:id")
+    @SqlUpdate("update scans set isDeleted=true where id=:id")
     void delete(@Bind("id") long id);
 
 

@@ -198,12 +198,13 @@ public class Constants {
     public static final String CLONE = "clone ";
     public static final String GIT_CLONE_FAILED = "Please check repo size (Scan not allowed if cloning taking more than 5 minutes) / Repo inaccessible";
     public static final String TEMP_DIR_PREFIX = "jackhammer";
-    public static final String TOOLS_NOT_SUPPORTED = "No Suitable tools found for given target";
+    public static final String TOOLS_NOT_SUPPORTED = "No tools to scan it";
     public static final String STATIC_SCAN_FAILED_MESSAGE = "No files in repo / Repo inaccessible / Not Supported";
     public static final String SCAN_PENDING_STATUS = "Pending";
     public static final String SCAN_PROGRESS_STATUS = "Progress";
     public static final String SCAN_QUEUED_STATUS = "Queued";
     public static final String SCAN_FAILED_STATUS = "Failed";
+    public static final String SCAN_PICKED_STATUS = "Picked";
     public static final String STRING_SPACER = " ";
     public static final String BRANCH_ARG_OPTION = "-b";
     public static final String HEALTHY = "Healthy";
@@ -300,6 +301,7 @@ public class Constants {
     public static final String NMAP = "Nmap";
     public static final String JACKHAMMER_URL = "Jackhammer Url";
     public static final String DESTROYED = "Destroyed";
+    public static final String MONITORING = "MONITORING";
 
     //scan fields
     public static final String START_TIME = "startTime";
@@ -344,4 +346,17 @@ public class Constants {
 
     //scheduleTypes
     public static final String WEEKLY = "WEEKLY";
+
+    //EXPORT FILE
+    public static final String JACKHAMMER_RESULT = "jackhammerResult";
+    public static final String CSV_EXTENSION  = ".csv";
+
+    //docker containers
+    public static final String EQUAL = "=";
+    public static final String COMMA = ",";
+    public static final String ENABLED_MARATHON = "ENABLED_MARATHON";
+
+
+    public static final String  SCAN = "SCAN";
+    public static final String  HYPEN = " - ";
 }

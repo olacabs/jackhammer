@@ -17,12 +17,12 @@ public interface FindingTagDAO {
     @SqlUpdate("insert into findingsTags (findingId, tagId) values (:ft.findingId, :ft.tagId)")
     long insert(@BindBean("ft") FindingTag findingTag);
 
-    @SqlQuery("select * from findingsTags where findingId=:findingId")
+    @SqlQuery("select * from findingsTags where findingId=:findingId and isDeleted=false")
     List<FindingTag> findByFindingId(@Bind("findingId") long findingId);
 
-    @SqlUpdate("delete from findingsTags where findingId = :ft.findingId and tagId = :ft.tagId")
+    @SqlUpdate("update findingsTags set isDeleted=true where findingId = :ft.findingId and tagId = :ft.tagId")
     void delete(@BindBean("ft") FindingTag findingTag);
 
-    @SqlUpdate("delete from findingsTags where findingId= :findingId")
+    @SqlUpdate("update findingsTags set isDeleted=true where findingId= :findingId")
     void deleteByFindingId(@Bind("findingId") long findingId);
 }

@@ -18,13 +18,13 @@ public interface UploadDAO extends CrudDAO<Upload> {
     @SqlQuery("select * from uploads where id=:id")
     Upload get(@Bind("id") long id);
 
-    @SqlQuery("select * from uploads where findingId=:findingId")
+    @SqlQuery("select * from uploads where findingId=:findingId and isDeleted=false")
     List<Upload> getAll(@BindBean Upload upload);
 
     @SqlUpdate("update uploads set id=:id where id=:id")
     void update(@BindBean Finding finding);
 
 
-    @SqlUpdate("delete from uploads where findingId=:findingId")
+    @SqlUpdate("update uploads set isDeleted=true where findingId=:findingId")
     void deleteFindingUploads(@Bind("findingId") long findingId);
 }

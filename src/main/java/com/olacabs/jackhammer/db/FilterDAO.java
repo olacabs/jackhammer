@@ -15,7 +15,7 @@ import java.util.List;
 
 @UseStringTemplate3StatementLocator
 public interface FilterDAO {
-    @SqlQuery("select distinct(name) from findings where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId")
+    @SqlQuery("select distinct(name) from findings where scanTypeId=:scanTypeId and ownerTypeId=:ownerTypeId and isDeleted=false")
     @RegisterMapper(VulnerableTypeMapper.class)
     List<VulnerableType> getVulnerableTypes(@BindBean Filter filter);
 

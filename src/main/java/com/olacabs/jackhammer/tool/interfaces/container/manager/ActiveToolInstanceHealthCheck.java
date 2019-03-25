@@ -9,6 +9,7 @@ import com.olacabs.jackhammer.db.ToolInstanceDAO;
 import com.olacabs.jackhammer.models.Tool;
 import com.olacabs.jackhammer.models.ToolInstance;
 import com.olacabs.jackhammer.models.ToolManifest;
+import com.olacabs.jackhammer.utilities.DockerUtil;
 import com.olacabs.jackhammer.utilities.ToolUtil;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
@@ -17,15 +18,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
-public class ToolHealthCheck implements Runnable {
+public class ActiveToolInstanceHealthCheck implements Runnable {
 
     @Inject
     @Named(Constants.TOOL_DAO)
@@ -44,40 +44,55 @@ public class ToolHealthCheck implements Runnable {
     @Inject
     JackhammerConfiguration jackhammerConfiguration;
 
+    @Inject
+    DockerUtil dockerUtil;
+    public static final Map<Long, String> toolStatus = new HashMap();
+
     public void run() {
         try {
             List<Tool> toolList = toolDAO.getAll();
-            log.info("pooling tools and tools size => " + toolList.size());
-            String healthCheckEndpoint = jackhammerConfiguration.marathonConfiguration.getEndpoint() + Constants.MARATHON_HEALTH_API;
-            Client client = ClientBuilder.newClient();
-            client.target(healthCheckEndpoint).request().get(String.class);
-            for (Tool eachTool : toolList) {
-                int noOfToolsRunning = 0;
-                int configuredInstances = 0;
-                try {
-                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(eachTool);
-                    String appId = toolManifest.getId();
-                    GetAppResponse getAppResponse = marathonClientManager.getApp(appId);
-                    if (getAppResponse != null)
-                        noOfToolsRunning = getRunningInstances(getAppResponse);
-                    configuredInstances = getConfiguredInstances(toolManifest);
-                    updateToolStatus(noOfToolsRunning, configuredInstances, eachTool);
-                    if (noOfToolsRunning == 0) marathonClientManager.createApp(toolManifest);
-                    if (noOfToolsRunning != 0 && noOfToolsRunning < configuredInstances) {
-                        int scaleInstances = configuredInstances - noOfToolsRunning;
-                        toolManifest.setInstances(scaleInstances);
-                        marathonClientManager.updateApp(toolManifest);
-                    }
-                    reDeployTool(eachTool, appId);
-                } catch (MarathonException me) {
-                    updateToolStatus(noOfToolsRunning, configuredInstances, eachTool);
-                    log.error("MarathonException While checking the tool health check", me.getMessage());
-                }
+            Boolean enabledMarathon = Boolean.valueOf(System.getenv(Constants.ENABLED_MARATHON));
+            if (enabledMarathon) {
+                containersHealthCheckWithMarathon(toolList);
+            } else {
+                containersHealthCheckWithNoMarathon(toolList);
             }
         } catch (Exception e) {
-            log.error("Tool health check error", e.getMessage());
+            log.error("Tool health check error", e);
         } catch (Throwable th) {
             log.error("Tool health check error", th);
+        }
+    }
+
+    private void containersHealthCheckWithNoMarathon(List<Tool> toolList) {
+        for (Tool tool : toolList) {
+            ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
+            String imageId = toolManifest.getContainer().getDocker().getImage();
+            dockerUtil.pullImage(imageId);
+            dockerUtil.startInstances(imageId, toolManifest);
+            updateToolStatus(dockerUtil.getContainerImages().get(imageId), toolManifest.getInstances(), tool);
+        }
+    }
+
+    private void containersHealthCheckWithMarathon(List<Tool> toolList) {
+        verifyMarathonHealthCheck();
+        for (Tool eachTool : toolList) {
+            int noOfToolsRunning = 0;
+            int configuredInstances = 0;
+            try {
+                ToolManifest toolManifest = toolUtil.buildToolManifestRecord(eachTool);
+                GetAppResponse getAppResponse = marathonClientManager.getApp(toolManifest.getId());
+                if (getAppResponse != null) noOfToolsRunning = getRunningInstances(getAppResponse);
+                configuredInstances = getConfiguredInstances(toolManifest);
+                updateToolStatus(noOfToolsRunning, configuredInstances, eachTool);
+                if (noOfToolsRunning == 0) marathonClientManager.createApp(toolManifest);
+                if (noOfToolsRunning != 0 && noOfToolsRunning < configuredInstances)
+                    marathonClientManager.updateApp(toolManifest);
+                reDeployTool(eachTool, toolManifest.getId());
+            } catch (MarathonException me) {
+                updateToolStatus(noOfToolsRunning, configuredInstances, eachTool);
+                log.error("MarathonException While checking the tool health check", me.getMessage());
+            }
         }
     }
 
@@ -112,23 +127,38 @@ public class ToolHealthCheck implements Runnable {
 
     //redeploy tool if session not present with jch
     private void reDeployTool(final Tool tool, final String appId) throws MarathonException {
-        List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
-        if (toolInstanceList.size() > 0 || StringUtils.equals(tool.getStatus(), Constants.DESTROYED)) return;
+        List<ToolInstance> toolInstances = toolInstanceDAO.getByToolId(tool.getId());
+        if (toolInstances.size() > 0 || StringUtils.equals(toolStatus.get(tool.getId()), Constants.MONITORING))
+            return;
+        toolStatus.put(tool.getId(), Constants.MONITORING);
+        waitUntilGracePeriod(tool, appId);
+    }
+
+    private int getDifferenceHours(Tool tool) {
         Calendar calendar = Calendar.getInstance();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(calendar.getTime().getTime());
         long milliseconds = timestamp.getTime() - tool.getUpdatedAt().getTime();
         final int seconds = (int) milliseconds / 1000;
-        final long differenceHours = seconds / 3600;
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        final int differenceHours = seconds / 3600;
+        return differenceHours;
+    }
 
+    private void verifyMarathonHealthCheck() {
+        String healthCheckEndpoint = jackhammerConfiguration.marathonConfiguration.getEndpoint() + Constants.MARATHON_HEALTH_API;
+        Client client = ClientBuilder.newClient();
+        client.target(healthCheckEndpoint).request().get(String.class);
+    }
+
+    private void waitUntilGracePeriod(final Tool tool, final String appId) {
+        final int differenceHours = getDifferenceHours(tool);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
                 try {
-                    List<ToolInstance> toolInstanceList = toolInstanceDAO.getByToolId(tool.getId());
-                    if (toolInstanceList.size() == 0 && differenceHours > 1) {
+                    List<ToolInstance> toolInstances = toolInstanceDAO.getByToolId(tool.getId());
+                    if (toolInstances.size() == 0 && differenceHours > 1) {
                         log.info("Session not hold with jackhammer for tool id {} {} ", tool.getId(), appId);
                         marathonClientManager.deleteApp(appId);
-                        tool.setStatus(Constants.DESTROYED);
                     }
                 } catch (Exception e) {
                     log.error("Error while deleting an app {} {}..", appId);
@@ -138,5 +168,6 @@ public class ToolHealthCheck implements Runnable {
         int delay = 15;
         scheduler.schedule(task, delay, TimeUnit.MINUTES);
         scheduler.shutdown();
+        toolStatus.remove(tool.getId());
     }
 }

@@ -28,6 +28,7 @@ public interface ApplicationDAO {
             "left outer join findings f on g.ID=f.groupid " +
             "and f.status not in('Closed') " +
             " and f.isFalsePositive=false " +
+            " and f.isDeleted=false " +
             " and f.notExploitable=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +
@@ -53,6 +54,7 @@ public interface ApplicationDAO {
             "left outer join findings f on g.id=f.groupid " +
             "and f.status not in('Closed') " +
             " and f.isFalsePositive=false " +
+            " and f.isDeleted=false " +
             " and f.notExploitable=false " +
             "and f.ownerTypeId=:ownerTypeId " +
             "and f.scanTypeId=:scanTypeId " +

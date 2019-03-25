@@ -89,18 +89,18 @@ public class ScanPooler implements Managed {
                 }
             }
 
-            List<Tool> tools = toolDAO.getAll();
+//            List<Tool> tools = toolDAO.getAll();
             //deleting tools from marathon
-            for (Tool tool : tools) {
-                try {
-//                    toolInstanceDAO.deleteByToolId(tool.getId());
-                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
-                    String appId = toolManifest.getId();
-                    marathonClientManager.deleteApp(appId);
-                } catch (Exception e) {
-                    log.error("Error while updating tool instance...", e);
-                }
-            }
+//            for (Tool tool : tools) {
+//                try {
+////                    toolInstanceDAO.deleteByToolId(tool.getId());
+//                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
+//                    String appId = toolManifest.getId();
+//                    marathonClientManager.deleteApp(appId);
+//                } catch (Exception e) {
+//                    log.error("Error while updating tool instance...", e);
+//                }
+//            }
             log.info("Deleting all records from tool instances table");
             toolInstanceDAO.deleteAll();
         } catch (Exception e) {

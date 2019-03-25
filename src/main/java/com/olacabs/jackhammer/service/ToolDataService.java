@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.olacabs.jackhammer.db.ScanToolDAO;
 import com.olacabs.jackhammer.db.ToolInstanceDAO;
-import com.olacabs.jackhammer.models.ScanTool;
-import com.olacabs.jackhammer.models.ToolManifest;
+import com.olacabs.jackhammer.models.*;
 import com.olacabs.jackhammer.tool.interfaces.container.manager.MarathonClientManager;
+import com.olacabs.jackhammer.utilities.DockerUtil;
 import com.olacabs.jackhammer.utilities.ToolUtil;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.MarathonClient;
@@ -15,11 +15,13 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.olacabs.jackhammer.common.Constants;
 import com.olacabs.jackhammer.db.ToolDAO;
-import com.olacabs.jackhammer.models.PagedResponse;
-import com.olacabs.jackhammer.models.Tool;
 
 
 @Slf4j
@@ -42,6 +44,9 @@ public class ToolDataService extends AbstractDataService<Tool> {
     @Inject
     @Named(Constants.TOOL_INSTANCE_DAO)
     ToolInstanceDAO toolInstanceDAO;
+
+    @Inject
+    DockerUtil dockerUtil;
 
     @Override
     public PagedResponse<Tool> getAllRecords(Tool tool) {
@@ -86,13 +91,18 @@ public class ToolDataService extends AbstractDataService<Tool> {
         Tool tool = fetchRecordById(id);
         ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
         scanToolDAO.deleteToolScans(id);
-        toolInstanceDAO.deleteByToolId(id);
+//        toolInstanceDAO.deleteByToolId(id);
+        Boolean enabledMarathon = Boolean.valueOf(System.getenv(Constants.ENABLED_MARATHON));
         if (toolManifest != null) {
             String appId = toolManifest.getId();
-            try {
-                marathonClientManager.deleteApp(appId);
-            } catch (MarathonException me) {
-                log.error("Error while deleting app from marathon  {} ", me);
+            if (enabledMarathon) {
+                try {
+                    marathonClientManager.deleteApp(appId);
+                } catch (MarathonException me) {
+                    log.error("Error while deleting app from marathon  {} ", me);
+                }
+            } else {
+                killAllToolContainers(toolManifest);
             }
         }
         toolDAO.delete(id);
@@ -107,5 +117,17 @@ public class ToolDataService extends AbstractDataService<Tool> {
         }
         tool.setManifestJson(manifestJson);
         tool.setStatus("Deploying started...");
+    }
+
+    private void killAllToolContainers(final ToolManifest toolManifest) {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                dockerUtil.stopContainers(toolManifest.getContainer().getDocker().getImage());
+            }
+        };
+        int delay = 0;
+        scheduler.schedule(task, delay, TimeUnit.SECONDS);
+        scheduler.shutdown();
     }
 }

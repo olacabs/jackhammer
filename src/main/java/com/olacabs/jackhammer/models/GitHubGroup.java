@@ -22,5 +22,6 @@ public class GitHubGroup {
     private String repositories_url;
     private String url;
     private String node_id;
+    private String html_url;
     List<GitHubProject> gitHubProjects;
 }

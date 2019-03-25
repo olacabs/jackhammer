@@ -27,21 +27,24 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @GetGeneratedKeys
     int insert(@BindBean Finding finding);
 
-    @SqlQuery("select * from findings where scanId=:scanId")
+    @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false")
     List<Finding> findByScanId(@Bind("scanId") long scanId);
 
     //scan results
-    @SqlQuery("select * from findings where scanId=:scanId")
+    @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false")
     List<Finding> getCSVResults(@BindBean Finding finding);
 
-    @SqlQuery("select * from findings where scanId=:scanId order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
+    @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false")
+    List<Finding> getAllWithNoLimit(@Bind("scanId") long scanId);
+
+    @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false order by <sortColumn> <order>  LIMIT :limit OFFSET :offset")
     List<Finding> getAll(@BindBean Finding finding, @Define("sortColumn") String sortColumn, @Define("order") String order);
 
     @SqlQuery("select count(*) from findings where scanId=:scanId")
     long totalCount(@BindBean Finding finding);
 
     @SqlQuery("select * from findings " +
-            "where scanId=:scanId " +
+            "where scanId=:scanId and isDeleted=false " +
             "and (name like concat('%', :searchTerm,'%') " +
             "or severity like concat('%', :searchTerm,'%') " +
             "or toolName like concat('%', :searchTerm,'%'))  " +
@@ -50,7 +53,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
 
 
     @SqlQuery("select count(*) from findings " +
-            "where scanId=:scanId " +
+            "where scanId=:scanId and isDeleted=false " +
             "and (name like concat('%', :searchTerm,'%') " +
             "or severity like concat('%', :searchTerm,'%') " +
             "or toolName like concat('%', :searchTerm,'%'))  " )
@@ -69,6 +72,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
             " and isFalsePositive=false " +
             " and notExploitable=false " +
             "and repoId=:repoId " +
+            " and isDeleted=false " +
             "and severity=:severity " +
             "and (name like concat('%', :searchTerm,'%') " +
             "or severity like concat('%', :searchTerm,'%') " +
@@ -80,6 +84,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlQuery("select count(*) from findings " +
             "where repoId=:repoId " +
             "and severity=:severity " +
+            " and isDeleted=false " +
             "and (name like concat('%', :searchTerm,'%') " +
             "or severity like concat('%', :searchTerm,'%') " +
             "or toolName like concat('%', :searchTerm,'%'))  " )
@@ -88,6 +93,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlQuery("select count(*) as count,severity from findings" +
             " where status not in('Closed') " +
             " and isFalsePositive=false " +
+            " and isDeleted=false " +
             " and notExploitable=false " +
             "and scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId " +
@@ -99,6 +105,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
             "where status not in('Closed') " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
+            " and isDeleted=false " +
             "and scanTypeId=:scanTypeId " +
             "and ownerTypeId=:ownerTypeId  " +
             "and repoId=:repoId  " +
@@ -110,6 +117,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlQuery("select count(*) as count ,toolName from findings where repoId=:repoId " +
             " and isFalsePositive=false " +
             " and notExploitable=false " +
+            " and isDeleted=false " +
             " and status not in('Closed') " +
             " group by toolName")
     @RegisterMapper({RepoToolResultMapper.class})
@@ -139,7 +147,7 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlUpdate("update findings set pushedToJira=:pushedToJira,modifiedBy=:modifiedBy where id=:id")
     void updateJiraPublishedStatus(@BindBean Finding finding);
 
-    @SqlQuery("select * from findings where scanId=:scanId")
+    @SqlQuery("select * from findings where scanId=:scanId and isDeleted=false")
     List<Finding> getAllScanFindings(@Bind("scanId") long scanId);
 
     @SqlUpdate("delete from findings where scanId=:scanId")
@@ -148,12 +156,13 @@ public interface FindingDAO extends CrudDAO<Finding> {
     @SqlUpdate("delete from findings " +
             "where repoId=:repoId" +
             " and toolName=:toolName " +
+            " and isDeleted=false " +
             "and scanType=:scanType " +
             "and ownerType=:ownerType limit 1")
     void deleteToolFindings(@Bind("repoId") long repoId,@Bind("ownerType") String ownerType,
                             @Bind("scanType") String scanType,@Bind("toolName") String toolName);
 
-    @SqlQuery("select count(*) from findings where scanId=:scanId and severity=:severity and isFalsePositive=false and notExploitable=false")
+    @SqlQuery("select count(*) from findings where isDeleted=false and scanId=:scanId and severity=:severity and isFalsePositive=false and notExploitable=false")
     long getSeverityCount(@Bind("scanId") long scanId,@Bind("severity") String severity);
 
 }
