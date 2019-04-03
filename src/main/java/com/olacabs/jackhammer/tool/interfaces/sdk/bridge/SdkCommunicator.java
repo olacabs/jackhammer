@@ -23,9 +23,7 @@ import org.eclipse.jetty.websocket.api.WebSocketException;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.net.SocketTimeoutException;
-import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.*;
 
 @Slf4j
 @Metered
@@ -79,7 +77,7 @@ public class SdkCommunicator {
     public void onClose(Session session, CloseReason closeReason) {
         String sessionId = session.getId();
         try {
-            long toolInstanceId = Long.getLong(toolInstances.get(sessionId));
+            long toolInstanceId = Long.valueOf(toolInstances.get(sessionId));
             clients.remove(session);
             toolResponse.deleteToolInstance(toolInstanceId);
             log.info(String.format("Session %s closed because of %s", session.getId(), closeReason));
@@ -132,8 +130,6 @@ public class SdkCommunicator {
                         } catch (NullPointerException nl) {
                             log.info("NullPointerException while sending scan to remote tool");
                         }
-                    } else {
-                        scan.setStatus(Constants.SCAN_QUEUED_STATUS);
                     }
                 }
             }

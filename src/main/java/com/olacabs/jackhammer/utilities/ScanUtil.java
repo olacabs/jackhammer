@@ -94,6 +94,9 @@ public class ScanUtil {
                 scan.setStatus(Constants.SCAN_FAILED_STATUS);
                 scan.setStatusReason(failedMessage);
                 scanDAO.updateScanStatusandReason(scan);
+            } else if (SdkCommunicator.clients.size() == 0) {
+                scan.setStatus(Constants.SCAN_QUEUED_STATUS);
+                scanDAO.updateScanStatus(scan);
             }
         } catch (Exception e) {
             log.error("Exception while fetching pending scans", e);

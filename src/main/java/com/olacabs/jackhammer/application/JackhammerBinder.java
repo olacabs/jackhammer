@@ -259,6 +259,10 @@ public class JackhammerBinder extends AbstractModule {
 
         //docker util
         bind(DockerUtil.class);
+
+        //AutoScalingTool
+        bind(AutoScalingManager.class);
+        bind(AutoScalingTool.class);
     }
 
     @Provides

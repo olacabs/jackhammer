@@ -10,8 +10,8 @@ import java.util.List;
 @RegisterMapper(ToolInstanceMapper.class)
 public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
 
-    @SqlUpdate("insert into toolInstances(toolId,sessionId,platform,status,maxAllowedScans) " +
-            "values(:toolId,:sessionId,:platform,:status,:maxAllowedScans)")
+    @SqlUpdate("insert into toolInstances(toolId,sessionId,platform,status,maxAllowedScans,containerId,port) " +
+            "values(:toolId,:sessionId,:platform,:status,:maxAllowedScans,:containerId,:port)")
     @GetGeneratedKeys
     int insert(@BindBean ToolInstance toolInstance);
 

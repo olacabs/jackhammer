@@ -1,7 +1,9 @@
 {
   "id": "jackhammer/findsecbugs",
   "cpus": 2.0,
-  "instances": 2,
+  "initialInstances": 2,
+  "minInstances": 1,
+  "maxInstances": 3,
   "container": {
     "type": "DOCKER",
     "docker": {

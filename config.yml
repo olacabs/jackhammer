@@ -33,6 +33,7 @@ toolManagerConfiguration:
   threadPoolSize: 5 # 5 threads
   initialDelay: 60 # 30 seconds delay on startup
   period: 60 #seconds
+  enableAutoScaling: true
 gitConfiguration:
   threadPoolSize: 5 # 5 threads
   initialDelay: 0 # 0 days delay on startup

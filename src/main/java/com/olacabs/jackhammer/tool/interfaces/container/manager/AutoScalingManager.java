@@ -10,14 +10,13 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class ActiveToolInstanceManager implements Managed {
+public class AutoScalingManager implements Managed {
 
     @Inject
-    JackhammerConfiguration jackhammerConfiguration;
+    private JackhammerConfiguration jackhammerConfiguration;
 
     @Inject
-    ActiveToolInstanceHealthCheck activeToolInstanceHealthCheck;
-
+    private AutoScalingTool autoScalingTool;
 
     public void start() throws Exception {
         try {
@@ -26,9 +25,9 @@ public class ActiveToolInstanceManager implements Managed {
             int initialDelay = jackhammerConfiguration.getToolManagerConfiguration().getInitialDelay();
             int period = jackhammerConfiguration.getToolManagerConfiguration().getPeriod();
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
-            executor.scheduleAtFixedRate(activeToolInstanceHealthCheck, initialDelay, period, TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(autoScalingTool, 0, period/4, TimeUnit.MINUTES);
         } catch (Throwable th) {
-            log.error("Error in Tool Pooler while pooling", th);
+            log.error("Error in ToolPooler while pooling", th);
         }
     }
 

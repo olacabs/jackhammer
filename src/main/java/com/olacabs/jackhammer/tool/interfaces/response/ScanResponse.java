@@ -55,12 +55,14 @@ public class ScanResponse {
             Scan dbScan = scanDAO.get(scan.getId());
             List<HashMap<String, String>> findingsList = mapper.convertValue(scanNode.get(Constants.FINDINGS), ArrayList.class);
             List<String> currentScanFingerPrints = currentScanFingerprints(dbScan);
+            long findingsCount = 0;
             if (findingsList != null) {
                 Iterator<HashMap<String, String>> iterator = findingsList.iterator();
                 while (iterator.hasNext()) {
                     Map<String, String> findingMap = iterator.next();
                     String fingerprint = findingMap.get(Constants.FINGERPRINT);
                     String title = findingMap.get(Constants.TITLE);
+                    findingsCount+=1;
                     if (!currentScanFingerPrints.contains(fingerprint) && !StringUtils.isEmpty(title)) {
                         Finding finding = buildFindingRecord(findingMap, dbScan);
                         updateSeverityCount(scan, findingMap.get(Constants.SEVERITY));
@@ -69,7 +71,7 @@ public class ScanResponse {
                 }
             }
             String scanTypeTitle = requireSendMail(dbScan, StringUtils.EMPTY);
-            if (fullListSent && !StringUtils.equals(scanTypeTitle, StringUtils.EMPTY))
+            if (fullListSent && !StringUtils.equals(scanTypeTitle, StringUtils.EMPTY) && findingsCount > 0)
                 emailOperations.sendAlertMail(dbScan, scanTypeTitle);
             scanDAO.update(scan);
             scanToolDAO.updateStatusPostScan(toolInstanceId, scan.getStatus(), dbScan.getId());

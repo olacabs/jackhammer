@@ -1081,4 +1081,6 @@ alter table scanTools add column isDeleted tinyint(1) default false;
 alter table tools add column isDeleted tinyint(1) default false;
 alter table toolInstances add column isDeleted tinyint(1) default false;
 alter table uploads add column isDeleted tinyint(1) default false;
+alter table toolInstances add column containerId varchar(100);
+alter table toolInstances add column port int(11);
 -- Dump completed on 2018-09-19 11:35:46
