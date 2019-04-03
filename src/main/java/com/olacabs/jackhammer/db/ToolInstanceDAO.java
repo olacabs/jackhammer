@@ -21,7 +21,7 @@ public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
     @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans + 1 where id=:id")
     void increaseRunningScans(@Bind("id") long id);
 
-    @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans - 1 where id=:id")
+    @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans - 1 where id=:id and currentRunningScans > 1")
     void decreaseRunningScans(@Bind("id") long id);
 
     @SqlQuery("select * from toolInstances where toolId=:toolId and isDeleted=false order by id desc")
