@@ -28,5 +28,6 @@
 	 "SUPPORTED_PLATFORM": "Java",
 	 "MAX_ALLOWED_SCANS": "1",
 	 "localSetup": "true"
+	 "MAX_HEAP_SIZE": 3000
 }
 }
