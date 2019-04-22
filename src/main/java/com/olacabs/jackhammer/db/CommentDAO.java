@@ -37,7 +37,7 @@ public interface CommentDAO extends CrudDAO<Comment> {
     @SqlUpdate("update comments set name=:name where id=:id ")
     void update(@BindBean Comment comment);
 
-    @SqlUpdate("delete from comments where id=:id")
+    @SqlUpdate("update comments set isDeleted=true where id=:id")
     void delete(@Bind("id") long id);
 
     @SqlUpdate("update comments set isDeleted=true where findingId=:findingId")

@@ -26,7 +26,7 @@ public class HangedToolInstanceManager implements Managed {
             int initialDelay = jackhammerConfiguration.getToolManagerConfiguration().getInitialDelay();
             int period = jackhammerConfiguration.getToolManagerConfiguration().getPeriod();
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
-            executor.scheduleAtFixedRate(hangedToolInstanceCheck, initialDelay, period, TimeUnit.MINUTES);
+            executor.scheduleAtFixedRate(hangedToolInstanceCheck, initialDelay, period/2, TimeUnit.MINUTES);
         } catch (Throwable th) {
             log.error("Error in ToolPooler while pooling", th);
         }

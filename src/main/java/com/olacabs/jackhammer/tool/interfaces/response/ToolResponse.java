@@ -31,7 +31,7 @@ public class ToolResponse {
 
     public ToolInstance addToolInstance(String response, Session session) {
         ToolInstance toolInstance = buildToolInstance(response, session);
-        toolInstanceDAO.deleteByToolId(toolInstance.getToolId());
+//        toolInstanceDAO.deleteByToolId(toolInstance.getToolId());
         long id = toolInstanceDAO.insert(toolInstance);
         ToolInstance insertedToolInstance = toolInstanceDAO.get(id);
         return insertedToolInstance;
@@ -75,13 +75,18 @@ public class ToolResponse {
         try {
             JsonNode toolNode = mapper.readTree(response);
             String supportedPlatform = mapper.convertValue(toolNode.get(Constants.SUPPORTED_PLATFORM), String.class);
+            String hostname = mapper.convertValue(toolNode.get(Constants.HOSTNAME), String.class);
+            String containerPort = mapper.convertValue(toolNode.get(Constants.PORT), String.class);
             long toolId = mapper.convertValue(toolNode.get(Constants.INSTANCE_TOOL_ID), Long.class);
             long maxAllowedScans = mapper.convertValue(toolNode.get(Constants.MAX_ALLOWED_SCANS), Long.class);
+            int port = containerPort == null ? 0 : Integer.valueOf(containerPort);
             toolInstance.setSessionId(session.getId());
             toolInstance.setToolId(toolId);
             toolInstance.setPlatform(supportedPlatform);
             toolInstance.setStatus(Constants.HEALTHY);
             toolInstance.setMaxAllowedScans(maxAllowedScans);
+            toolInstance.setContainerId(hostname);
+            toolInstance.setPort(port);
         } catch (IOException io) {
             log.error("IOException while reading client response", io);
         } catch (Exception e) {

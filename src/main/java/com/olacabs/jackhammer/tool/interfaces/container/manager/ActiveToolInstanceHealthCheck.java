@@ -70,7 +70,7 @@ public class ActiveToolInstanceHealthCheck implements Runnable {
             String imageId = toolManifest.getContainer().getDocker().getImage();
             dockerUtil.pullImage(imageId);
             dockerUtil.startInstances(imageId, toolManifest);
-            updateToolStatus(dockerUtil.getContainerImages().get(imageId), toolManifest.getInstances(), tool);
+            updateToolStatus(dockerUtil.getContainerImages().get(imageId), toolManifest.getInitialInstances(), tool);
         }
     }
 
@@ -122,7 +122,7 @@ public class ActiveToolInstanceHealthCheck implements Runnable {
 
     private int getConfiguredInstances(ToolManifest toolManifest) {
         if (toolManifest == null) return 0;
-        return toolManifest.getInstances();
+        return toolManifest.getInitialInstances();
     }
 
     //redeploy tool if session not present with jch
@@ -131,6 +131,7 @@ public class ActiveToolInstanceHealthCheck implements Runnable {
         if (toolInstances.size() > 0 || StringUtils.equals(toolStatus.get(tool.getId()), Constants.MONITORING))
             return;
         toolStatus.put(tool.getId(), Constants.MONITORING);
+        log.info("Monitoring tool...{}",appId);
         waitUntilGracePeriod(tool, appId);
     }
 

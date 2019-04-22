@@ -2,6 +2,9 @@
   "id": "jackhammer/exakat",
   "cpus": 1.0,
   "instances": 1,
+  "initialInstances": 1,
+  "minInstances": 0,
+  "maxInstances": 2,
   "container": {
     "type": "DOCKER",
     "docker": {

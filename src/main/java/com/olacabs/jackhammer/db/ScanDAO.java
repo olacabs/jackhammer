@@ -80,6 +80,9 @@ public interface ScanDAO extends CrudDAO<Scan> {
     @SqlQuery("select * from scans where status='Queued' and isDeleted=false order by RAND() limit 10")
     List<Scan> getQueuedScans();
 
+    @SqlQuery("select count(*) from scans where status='Queued' and scanPlatforms like concat('%', :platform,'%') and isDeleted=false")
+    int getToolQueuedScansCount(@Bind("platform") String platform);
+
     @SqlQuery("select * from scans where scheduleTypeId not in(0) and isDeleted=false and lastRunDate is not null order by RAND() limit 10")
     List<Scan> getScheduledScans();
 

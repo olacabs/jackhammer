@@ -1,7 +1,9 @@
 {
   "id": "jackhammer/findsecbugs",
   "cpus": 2.0,
-  "instances": 2,
+  "initialInstances": 2,
+  "minInstances": 1,
+  "maxInstances": 3,
   "container": {
     "type": "DOCKER",
     "docker": {
@@ -26,5 +28,6 @@
 	 "SUPPORTED_PLATFORM": "Java",
 	 "MAX_ALLOWED_SCANS": "1",
 	 "localSetup": "true"
+	 "MAX_HEAP_SIZE": 3000
 }
 }

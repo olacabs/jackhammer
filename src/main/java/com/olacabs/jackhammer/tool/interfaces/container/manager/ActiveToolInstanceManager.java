@@ -1,9 +1,10 @@
 package com.olacabs.jackhammer.tool.interfaces.container.manager;
 
 import com.google.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
 import io.dropwizard.lifecycle.Managed;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ public class ActiveToolInstanceManager implements Managed {
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
             executor.scheduleAtFixedRate(activeToolInstanceHealthCheck, initialDelay, period, TimeUnit.SECONDS);
         } catch (Throwable th) {
-            log.error("Error in ToolPooler while pooling", th);
+            log.error("Error in Tool Pooler while pooling", th);
         }
     }
 

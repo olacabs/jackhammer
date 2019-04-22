@@ -10,8 +10,8 @@ import java.util.List;
 @RegisterMapper(ToolInstanceMapper.class)
 public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
 
-    @SqlUpdate("insert into toolInstances(toolId,sessionId,platform,status,maxAllowedScans) " +
-            "values(:toolId,:sessionId,:platform,:status,:maxAllowedScans)")
+    @SqlUpdate("insert into toolInstances(toolId,sessionId,platform,status,maxAllowedScans,containerId,port) " +
+            "values(:toolId,:sessionId,:platform,:status,:maxAllowedScans,:containerId,:port)")
     @GetGeneratedKeys
     int insert(@BindBean ToolInstance toolInstance);
 
@@ -21,7 +21,7 @@ public interface ToolInstanceDAO extends CrudDAO<ToolInstance> {
     @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans + 1 where id=:id")
     void increaseRunningScans(@Bind("id") long id);
 
-    @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans - 1 where id=:id")
+    @SqlUpdate("update toolInstances set currentRunningScans = currentRunningScans - 1 where id=:id and currentRunningScans > 1")
     void decreaseRunningScans(@Bind("id") long id);
 
     @SqlQuery("select * from toolInstances where toolId=:toolId and isDeleted=false order by id desc")

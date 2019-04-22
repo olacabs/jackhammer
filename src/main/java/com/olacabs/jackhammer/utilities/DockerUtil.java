@@ -49,10 +49,10 @@ public class DockerUtil {
         if (toolDeleteRequests.contains(imageId)) return;
         Map<String, Integer> containerImages = getContainerImages();
         int runningCount = containerImages.get(imageId) == null ? 0 : containerImages.get(imageId);
-        if (runningCount == toolManifest.getInstances()) return;
+        if (runningCount == toolManifest.getInitialInstances()) return;
         int count;
-        log.info("starting container for image..{}..{}",imageId);
-        for (count = runningCount; count < toolManifest.getInstances(); count++) {
+        log.info("starting container for image..{}..{}", imageId);
+        for (count = runningCount; count < toolManifest.getInitialInstances(); count++) {
             startContainer(toolManifest, dockerClient, imageId);
         }
     }
@@ -81,11 +81,15 @@ public class DockerUtil {
         List<Container> containerList = dockerClient.listContainersCmd().exec();
         for (Container container : containerList) {
             if (StringUtils.equals(container.getImage(), imageId)) {
-                dockerClient.stopContainerCmd(container.getId()).exec();
-                dockerClient.removeContainerCmd(container.getId()).exec();
+                stopContainer(container.getId());
             }
         }
         toolDeleteRequests.remove(imageId);
+    }
+
+    public void stopContainer(String containerId) {
+        dockerClient.stopContainerCmd(containerId).exec();
+        dockerClient.removeContainerCmd(containerId).exec();
     }
 
     private void waitUntilPullImage(DockerClient dockerClient, String imageId) {

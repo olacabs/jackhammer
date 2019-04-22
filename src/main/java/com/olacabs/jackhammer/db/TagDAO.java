@@ -32,6 +32,6 @@ public interface TagDAO extends CrudDAO<Tag> {
     @SqlUpdate("update roles set name=:name where id=:id ")
     void update(@BindBean Tag tag);
 
-    @SqlUpdate("delete from roles where id=:id")
+    @SqlUpdate("update  tags set isDeleted=true where id=:id")
     void delete(@Bind("id") long id);
 }

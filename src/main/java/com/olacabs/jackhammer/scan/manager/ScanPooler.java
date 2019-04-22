@@ -10,6 +10,7 @@ import com.olacabs.jackhammer.models.ScanTool;
 import com.olacabs.jackhammer.models.Tool;
 import com.olacabs.jackhammer.models.ToolInstance;
 import com.olacabs.jackhammer.models.ToolManifest;
+import com.olacabs.jackhammer.utilities.DockerUtil;
 import com.olacabs.jackhammer.utilities.ToolUtil;
 import io.dropwizard.lifecycle.Managed;
 
@@ -55,6 +56,9 @@ public class ScanPooler implements Managed {
     ToolUtil toolUtil;
 
     @Inject
+    DockerUtil dockerUtil;
+
+    @Inject
     MarathonClientManager marathonClientManager;
 
     public void start() {
@@ -77,7 +81,7 @@ public class ScanPooler implements Managed {
 
     public void stop() {
         try {
-            log.info("jch server  going down.....");
+            log.info("jackhammer server  going down.....");
             // delete current running containers from db and make running scans as failed
             List<ToolInstance> toolInstanceList = toolInstanceDAO.getAll();
 
@@ -89,18 +93,24 @@ public class ScanPooler implements Managed {
                 }
             }
 
-//            List<Tool> tools = toolDAO.getAll();
-            //deleting tools from marathon
-//            for (Tool tool : tools) {
-//                try {
-////                    toolInstanceDAO.deleteByToolId(tool.getId());
-//                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
-//                    String appId = toolManifest.getId();
-//                    marathonClientManager.deleteApp(appId);
-//                } catch (Exception e) {
-//                    log.error("Error while updating tool instance...", e);
-//                }
-//            }
+            List<Tool> tools = toolDAO.getAll();
+            Boolean enabledMarathon = Boolean.valueOf(System.getenv(Constants.ENABLED_MARATHON));
+//            deleting tools from marathon
+            for (Tool tool : tools) {
+                try {
+//                    toolInstanceDAO.deleteByToolId(tool.getId());
+                    ToolManifest toolManifest = toolUtil.buildToolManifestRecord(tool);
+                    String appId = toolManifest.getId();
+                    if (enabledMarathon) {
+                        marathonClientManager.deleteApp(appId);
+                    } else {
+                        dockerUtil.stopContainers(toolManifest.getContainer().getDocker().getImage());
+                    }
+                } catch (Exception e) {
+                    log.error("Error while updating tool instance...", e);
+                }
+            }
+
             log.info("Deleting all records from tool instances table");
             toolInstanceDAO.deleteAll();
         } catch (Exception e) {

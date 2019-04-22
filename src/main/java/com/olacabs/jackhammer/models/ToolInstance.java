@@ -13,7 +13,9 @@ public class ToolInstance  extends AbstractModel {
     private long toolId;
     private long maxAllowedScans;
     private long currentRunningScans;
+    private int port;
     private String status;
     private String sessionId;
     private String platform;
+    private String containerId;
 }

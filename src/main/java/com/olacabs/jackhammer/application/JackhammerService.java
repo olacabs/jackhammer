@@ -10,6 +10,7 @@ import com.olacabs.jackhammer.filters.AuthorizationFilter;
 import com.olacabs.jackhammer.git.manager.GitPooler;
 import com.olacabs.jackhammer.scan.manager.ScheduledScanPooler;
 import com.olacabs.jackhammer.scan.manager.WpScanSchedulerPooler;
+import com.olacabs.jackhammer.tool.interfaces.container.manager.AutoScalingManager;
 import com.olacabs.jackhammer.tool.interfaces.container.manager.HangedToolInstanceManager;
 import com.olacabs.jackhammer.tool.interfaces.container.manager.ActiveToolInstanceManager;
 import io.dropwizard.Application;
@@ -69,14 +70,14 @@ public class JackhammerService extends Application<JackhammerConfiguration> {
 
         //register filters
         environment.servlets().addFilter(Constants.CORS_FILTER, CORSFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),true,Constants.CORS_URL_PATTERN);
+                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, Constants.CORS_URL_PATTERN);
         environment.servlets()
-                .addFilter(Constants.AUTHENTICATION_FILTER,(AuthenticationFilter)guiceBundle
-                .getInjector()
-                .getInstance(AuthenticationFilter.class))
+                .addFilter(Constants.AUTHENTICATION_FILTER, (AuthenticationFilter) guiceBundle
+                        .getInjector()
+                        .getInstance(AuthenticationFilter.class))
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, Constants.AUTH_BASE_URL_PATTERN);
         environment.servlets()
-                .addFilter(Constants.AUTHORIZATION_FILTER,(AuthorizationFilter)guiceBundle
+                .addFilter(Constants.AUTHORIZATION_FILTER, (AuthorizationFilter) guiceBundle
                         .getInjector()
                         .getInstance(AuthorizationFilter.class))
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, Constants.AUTH_BASE_URL_PATTERN);
@@ -119,6 +120,10 @@ public class JackhammerService extends Application<JackhammerConfiguration> {
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(GitPooler.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(HangedToolInstanceManager.class));
         environment.lifecycle().manage(guiceBundle.getInjector().getInstance(WpScanSchedulerPooler.class));
+
+        if (jackhammerConfiguration.getToolManagerConfiguration().getEnableAutoScaling())
+            environment.lifecycle().manage(guiceBundle.getInjector().getInstance(AutoScalingManager.class));
+
     }
 
     @Override
