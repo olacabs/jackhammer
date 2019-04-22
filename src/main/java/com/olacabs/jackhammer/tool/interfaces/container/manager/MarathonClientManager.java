@@ -5,9 +5,7 @@ import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
-import mesosphere.marathon.client.model.v2.GetAppResponse;
-import mesosphere.marathon.client.model.v2.GetAppTasksResponse;
-import mesosphere.marathon.client.model.v2.Result;
+import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.utils.MarathonException;
 
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
@@ -45,10 +43,15 @@ public class MarathonClientManager {
     }
 
     public GetAppTasksResponse getAppTasks(String appId) {
-        GetAppTasksResponse getAppTasksResponse = null;
         Marathon marathon = getMarathonAgent();
-        getAppTasksResponse = marathon.getAppTasks(appId);
+        GetAppTasksResponse getAppTasksResponse = marathon.getAppTasks(appId);
         return getAppTasksResponse;
+    }
+
+    public DeleteAppTaskResponse deleteAppTask(String appId,String taskId,String scale) {
+        Marathon marathon = getMarathonAgent();
+        DeleteAppTaskResponse deleteAppTaskResponse = marathon.deleteAppTask(appId,taskId,scale);
+        return deleteAppTaskResponse;
     }
 
     public void updateApp(ToolManifest toolManifest) {
@@ -71,7 +74,7 @@ public class MarathonClientManager {
         marathonModel.setId(toolManifest.getId());
         marathonModel.setCpus(toolManifest.getCpus());
         marathonModel.setMem(toolManifest.getMem());
-        marathonModel.setInstances(toolManifest.getInstances());
+        marathonModel.setInstances(toolManifest.getInitialInstances());
         marathonModel.setContainer(dockerContainer.getContainer(toolManifest));
         marathonModel.setHealthChecks(dockerHealthCheck.getDockerHealthCheck(toolManifest));
         marathonModel.setEnv(toolManifest.getEnv());

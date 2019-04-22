@@ -1,7 +1,9 @@
 {
   "id": "jackhammer/andro",
   "cpus": 1,
-  "instances": 1,
+  "initialInstances": 1,
+  "minInstances": 0,
+  "maxInstances": 2,
   "container": {
     "type": "DOCKER",
     "docker": {

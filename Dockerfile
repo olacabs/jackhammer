@@ -12,7 +12,13 @@ RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update \
 
 #RUN apt-get -y update
 #RUN apt-get install -y maven
-
+RUN apt-get update -qq && apt-get install -qqy \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    lxc \
+    iptables
+RUN curl -sSL https://get.docker.com/ | sh
 RUN mkdir -p /home/src/jch_server
 ENV WORKSPACE /home/src/jch_server
 WORKDIR $WORKSPACE

@@ -357,6 +357,9 @@ public class Constants {
     public static final String ENABLED_MARATHON = "ENABLED_MARATHON";
 
 
-    public static final String  SCAN = "SCAN";
+    public static final String  SCAN = " Scan";
     public static final String  HYPEN = " - ";
+    public static final String TOOL_SUPPORTED_PLATFORM = "SUPPORTED_PLATFORM";
+    public static final String TOOL_MAX_ALLOWED_SCANS = "MAX_ALLOWED_SCANS";
+    public static final String HOSTNAME = "hostname";
 }

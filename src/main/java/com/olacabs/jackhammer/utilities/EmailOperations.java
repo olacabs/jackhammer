@@ -171,7 +171,7 @@ public class EmailOperations {
         findingBuilder.append(finding.getName());
         findingBuilder.append("</td>");
         findingBuilder.append("<td>");
-        findingBuilder.append(finding.getDescription());
+        findingBuilder.append(finding.getDescription() == null ? Constants.STRING_SPACER : finding.getDescription());
         findingBuilder.append("</td>");
         findingBuilder.append("</tr>");
         return findingBuilder.toString();
@@ -183,8 +183,14 @@ public class EmailOperations {
             tempFile = File.createTempFile(Constants.JACKHAMMER_RESULT, Constants.CSV_EXTENSION);
             FileWriter olaOutputFile = new FileWriter(tempFile);
             CSVWriter writer = new CSVWriter(olaOutputFile);
+            String[] headers = {"Severity","Bug Type","Description","External Link","CVE Code",
+                    "Solution","Line Number","File Name","code","Tool Name","Cvss Score","Location","Port","State"};
+            writer.writeNext(headers);
             for (Finding finding : findings) {
-                String[] findingSet = {finding.getSeverity(), finding.getName(), finding.getDescription()};
+                String[] findingSet = {finding.getSeverity(), finding.getName(), finding.getDescription(),
+                        finding.getExternalLink(),finding.getCveCode(),finding.getSolution(),finding.getLineNumber(),
+                finding.getFileName(),finding.getCode(),finding.getToolName(),finding.getCvssScore(),finding.getLocation()
+                ,finding.getPort(),finding.getState()};
                 writer.writeNext(findingSet);
             }
             writer.close();
@@ -195,7 +201,7 @@ public class EmailOperations {
     }
 
     private Address[] getRecipients() throws AddressException {
-        String[] mailIds = jackhammerConfiguration.getScanMangerConfiguration().getAlertMails().split(",");
+        String[] mailIds = jackhammerConfiguration.getScanMangerConfiguration().getAlertMails().split(Constants.COMMA);
         final List<Address> to = new ArrayList<Address>();
         for (final String address : mailIds) {
             to.add(new InternetAddress(address.trim()));

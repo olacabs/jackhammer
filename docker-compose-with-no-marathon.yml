@@ -32,6 +32,8 @@ services:
      - jch_net
    environment:
      ENABLED_MARATHON: 'false'
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
   jch-client:
     image: jackhammer/jackhammer-client
     ports:

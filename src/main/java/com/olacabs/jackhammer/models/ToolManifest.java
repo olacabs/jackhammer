@@ -17,7 +17,9 @@ public class ToolManifest {
     private Double cpus;
     private Container container;
     private Double mem;
-    private Integer instances;
+    private Integer initialInstances;
+    private Integer minInstances;
+    private Integer maxInstances;
     private List<HealthCheck> healthChecks;
     private Map<String, String> env;
 }

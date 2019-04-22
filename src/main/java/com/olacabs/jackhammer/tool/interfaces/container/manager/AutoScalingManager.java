@@ -1,22 +1,22 @@
 package com.olacabs.jackhammer.tool.interfaces.container.manager;
 
 import com.google.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
+
 import com.olacabs.jackhammer.configuration.JackhammerConfiguration;
 import io.dropwizard.lifecycle.Managed;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class ToolPooler implements Managed {
+public class AutoScalingManager implements Managed {
 
     @Inject
-    JackhammerConfiguration jackhammerConfiguration;
+    private JackhammerConfiguration jackhammerConfiguration;
 
     @Inject
-    ToolHealthCheck toolHealthCheck;
-
+    private AutoScalingTool autoScalingTool;
 
     public void start() throws Exception {
         try {
@@ -25,7 +25,7 @@ public class ToolPooler implements Managed {
             int initialDelay = jackhammerConfiguration.getToolManagerConfiguration().getInitialDelay();
             int period = jackhammerConfiguration.getToolManagerConfiguration().getPeriod();
             ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(threadPoolSize);
-            executor.scheduleAtFixedRate(toolHealthCheck, initialDelay, period, TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(autoScalingTool, 0, period/4, TimeUnit.MINUTES);
         } catch (Throwable th) {
             log.error("Error in ToolPooler while pooling", th);
         }
