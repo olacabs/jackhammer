@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>4.2.3.RELEASE</version>
+            <version>5.5.7</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.hubspot.dropwizard/dropwizard-guice -->
         <dependency>
